@@ -1834,6 +1834,6845 @@ function isLoopbackAddress(host) {
 
 /***/ }),
 
+/***/ 2374:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+// Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AwsCrc32 = void 0;
+var tslib_1 = __nccwpck_require__(5066);
+var util_1 = __nccwpck_require__(1236);
+var index_1 = __nccwpck_require__(7327);
+var AwsCrc32 = /** @class */ (function () {
+    function AwsCrc32() {
+        this.crc32 = new index_1.Crc32();
+    }
+    AwsCrc32.prototype.update = function (toHash) {
+        if ((0, util_1.isEmptyData)(toHash))
+            return;
+        this.crc32.update((0, util_1.convertToBuffer)(toHash));
+    };
+    AwsCrc32.prototype.digest = function () {
+        return tslib_1.__awaiter(this, void 0, void 0, function () {
+            return tslib_1.__generator(this, function (_a) {
+                return [2 /*return*/, (0, util_1.numToUint8)(this.crc32.digest())];
+            });
+        });
+    };
+    AwsCrc32.prototype.reset = function () {
+        this.crc32 = new index_1.Crc32();
+    };
+    return AwsCrc32;
+}());
+exports.AwsCrc32 = AwsCrc32;
+//# sourceMappingURL=aws_crc32.js.map
+
+/***/ }),
+
+/***/ 7327:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AwsCrc32 = exports.Crc32 = exports.crc32 = void 0;
+var tslib_1 = __nccwpck_require__(5066);
+var util_1 = __nccwpck_require__(1236);
+function crc32(data) {
+    return new Crc32().update(data).digest();
+}
+exports.crc32 = crc32;
+var Crc32 = /** @class */ (function () {
+    function Crc32() {
+        this.checksum = 0xffffffff;
+    }
+    Crc32.prototype.update = function (data) {
+        var e_1, _a;
+        try {
+            for (var data_1 = tslib_1.__values(data), data_1_1 = data_1.next(); !data_1_1.done; data_1_1 = data_1.next()) {
+                var byte = data_1_1.value;
+                this.checksum =
+                    (this.checksum >>> 8) ^ lookupTable[(this.checksum ^ byte) & 0xff];
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (data_1_1 && !data_1_1.done && (_a = data_1.return)) _a.call(data_1);
+            }
+            finally { if (e_1) throw e_1.error; }
+        }
+        return this;
+    };
+    Crc32.prototype.digest = function () {
+        return (this.checksum ^ 0xffffffff) >>> 0;
+    };
+    return Crc32;
+}());
+exports.Crc32 = Crc32;
+// prettier-ignore
+var a_lookUpTable = [
+    0x00000000, 0x77073096, 0xEE0E612C, 0x990951BA,
+    0x076DC419, 0x706AF48F, 0xE963A535, 0x9E6495A3,
+    0x0EDB8832, 0x79DCB8A4, 0xE0D5E91E, 0x97D2D988,
+    0x09B64C2B, 0x7EB17CBD, 0xE7B82D07, 0x90BF1D91,
+    0x1DB71064, 0x6AB020F2, 0xF3B97148, 0x84BE41DE,
+    0x1ADAD47D, 0x6DDDE4EB, 0xF4D4B551, 0x83D385C7,
+    0x136C9856, 0x646BA8C0, 0xFD62F97A, 0x8A65C9EC,
+    0x14015C4F, 0x63066CD9, 0xFA0F3D63, 0x8D080DF5,
+    0x3B6E20C8, 0x4C69105E, 0xD56041E4, 0xA2677172,
+    0x3C03E4D1, 0x4B04D447, 0xD20D85FD, 0xA50AB56B,
+    0x35B5A8FA, 0x42B2986C, 0xDBBBC9D6, 0xACBCF940,
+    0x32D86CE3, 0x45DF5C75, 0xDCD60DCF, 0xABD13D59,
+    0x26D930AC, 0x51DE003A, 0xC8D75180, 0xBFD06116,
+    0x21B4F4B5, 0x56B3C423, 0xCFBA9599, 0xB8BDA50F,
+    0x2802B89E, 0x5F058808, 0xC60CD9B2, 0xB10BE924,
+    0x2F6F7C87, 0x58684C11, 0xC1611DAB, 0xB6662D3D,
+    0x76DC4190, 0x01DB7106, 0x98D220BC, 0xEFD5102A,
+    0x71B18589, 0x06B6B51F, 0x9FBFE4A5, 0xE8B8D433,
+    0x7807C9A2, 0x0F00F934, 0x9609A88E, 0xE10E9818,
+    0x7F6A0DBB, 0x086D3D2D, 0x91646C97, 0xE6635C01,
+    0x6B6B51F4, 0x1C6C6162, 0x856530D8, 0xF262004E,
+    0x6C0695ED, 0x1B01A57B, 0x8208F4C1, 0xF50FC457,
+    0x65B0D9C6, 0x12B7E950, 0x8BBEB8EA, 0xFCB9887C,
+    0x62DD1DDF, 0x15DA2D49, 0x8CD37CF3, 0xFBD44C65,
+    0x4DB26158, 0x3AB551CE, 0xA3BC0074, 0xD4BB30E2,
+    0x4ADFA541, 0x3DD895D7, 0xA4D1C46D, 0xD3D6F4FB,
+    0x4369E96A, 0x346ED9FC, 0xAD678846, 0xDA60B8D0,
+    0x44042D73, 0x33031DE5, 0xAA0A4C5F, 0xDD0D7CC9,
+    0x5005713C, 0x270241AA, 0xBE0B1010, 0xC90C2086,
+    0x5768B525, 0x206F85B3, 0xB966D409, 0xCE61E49F,
+    0x5EDEF90E, 0x29D9C998, 0xB0D09822, 0xC7D7A8B4,
+    0x59B33D17, 0x2EB40D81, 0xB7BD5C3B, 0xC0BA6CAD,
+    0xEDB88320, 0x9ABFB3B6, 0x03B6E20C, 0x74B1D29A,
+    0xEAD54739, 0x9DD277AF, 0x04DB2615, 0x73DC1683,
+    0xE3630B12, 0x94643B84, 0x0D6D6A3E, 0x7A6A5AA8,
+    0xE40ECF0B, 0x9309FF9D, 0x0A00AE27, 0x7D079EB1,
+    0xF00F9344, 0x8708A3D2, 0x1E01F268, 0x6906C2FE,
+    0xF762575D, 0x806567CB, 0x196C3671, 0x6E6B06E7,
+    0xFED41B76, 0x89D32BE0, 0x10DA7A5A, 0x67DD4ACC,
+    0xF9B9DF6F, 0x8EBEEFF9, 0x17B7BE43, 0x60B08ED5,
+    0xD6D6A3E8, 0xA1D1937E, 0x38D8C2C4, 0x4FDFF252,
+    0xD1BB67F1, 0xA6BC5767, 0x3FB506DD, 0x48B2364B,
+    0xD80D2BDA, 0xAF0A1B4C, 0x36034AF6, 0x41047A60,
+    0xDF60EFC3, 0xA867DF55, 0x316E8EEF, 0x4669BE79,
+    0xCB61B38C, 0xBC66831A, 0x256FD2A0, 0x5268E236,
+    0xCC0C7795, 0xBB0B4703, 0x220216B9, 0x5505262F,
+    0xC5BA3BBE, 0xB2BD0B28, 0x2BB45A92, 0x5CB36A04,
+    0xC2D7FFA7, 0xB5D0CF31, 0x2CD99E8B, 0x5BDEAE1D,
+    0x9B64C2B0, 0xEC63F226, 0x756AA39C, 0x026D930A,
+    0x9C0906A9, 0xEB0E363F, 0x72076785, 0x05005713,
+    0x95BF4A82, 0xE2B87A14, 0x7BB12BAE, 0x0CB61B38,
+    0x92D28E9B, 0xE5D5BE0D, 0x7CDCEFB7, 0x0BDBDF21,
+    0x86D3D2D4, 0xF1D4E242, 0x68DDB3F8, 0x1FDA836E,
+    0x81BE16CD, 0xF6B9265B, 0x6FB077E1, 0x18B74777,
+    0x88085AE6, 0xFF0F6A70, 0x66063BCA, 0x11010B5C,
+    0x8F659EFF, 0xF862AE69, 0x616BFFD3, 0x166CCF45,
+    0xA00AE278, 0xD70DD2EE, 0x4E048354, 0x3903B3C2,
+    0xA7672661, 0xD06016F7, 0x4969474D, 0x3E6E77DB,
+    0xAED16A4A, 0xD9D65ADC, 0x40DF0B66, 0x37D83BF0,
+    0xA9BCAE53, 0xDEBB9EC5, 0x47B2CF7F, 0x30B5FFE9,
+    0xBDBDF21C, 0xCABAC28A, 0x53B39330, 0x24B4A3A6,
+    0xBAD03605, 0xCDD70693, 0x54DE5729, 0x23D967BF,
+    0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94,
+    0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D,
+];
+var lookupTable = (0, util_1.uint32ArrayFrom)(a_lookUpTable);
+var aws_crc32_1 = __nccwpck_require__(2374);
+Object.defineProperty(exports, "AwsCrc32", ({ enumerable: true, get: function () { return aws_crc32_1.AwsCrc32; } }));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 5066:
+/***/ ((module) => {
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+/* global global, define, System, Reflect, Promise */
+var __extends;
+var __assign;
+var __rest;
+var __decorate;
+var __param;
+var __metadata;
+var __awaiter;
+var __generator;
+var __exportStar;
+var __values;
+var __read;
+var __spread;
+var __spreadArrays;
+var __await;
+var __asyncGenerator;
+var __asyncDelegator;
+var __asyncValues;
+var __makeTemplateObject;
+var __importStar;
+var __importDefault;
+var __classPrivateFieldGet;
+var __classPrivateFieldSet;
+var __createBinding;
+(function (factory) {
+    var root = typeof global === "object" ? global : typeof self === "object" ? self : typeof this === "object" ? this : {};
+    if (typeof define === "function" && define.amd) {
+        define("tslib", ["exports"], function (exports) { factory(createExporter(root, createExporter(exports))); });
+    }
+    else if ( true && typeof module.exports === "object") {
+        factory(createExporter(root, createExporter(module.exports)));
+    }
+    else {
+        factory(createExporter(root));
+    }
+    function createExporter(exports, previous) {
+        if (exports !== root) {
+            if (typeof Object.create === "function") {
+                Object.defineProperty(exports, "__esModule", { value: true });
+            }
+            else {
+                exports.__esModule = true;
+            }
+        }
+        return function (id, v) { return exports[id] = previous ? previous(id, v) : v; };
+    }
+})
+(function (exporter) {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+
+    __extends = function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+
+    __assign = Object.assign || function (t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+
+    __rest = function (s, e) {
+        var t = {};
+        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+            t[p] = s[p];
+        if (s != null && typeof Object.getOwnPropertySymbols === "function")
+            for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+                if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                    t[p[i]] = s[p[i]];
+            }
+        return t;
+    };
+
+    __decorate = function (decorators, target, key, desc) {
+        var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+        else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+
+    __param = function (paramIndex, decorator) {
+        return function (target, key) { decorator(target, key, paramIndex); }
+    };
+
+    __metadata = function (metadataKey, metadataValue) {
+        if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(metadataKey, metadataValue);
+    };
+
+    __awaiter = function (thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+        return new (P || (P = Promise))(function (resolve, reject) {
+            function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+            function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+            step((generator = generator.apply(thisArg, _arguments || [])).next());
+        });
+    };
+
+    __generator = function (thisArg, body) {
+        var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+        return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
+        function verb(n) { return function (v) { return step([n, v]); }; }
+        function step(op) {
+            if (f) throw new TypeError("Generator is already executing.");
+            while (_) try {
+                if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+                if (y = 0, t) op = [op[0] & 2, t.value];
+                switch (op[0]) {
+                    case 0: case 1: t = op; break;
+                    case 4: _.label++; return { value: op[1], done: false };
+                    case 5: _.label++; y = op[1]; op = [0]; continue;
+                    case 7: op = _.ops.pop(); _.trys.pop(); continue;
+                    default:
+                        if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
+                        if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
+                        if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
+                        if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
+                        if (t[2]) _.ops.pop();
+                        _.trys.pop(); continue;
+                }
+                op = body.call(thisArg, _);
+            } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
+            if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
+        }
+    };
+
+    __createBinding = function(o, m, k, k2) {
+        if (k2 === undefined) k2 = k;
+        o[k2] = m[k];
+    };
+
+    __exportStar = function (m, exports) {
+        for (var p in m) if (p !== "default" && !exports.hasOwnProperty(p)) exports[p] = m[p];
+    };
+
+    __values = function (o) {
+        var s = typeof Symbol === "function" && Symbol.iterator, m = s && o[s], i = 0;
+        if (m) return m.call(o);
+        if (o && typeof o.length === "number") return {
+            next: function () {
+                if (o && i >= o.length) o = void 0;
+                return { value: o && o[i++], done: !o };
+            }
+        };
+        throw new TypeError(s ? "Object is not iterable." : "Symbol.iterator is not defined.");
+    };
+
+    __read = function (o, n) {
+        var m = typeof Symbol === "function" && o[Symbol.iterator];
+        if (!m) return o;
+        var i = m.call(o), r, ar = [], e;
+        try {
+            while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+        }
+        catch (error) { e = { error: error }; }
+        finally {
+            try {
+                if (r && !r.done && (m = i["return"])) m.call(i);
+            }
+            finally { if (e) throw e.error; }
+        }
+        return ar;
+    };
+
+    __spread = function () {
+        for (var ar = [], i = 0; i < arguments.length; i++)
+            ar = ar.concat(__read(arguments[i]));
+        return ar;
+    };
+
+    __spreadArrays = function () {
+        for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+        for (var r = Array(s), k = 0, i = 0; i < il; i++)
+            for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+                r[k] = a[j];
+        return r;
+    };
+
+    __await = function (v) {
+        return this instanceof __await ? (this.v = v, this) : new __await(v);
+    };
+
+    __asyncGenerator = function (thisArg, _arguments, generator) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var g = generator.apply(thisArg, _arguments || []), i, q = [];
+        return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+        function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+        function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+        function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r);  }
+        function fulfill(value) { resume("next", value); }
+        function reject(value) { resume("throw", value); }
+        function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
+    };
+
+    __asyncDelegator = function (o) {
+        var i, p;
+        return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
+        function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+    };
+
+    __asyncValues = function (o) {
+        if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+        var m = o[Symbol.asyncIterator], i;
+        return m ? m.call(o) : (o = typeof __values === "function" ? __values(o) : o[Symbol.iterator](), i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i);
+        function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
+        function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
+    };
+
+    __makeTemplateObject = function (cooked, raw) {
+        if (Object.defineProperty) { Object.defineProperty(cooked, "raw", { value: raw }); } else { cooked.raw = raw; }
+        return cooked;
+    };
+
+    __importStar = function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+        result["default"] = mod;
+        return result;
+    };
+
+    __importDefault = function (mod) {
+        return (mod && mod.__esModule) ? mod : { "default": mod };
+    };
+
+    __classPrivateFieldGet = function (receiver, privateMap) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to get private field on non-instance");
+        }
+        return privateMap.get(receiver);
+    };
+
+    __classPrivateFieldSet = function (receiver, privateMap, value) {
+        if (!privateMap.has(receiver)) {
+            throw new TypeError("attempted to set private field on non-instance");
+        }
+        privateMap.set(receiver, value);
+        return value;
+    };
+
+    exporter("__extends", __extends);
+    exporter("__assign", __assign);
+    exporter("__rest", __rest);
+    exporter("__decorate", __decorate);
+    exporter("__param", __param);
+    exporter("__metadata", __metadata);
+    exporter("__awaiter", __awaiter);
+    exporter("__generator", __generator);
+    exporter("__exportStar", __exportStar);
+    exporter("__createBinding", __createBinding);
+    exporter("__values", __values);
+    exporter("__read", __read);
+    exporter("__spread", __spread);
+    exporter("__spreadArrays", __spreadArrays);
+    exporter("__await", __await);
+    exporter("__asyncGenerator", __asyncGenerator);
+    exporter("__asyncDelegator", __asyncDelegator);
+    exporter("__asyncValues", __asyncValues);
+    exporter("__makeTemplateObject", __makeTemplateObject);
+    exporter("__importStar", __importStar);
+    exporter("__importDefault", __importDefault);
+    exporter("__classPrivateFieldGet", __classPrivateFieldGet);
+    exporter("__classPrivateFieldSet", __classPrivateFieldSet);
+});
+
+
+/***/ }),
+
+/***/ 3228:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+// Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.convertToBuffer = void 0;
+var util_utf8_browser_1 = __nccwpck_require__(8172);
+// Quick polyfill
+var fromUtf8 = typeof Buffer !== "undefined" && Buffer.from
+    ? function (input) { return Buffer.from(input, "utf8"); }
+    : util_utf8_browser_1.fromUtf8;
+function convertToBuffer(data) {
+    // Already a Uint8, do nothing
+    if (data instanceof Uint8Array)
+        return data;
+    if (typeof data === "string") {
+        return fromUtf8(data);
+    }
+    if (ArrayBuffer.isView(data)) {
+        return new Uint8Array(data.buffer, data.byteOffset, data.byteLength / Uint8Array.BYTES_PER_ELEMENT);
+    }
+    return new Uint8Array(data);
+}
+exports.convertToBuffer = convertToBuffer;
+//# sourceMappingURL=convertToBuffer.js.map
+
+/***/ }),
+
+/***/ 1236:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+// Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.uint32ArrayFrom = exports.numToUint8 = exports.isEmptyData = exports.convertToBuffer = void 0;
+var convertToBuffer_1 = __nccwpck_require__(3228);
+Object.defineProperty(exports, "convertToBuffer", ({ enumerable: true, get: function () { return convertToBuffer_1.convertToBuffer; } }));
+var isEmptyData_1 = __nccwpck_require__(8275);
+Object.defineProperty(exports, "isEmptyData", ({ enumerable: true, get: function () { return isEmptyData_1.isEmptyData; } }));
+var numToUint8_1 = __nccwpck_require__(3775);
+Object.defineProperty(exports, "numToUint8", ({ enumerable: true, get: function () { return numToUint8_1.numToUint8; } }));
+var uint32ArrayFrom_1 = __nccwpck_require__(9404);
+Object.defineProperty(exports, "uint32ArrayFrom", ({ enumerable: true, get: function () { return uint32ArrayFrom_1.uint32ArrayFrom; } }));
+//# sourceMappingURL=index.js.map
+
+/***/ }),
+
+/***/ 8275:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+// Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isEmptyData = void 0;
+function isEmptyData(data) {
+    if (typeof data === "string") {
+        return data.length === 0;
+    }
+    return data.byteLength === 0;
+}
+exports.isEmptyData = isEmptyData;
+//# sourceMappingURL=isEmptyData.js.map
+
+/***/ }),
+
+/***/ 3775:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+// Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.numToUint8 = void 0;
+function numToUint8(num) {
+    return new Uint8Array([
+        (num & 0xff000000) >> 24,
+        (num & 0x00ff0000) >> 16,
+        (num & 0x0000ff00) >> 8,
+        num & 0x000000ff,
+    ]);
+}
+exports.numToUint8 = numToUint8;
+//# sourceMappingURL=numToUint8.js.map
+
+/***/ }),
+
+/***/ 9404:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+// Copyright Amazon.com Inc. or its affiliates. All Rights Reserved.
+// SPDX-License-Identifier: Apache-2.0
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.uint32ArrayFrom = void 0;
+// IE 11 does not support Array.from, so we do it manually
+function uint32ArrayFrom(a_lookUpTable) {
+    if (!Uint32Array.from) {
+        var return_array = new Uint32Array(a_lookUpTable.length);
+        var a_index = 0;
+        while (a_index < a_lookUpTable.length) {
+            return_array[a_index] = a_lookUpTable[a_index];
+            a_index += 1;
+        }
+        return return_array;
+    }
+    return Uint32Array.from(a_lookUpTable);
+}
+exports.uint32ArrayFrom = uint32ArrayFrom;
+//# sourceMappingURL=uint32ArrayFrom.js.map
+
+/***/ }),
+
+/***/ 5506:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resolveHttpAuthSchemeConfig = exports.defaultLambdaHttpAuthSchemeProvider = exports.defaultLambdaHttpAuthSchemeParametersProvider = void 0;
+const core_1 = __nccwpck_require__(9963);
+const util_middleware_1 = __nccwpck_require__(2390);
+const defaultLambdaHttpAuthSchemeParametersProvider = async (config, context, input) => {
+    return {
+        operation: (0, util_middleware_1.getSmithyContext)(context).operation,
+        region: (await (0, util_middleware_1.normalizeProvider)(config.region)()) ||
+            (() => {
+                throw new Error("expected `region` to be configured for `aws.auth#sigv4`");
+            })(),
+    };
+};
+exports.defaultLambdaHttpAuthSchemeParametersProvider = defaultLambdaHttpAuthSchemeParametersProvider;
+function createAwsAuthSigv4HttpAuthOption(authParameters) {
+    return {
+        schemeId: "aws.auth#sigv4",
+        signingProperties: {
+            name: "lambda",
+            region: authParameters.region,
+        },
+        propertiesExtractor: (config, context) => ({
+            signingProperties: {
+                config,
+                context,
+            },
+        }),
+    };
+}
+const defaultLambdaHttpAuthSchemeProvider = (authParameters) => {
+    const options = [];
+    switch (authParameters.operation) {
+        default: {
+            options.push(createAwsAuthSigv4HttpAuthOption(authParameters));
+        }
+    }
+    return options;
+};
+exports.defaultLambdaHttpAuthSchemeProvider = defaultLambdaHttpAuthSchemeProvider;
+const resolveHttpAuthSchemeConfig = (config) => {
+    const config_0 = (0, core_1.resolveAwsSdkSigV4Config)(config);
+    return {
+        ...config_0,
+    };
+};
+exports.resolveHttpAuthSchemeConfig = resolveHttpAuthSchemeConfig;
+
+
+/***/ }),
+
+/***/ 5060:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.defaultEndpointResolver = void 0;
+const util_endpoints_1 = __nccwpck_require__(3350);
+const util_endpoints_2 = __nccwpck_require__(5473);
+const ruleset_1 = __nccwpck_require__(1512);
+const defaultEndpointResolver = (endpointParams, context = {}) => {
+    return (0, util_endpoints_2.resolveEndpoint)(ruleset_1.ruleSet, {
+        endpointParams: endpointParams,
+        logger: context.logger,
+    });
+};
+exports.defaultEndpointResolver = defaultEndpointResolver;
+util_endpoints_2.customEndpointFunctions.aws = util_endpoints_1.awsEndpointFunctions;
+
+
+/***/ }),
+
+/***/ 1512:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ruleSet = void 0;
+const s = "required", t = "fn", u = "argv", v = "ref";
+const a = true, b = "isSet", c = "booleanEquals", d = "error", e = "endpoint", f = "tree", g = "PartitionResult", h = { [s]: false, "type": "String" }, i = { [s]: true, "default": false, "type": "Boolean" }, j = { [v]: "Endpoint" }, k = { [t]: c, [u]: [{ [v]: "UseFIPS" }, true] }, l = { [t]: c, [u]: [{ [v]: "UseDualStack" }, true] }, m = {}, n = { [t]: "getAttr", [u]: [{ [v]: g }, "supportsFIPS"] }, o = { [t]: c, [u]: [true, { [t]: "getAttr", [u]: [{ [v]: g }, "supportsDualStack"] }] }, p = [k], q = [l], r = [{ [v]: "Region" }];
+const _data = { version: "1.0", parameters: { Region: h, UseDualStack: i, UseFIPS: i, Endpoint: h }, rules: [{ conditions: [{ [t]: b, [u]: [j] }], rules: [{ conditions: p, error: "Invalid Configuration: FIPS and custom endpoint are not supported", type: d }, { conditions: q, error: "Invalid Configuration: Dualstack and custom endpoint are not supported", type: d }, { endpoint: { url: j, properties: m, headers: m }, type: e }], type: f }, { conditions: [{ [t]: b, [u]: r }], rules: [{ conditions: [{ [t]: "aws.partition", [u]: r, assign: g }], rules: [{ conditions: [k, l], rules: [{ conditions: [{ [t]: c, [u]: [a, n] }, o], rules: [{ endpoint: { url: "https://lambda-fips.{Region}.{PartitionResult#dualStackDnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "FIPS and DualStack are enabled, but this partition does not support one or both", type: d }], type: f }, { conditions: p, rules: [{ conditions: [{ [t]: c, [u]: [n, a] }], rules: [{ endpoint: { url: "https://lambda-fips.{Region}.{PartitionResult#dnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "FIPS is enabled but this partition does not support FIPS", type: d }], type: f }, { conditions: q, rules: [{ conditions: [o], rules: [{ endpoint: { url: "https://lambda.{Region}.{PartitionResult#dualStackDnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "DualStack is enabled but this partition does not support DualStack", type: d }], type: f }, { endpoint: { url: "https://lambda.{Region}.{PartitionResult#dnsSuffix}", properties: m, headers: m }, type: e }], type: f }], type: f }, { error: "Invalid Configuration: Missing Region", type: d }] };
+exports.ruleSet = _data;
+
+
+/***/ }),
+
+/***/ 6584:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  AddLayerVersionPermissionCommand: () => AddLayerVersionPermissionCommand,
+  AddPermissionCommand: () => AddPermissionCommand,
+  ApplicationLogLevel: () => ApplicationLogLevel,
+  Architecture: () => Architecture,
+  CodeSigningConfigNotFoundException: () => CodeSigningConfigNotFoundException,
+  CodeSigningPolicy: () => CodeSigningPolicy,
+  CodeStorageExceededException: () => CodeStorageExceededException,
+  CodeVerificationFailedException: () => CodeVerificationFailedException,
+  CreateAliasCommand: () => CreateAliasCommand,
+  CreateCodeSigningConfigCommand: () => CreateCodeSigningConfigCommand,
+  CreateEventSourceMappingCommand: () => CreateEventSourceMappingCommand,
+  CreateFunctionCommand: () => CreateFunctionCommand,
+  CreateFunctionRequestFilterSensitiveLog: () => CreateFunctionRequestFilterSensitiveLog,
+  CreateFunctionUrlConfigCommand: () => CreateFunctionUrlConfigCommand,
+  DeleteAliasCommand: () => DeleteAliasCommand,
+  DeleteCodeSigningConfigCommand: () => DeleteCodeSigningConfigCommand,
+  DeleteEventSourceMappingCommand: () => DeleteEventSourceMappingCommand,
+  DeleteFunctionCodeSigningConfigCommand: () => DeleteFunctionCodeSigningConfigCommand,
+  DeleteFunctionCommand: () => DeleteFunctionCommand,
+  DeleteFunctionConcurrencyCommand: () => DeleteFunctionConcurrencyCommand,
+  DeleteFunctionEventInvokeConfigCommand: () => DeleteFunctionEventInvokeConfigCommand,
+  DeleteFunctionUrlConfigCommand: () => DeleteFunctionUrlConfigCommand,
+  DeleteLayerVersionCommand: () => DeleteLayerVersionCommand,
+  DeleteProvisionedConcurrencyConfigCommand: () => DeleteProvisionedConcurrencyConfigCommand,
+  EC2AccessDeniedException: () => EC2AccessDeniedException,
+  EC2ThrottledException: () => EC2ThrottledException,
+  EC2UnexpectedException: () => EC2UnexpectedException,
+  EFSIOException: () => EFSIOException,
+  EFSMountConnectivityException: () => EFSMountConnectivityException,
+  EFSMountFailureException: () => EFSMountFailureException,
+  EFSMountTimeoutException: () => EFSMountTimeoutException,
+  ENILimitReachedException: () => ENILimitReachedException,
+  EndPointType: () => EndPointType,
+  EnvironmentErrorFilterSensitiveLog: () => EnvironmentErrorFilterSensitiveLog,
+  EnvironmentFilterSensitiveLog: () => EnvironmentFilterSensitiveLog,
+  EnvironmentResponseFilterSensitiveLog: () => EnvironmentResponseFilterSensitiveLog,
+  EventSourcePosition: () => EventSourcePosition,
+  FullDocument: () => FullDocument,
+  FunctionCodeFilterSensitiveLog: () => FunctionCodeFilterSensitiveLog,
+  FunctionConfigurationFilterSensitiveLog: () => FunctionConfigurationFilterSensitiveLog,
+  FunctionResponseType: () => FunctionResponseType,
+  FunctionUrlAuthType: () => FunctionUrlAuthType,
+  FunctionVersion: () => FunctionVersion,
+  GetAccountSettingsCommand: () => GetAccountSettingsCommand,
+  GetAliasCommand: () => GetAliasCommand,
+  GetCodeSigningConfigCommand: () => GetCodeSigningConfigCommand,
+  GetEventSourceMappingCommand: () => GetEventSourceMappingCommand,
+  GetFunctionCodeSigningConfigCommand: () => GetFunctionCodeSigningConfigCommand,
+  GetFunctionCommand: () => GetFunctionCommand,
+  GetFunctionConcurrencyCommand: () => GetFunctionConcurrencyCommand,
+  GetFunctionConfigurationCommand: () => GetFunctionConfigurationCommand,
+  GetFunctionEventInvokeConfigCommand: () => GetFunctionEventInvokeConfigCommand,
+  GetFunctionResponseFilterSensitiveLog: () => GetFunctionResponseFilterSensitiveLog,
+  GetFunctionUrlConfigCommand: () => GetFunctionUrlConfigCommand,
+  GetLayerVersionByArnCommand: () => GetLayerVersionByArnCommand,
+  GetLayerVersionCommand: () => GetLayerVersionCommand,
+  GetLayerVersionPolicyCommand: () => GetLayerVersionPolicyCommand,
+  GetPolicyCommand: () => GetPolicyCommand,
+  GetProvisionedConcurrencyConfigCommand: () => GetProvisionedConcurrencyConfigCommand,
+  GetRuntimeManagementConfigCommand: () => GetRuntimeManagementConfigCommand,
+  ImageConfigErrorFilterSensitiveLog: () => ImageConfigErrorFilterSensitiveLog,
+  ImageConfigResponseFilterSensitiveLog: () => ImageConfigResponseFilterSensitiveLog,
+  InvalidCodeSignatureException: () => InvalidCodeSignatureException,
+  InvalidParameterValueException: () => InvalidParameterValueException,
+  InvalidRequestContentException: () => InvalidRequestContentException,
+  InvalidRuntimeException: () => InvalidRuntimeException,
+  InvalidSecurityGroupIDException: () => InvalidSecurityGroupIDException,
+  InvalidSubnetIDException: () => InvalidSubnetIDException,
+  InvalidZipFileException: () => InvalidZipFileException,
+  InvocationRequestFilterSensitiveLog: () => InvocationRequestFilterSensitiveLog,
+  InvocationResponseFilterSensitiveLog: () => InvocationResponseFilterSensitiveLog,
+  InvocationType: () => InvocationType,
+  InvokeAsyncCommand: () => InvokeAsyncCommand,
+  InvokeAsyncRequestFilterSensitiveLog: () => InvokeAsyncRequestFilterSensitiveLog,
+  InvokeCommand: () => InvokeCommand,
+  InvokeMode: () => InvokeMode,
+  InvokeResponseStreamUpdateFilterSensitiveLog: () => InvokeResponseStreamUpdateFilterSensitiveLog,
+  InvokeWithResponseStreamCommand: () => InvokeWithResponseStreamCommand,
+  InvokeWithResponseStreamRequestFilterSensitiveLog: () => InvokeWithResponseStreamRequestFilterSensitiveLog,
+  InvokeWithResponseStreamResponseEvent: () => InvokeWithResponseStreamResponseEvent,
+  InvokeWithResponseStreamResponseEventFilterSensitiveLog: () => InvokeWithResponseStreamResponseEventFilterSensitiveLog,
+  InvokeWithResponseStreamResponseFilterSensitiveLog: () => InvokeWithResponseStreamResponseFilterSensitiveLog,
+  KMSAccessDeniedException: () => KMSAccessDeniedException,
+  KMSDisabledException: () => KMSDisabledException,
+  KMSInvalidStateException: () => KMSInvalidStateException,
+  KMSNotFoundException: () => KMSNotFoundException,
+  Lambda: () => Lambda,
+  LambdaClient: () => LambdaClient,
+  LambdaServiceException: () => LambdaServiceException,
+  LastUpdateStatus: () => LastUpdateStatus,
+  LastUpdateStatusReasonCode: () => LastUpdateStatusReasonCode,
+  LayerVersionContentInputFilterSensitiveLog: () => LayerVersionContentInputFilterSensitiveLog,
+  ListAliasesCommand: () => ListAliasesCommand,
+  ListCodeSigningConfigsCommand: () => ListCodeSigningConfigsCommand,
+  ListEventSourceMappingsCommand: () => ListEventSourceMappingsCommand,
+  ListFunctionEventInvokeConfigsCommand: () => ListFunctionEventInvokeConfigsCommand,
+  ListFunctionUrlConfigsCommand: () => ListFunctionUrlConfigsCommand,
+  ListFunctionsByCodeSigningConfigCommand: () => ListFunctionsByCodeSigningConfigCommand,
+  ListFunctionsCommand: () => ListFunctionsCommand,
+  ListFunctionsResponseFilterSensitiveLog: () => ListFunctionsResponseFilterSensitiveLog,
+  ListLayerVersionsCommand: () => ListLayerVersionsCommand,
+  ListLayersCommand: () => ListLayersCommand,
+  ListProvisionedConcurrencyConfigsCommand: () => ListProvisionedConcurrencyConfigsCommand,
+  ListTagsCommand: () => ListTagsCommand,
+  ListVersionsByFunctionCommand: () => ListVersionsByFunctionCommand,
+  ListVersionsByFunctionResponseFilterSensitiveLog: () => ListVersionsByFunctionResponseFilterSensitiveLog,
+  LogFormat: () => LogFormat,
+  LogType: () => LogType,
+  PackageType: () => PackageType,
+  PolicyLengthExceededException: () => PolicyLengthExceededException,
+  PreconditionFailedException: () => PreconditionFailedException,
+  ProvisionedConcurrencyConfigNotFoundException: () => ProvisionedConcurrencyConfigNotFoundException,
+  ProvisionedConcurrencyStatusEnum: () => ProvisionedConcurrencyStatusEnum,
+  PublishLayerVersionCommand: () => PublishLayerVersionCommand,
+  PublishLayerVersionRequestFilterSensitiveLog: () => PublishLayerVersionRequestFilterSensitiveLog,
+  PublishVersionCommand: () => PublishVersionCommand,
+  PutFunctionCodeSigningConfigCommand: () => PutFunctionCodeSigningConfigCommand,
+  PutFunctionConcurrencyCommand: () => PutFunctionConcurrencyCommand,
+  PutFunctionEventInvokeConfigCommand: () => PutFunctionEventInvokeConfigCommand,
+  PutProvisionedConcurrencyConfigCommand: () => PutProvisionedConcurrencyConfigCommand,
+  PutRuntimeManagementConfigCommand: () => PutRuntimeManagementConfigCommand,
+  RecursiveInvocationException: () => RecursiveInvocationException,
+  RemoveLayerVersionPermissionCommand: () => RemoveLayerVersionPermissionCommand,
+  RemovePermissionCommand: () => RemovePermissionCommand,
+  RequestTooLargeException: () => RequestTooLargeException,
+  ResourceConflictException: () => ResourceConflictException,
+  ResourceInUseException: () => ResourceInUseException,
+  ResourceNotFoundException: () => ResourceNotFoundException,
+  ResourceNotReadyException: () => ResourceNotReadyException,
+  ResponseStreamingInvocationType: () => ResponseStreamingInvocationType,
+  Runtime: () => Runtime,
+  RuntimeVersionConfigFilterSensitiveLog: () => RuntimeVersionConfigFilterSensitiveLog,
+  RuntimeVersionErrorFilterSensitiveLog: () => RuntimeVersionErrorFilterSensitiveLog,
+  ServiceException: () => ServiceException,
+  SnapStartApplyOn: () => SnapStartApplyOn,
+  SnapStartException: () => SnapStartException,
+  SnapStartNotReadyException: () => SnapStartNotReadyException,
+  SnapStartOptimizationStatus: () => SnapStartOptimizationStatus,
+  SnapStartTimeoutException: () => SnapStartTimeoutException,
+  SourceAccessType: () => SourceAccessType,
+  State: () => State,
+  StateReasonCode: () => StateReasonCode,
+  SubnetIPAddressLimitReachedException: () => SubnetIPAddressLimitReachedException,
+  SystemLogLevel: () => SystemLogLevel,
+  TagResourceCommand: () => TagResourceCommand,
+  ThrottleReason: () => ThrottleReason,
+  TooManyRequestsException: () => TooManyRequestsException,
+  TracingMode: () => TracingMode,
+  UnsupportedMediaTypeException: () => UnsupportedMediaTypeException,
+  UntagResourceCommand: () => UntagResourceCommand,
+  UpdateAliasCommand: () => UpdateAliasCommand,
+  UpdateCodeSigningConfigCommand: () => UpdateCodeSigningConfigCommand,
+  UpdateEventSourceMappingCommand: () => UpdateEventSourceMappingCommand,
+  UpdateFunctionCodeCommand: () => UpdateFunctionCodeCommand,
+  UpdateFunctionCodeRequestFilterSensitiveLog: () => UpdateFunctionCodeRequestFilterSensitiveLog,
+  UpdateFunctionConfigurationCommand: () => UpdateFunctionConfigurationCommand,
+  UpdateFunctionConfigurationRequestFilterSensitiveLog: () => UpdateFunctionConfigurationRequestFilterSensitiveLog,
+  UpdateFunctionEventInvokeConfigCommand: () => UpdateFunctionEventInvokeConfigCommand,
+  UpdateFunctionUrlConfigCommand: () => UpdateFunctionUrlConfigCommand,
+  UpdateRuntimeOn: () => UpdateRuntimeOn,
+  __Client: () => import_smithy_client.Client,
+  paginateListAliases: () => paginateListAliases,
+  paginateListCodeSigningConfigs: () => paginateListCodeSigningConfigs,
+  paginateListEventSourceMappings: () => paginateListEventSourceMappings,
+  paginateListFunctionEventInvokeConfigs: () => paginateListFunctionEventInvokeConfigs,
+  paginateListFunctionUrlConfigs: () => paginateListFunctionUrlConfigs,
+  paginateListFunctions: () => paginateListFunctions,
+  paginateListFunctionsByCodeSigningConfig: () => paginateListFunctionsByCodeSigningConfig,
+  paginateListLayerVersions: () => paginateListLayerVersions,
+  paginateListLayers: () => paginateListLayers,
+  paginateListProvisionedConcurrencyConfigs: () => paginateListProvisionedConcurrencyConfigs,
+  paginateListVersionsByFunction: () => paginateListVersionsByFunction,
+  waitForFunctionActive: () => waitForFunctionActive,
+  waitForFunctionActiveV2: () => waitForFunctionActiveV2,
+  waitForFunctionExists: () => waitForFunctionExists,
+  waitForFunctionUpdated: () => waitForFunctionUpdated,
+  waitForFunctionUpdatedV2: () => waitForFunctionUpdatedV2,
+  waitForPublishedVersionActive: () => waitForPublishedVersionActive,
+  waitUntilFunctionActive: () => waitUntilFunctionActive,
+  waitUntilFunctionActiveV2: () => waitUntilFunctionActiveV2,
+  waitUntilFunctionExists: () => waitUntilFunctionExists,
+  waitUntilFunctionUpdated: () => waitUntilFunctionUpdated,
+  waitUntilFunctionUpdatedV2: () => waitUntilFunctionUpdatedV2,
+  waitUntilPublishedVersionActive: () => waitUntilPublishedVersionActive
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/LambdaClient.ts
+var import_middleware_host_header = __nccwpck_require__(2545);
+var import_middleware_logger = __nccwpck_require__(14);
+var import_middleware_recursion_detection = __nccwpck_require__(5525);
+var import_middleware_user_agent = __nccwpck_require__(4688);
+var import_config_resolver = __nccwpck_require__(3098);
+var import_core = __nccwpck_require__(5829);
+var import_eventstream_serde_config_resolver = __nccwpck_require__(6181);
+var import_middleware_content_length = __nccwpck_require__(2800);
+var import_middleware_endpoint = __nccwpck_require__(2918);
+var import_middleware_retry = __nccwpck_require__(6039);
+
+var import_httpAuthSchemeProvider = __nccwpck_require__(5506);
+
+// src/endpoint/EndpointParameters.ts
+var resolveClientEndpointParameters = /* @__PURE__ */ __name((options) => {
+  return {
+    ...options,
+    useDualstackEndpoint: options.useDualstackEndpoint ?? false,
+    useFipsEndpoint: options.useFipsEndpoint ?? false,
+    defaultSigningName: "lambda"
+  };
+}, "resolveClientEndpointParameters");
+var commonParams = {
+  UseFIPS: { type: "builtInParams", name: "useFipsEndpoint" },
+  Endpoint: { type: "builtInParams", name: "endpoint" },
+  Region: { type: "builtInParams", name: "region" },
+  UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" }
+};
+
+// src/LambdaClient.ts
+var import_runtimeConfig = __nccwpck_require__(3612);
+
+// src/runtimeExtensions.ts
+var import_region_config_resolver = __nccwpck_require__(8156);
+var import_protocol_http = __nccwpck_require__(4418);
+var import_smithy_client = __nccwpck_require__(3570);
+
+// src/auth/httpAuthExtensionConfiguration.ts
+var getHttpAuthExtensionConfiguration = /* @__PURE__ */ __name((runtimeConfig) => {
+  const _httpAuthSchemes = runtimeConfig.httpAuthSchemes;
+  let _httpAuthSchemeProvider = runtimeConfig.httpAuthSchemeProvider;
+  let _credentials = runtimeConfig.credentials;
+  return {
+    setHttpAuthScheme(httpAuthScheme) {
+      const index = _httpAuthSchemes.findIndex((scheme) => scheme.schemeId === httpAuthScheme.schemeId);
+      if (index === -1) {
+        _httpAuthSchemes.push(httpAuthScheme);
+      } else {
+        _httpAuthSchemes.splice(index, 1, httpAuthScheme);
+      }
+    },
+    httpAuthSchemes() {
+      return _httpAuthSchemes;
+    },
+    setHttpAuthSchemeProvider(httpAuthSchemeProvider) {
+      _httpAuthSchemeProvider = httpAuthSchemeProvider;
+    },
+    httpAuthSchemeProvider() {
+      return _httpAuthSchemeProvider;
+    },
+    setCredentials(credentials) {
+      _credentials = credentials;
+    },
+    credentials() {
+      return _credentials;
+    }
+  };
+}, "getHttpAuthExtensionConfiguration");
+var resolveHttpAuthRuntimeConfig = /* @__PURE__ */ __name((config) => {
+  return {
+    httpAuthSchemes: config.httpAuthSchemes(),
+    httpAuthSchemeProvider: config.httpAuthSchemeProvider(),
+    credentials: config.credentials()
+  };
+}, "resolveHttpAuthRuntimeConfig");
+
+// src/runtimeExtensions.ts
+var asPartial = /* @__PURE__ */ __name((t) => t, "asPartial");
+var resolveRuntimeExtensions = /* @__PURE__ */ __name((runtimeConfig, extensions) => {
+  const extensionConfiguration = {
+    ...asPartial((0, import_region_config_resolver.getAwsRegionExtensionConfiguration)(runtimeConfig)),
+    ...asPartial((0, import_smithy_client.getDefaultExtensionConfiguration)(runtimeConfig)),
+    ...asPartial((0, import_protocol_http.getHttpHandlerExtensionConfiguration)(runtimeConfig)),
+    ...asPartial(getHttpAuthExtensionConfiguration(runtimeConfig))
+  };
+  extensions.forEach((extension) => extension.configure(extensionConfiguration));
+  return {
+    ...runtimeConfig,
+    ...(0, import_region_config_resolver.resolveAwsRegionExtensionConfiguration)(extensionConfiguration),
+    ...(0, import_smithy_client.resolveDefaultRuntimeConfig)(extensionConfiguration),
+    ...(0, import_protocol_http.resolveHttpHandlerRuntimeConfig)(extensionConfiguration),
+    ...resolveHttpAuthRuntimeConfig(extensionConfiguration)
+  };
+}, "resolveRuntimeExtensions");
+
+// src/LambdaClient.ts
+var _LambdaClient = class _LambdaClient extends import_smithy_client.Client {
+  constructor(...[configuration]) {
+    const _config_0 = (0, import_runtimeConfig.getRuntimeConfig)(configuration || {});
+    const _config_1 = resolveClientEndpointParameters(_config_0);
+    const _config_2 = (0, import_config_resolver.resolveRegionConfig)(_config_1);
+    const _config_3 = (0, import_middleware_endpoint.resolveEndpointConfig)(_config_2);
+    const _config_4 = (0, import_middleware_retry.resolveRetryConfig)(_config_3);
+    const _config_5 = (0, import_middleware_host_header.resolveHostHeaderConfig)(_config_4);
+    const _config_6 = (0, import_middleware_user_agent.resolveUserAgentConfig)(_config_5);
+    const _config_7 = (0, import_eventstream_serde_config_resolver.resolveEventStreamSerdeConfig)(_config_6);
+    const _config_8 = (0, import_httpAuthSchemeProvider.resolveHttpAuthSchemeConfig)(_config_7);
+    const _config_9 = resolveRuntimeExtensions(_config_8, (configuration == null ? void 0 : configuration.extensions) || []);
+    super(_config_9);
+    this.config = _config_9;
+    this.middlewareStack.use((0, import_middleware_retry.getRetryPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_content_length.getContentLengthPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_host_header.getHostHeaderPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_logger.getLoggerPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_recursion_detection.getRecursionDetectionPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_user_agent.getUserAgentPlugin)(this.config));
+    this.middlewareStack.use(
+      (0, import_core.getHttpAuthSchemeEndpointRuleSetPlugin)(this.config, {
+        httpAuthSchemeParametersProvider: this.getDefaultHttpAuthSchemeParametersProvider(),
+        identityProviderConfigProvider: this.getIdentityProviderConfigProvider()
+      })
+    );
+    this.middlewareStack.use((0, import_core.getHttpSigningPlugin)(this.config));
+  }
+  /**
+   * Destroy underlying resources, like sockets. It's usually not necessary to do this.
+   * However in Node.js, it's best to explicitly shut down the client's agent when it is no longer needed.
+   * Otherwise, sockets might stay open for quite a long time before the server terminates them.
+   */
+  destroy() {
+    super.destroy();
+  }
+  getDefaultHttpAuthSchemeParametersProvider() {
+    return import_httpAuthSchemeProvider.defaultLambdaHttpAuthSchemeParametersProvider;
+  }
+  getIdentityProviderConfigProvider() {
+    return async (config) => new import_core.DefaultIdentityProviderConfig({
+      "aws.auth#sigv4": config.credentials
+    });
+  }
+};
+__name(_LambdaClient, "LambdaClient");
+var LambdaClient = _LambdaClient;
+
+// src/Lambda.ts
+
+
+// src/commands/AddLayerVersionPermissionCommand.ts
+
+var import_middleware_serde = __nccwpck_require__(1238);
+
+var import_types = __nccwpck_require__(5756);
+
+// src/protocols/Aws_restJson1.ts
+var import_core2 = __nccwpck_require__(9963);
+
+
+
+// src/models/LambdaServiceException.ts
+
+var _LambdaServiceException = class _LambdaServiceException extends import_smithy_client.ServiceException {
+  /**
+   * @internal
+   */
+  constructor(options) {
+    super(options);
+    Object.setPrototypeOf(this, _LambdaServiceException.prototype);
+  }
+};
+__name(_LambdaServiceException, "LambdaServiceException");
+var LambdaServiceException = _LambdaServiceException;
+
+// src/models/models_0.ts
+
+var _InvalidParameterValueException = class _InvalidParameterValueException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidParameterValueException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidParameterValueException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidParameterValueException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_InvalidParameterValueException, "InvalidParameterValueException");
+var InvalidParameterValueException = _InvalidParameterValueException;
+var _PolicyLengthExceededException = class _PolicyLengthExceededException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "PolicyLengthExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "PolicyLengthExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _PolicyLengthExceededException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_PolicyLengthExceededException, "PolicyLengthExceededException");
+var PolicyLengthExceededException = _PolicyLengthExceededException;
+var _PreconditionFailedException = class _PreconditionFailedException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "PreconditionFailedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "PreconditionFailedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _PreconditionFailedException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_PreconditionFailedException, "PreconditionFailedException");
+var PreconditionFailedException = _PreconditionFailedException;
+var _ResourceConflictException = class _ResourceConflictException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ResourceConflictException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ResourceConflictException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ResourceConflictException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_ResourceConflictException, "ResourceConflictException");
+var ResourceConflictException = _ResourceConflictException;
+var _ResourceNotFoundException = class _ResourceNotFoundException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ResourceNotFoundException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ResourceNotFoundException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ResourceNotFoundException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_ResourceNotFoundException, "ResourceNotFoundException");
+var ResourceNotFoundException = _ResourceNotFoundException;
+var _ServiceException = class _ServiceException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ServiceException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "ServiceException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _ServiceException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_ServiceException, "ServiceException");
+var ServiceException = _ServiceException;
+var ThrottleReason = {
+  CallerRateLimitExceeded: "CallerRateLimitExceeded",
+  ConcurrentInvocationLimitExceeded: "ConcurrentInvocationLimitExceeded",
+  ConcurrentSnapshotCreateLimitExceeded: "ConcurrentSnapshotCreateLimitExceeded",
+  FunctionInvocationRateLimitExceeded: "FunctionInvocationRateLimitExceeded",
+  ReservedFunctionConcurrentInvocationLimitExceeded: "ReservedFunctionConcurrentInvocationLimitExceeded",
+  ReservedFunctionInvocationRateLimitExceeded: "ReservedFunctionInvocationRateLimitExceeded"
+};
+var _TooManyRequestsException = class _TooManyRequestsException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "TooManyRequestsException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "TooManyRequestsException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _TooManyRequestsException.prototype);
+    this.retryAfterSeconds = opts.retryAfterSeconds;
+    this.Type = opts.Type;
+    this.Reason = opts.Reason;
+  }
+};
+__name(_TooManyRequestsException, "TooManyRequestsException");
+var TooManyRequestsException = _TooManyRequestsException;
+var FunctionUrlAuthType = {
+  AWS_IAM: "AWS_IAM",
+  NONE: "NONE"
+};
+var ApplicationLogLevel = {
+  Debug: "DEBUG",
+  Error: "ERROR",
+  Fatal: "FATAL",
+  Info: "INFO",
+  Trace: "TRACE",
+  Warn: "WARN"
+};
+var Architecture = {
+  arm64: "arm64",
+  x86_64: "x86_64"
+};
+var CodeSigningPolicy = {
+  Enforce: "Enforce",
+  Warn: "Warn"
+};
+var FullDocument = {
+  Default: "Default",
+  UpdateLookup: "UpdateLookup"
+};
+var FunctionResponseType = {
+  ReportBatchItemFailures: "ReportBatchItemFailures"
+};
+var EndPointType = {
+  KAFKA_BOOTSTRAP_SERVERS: "KAFKA_BOOTSTRAP_SERVERS"
+};
+var SourceAccessType = {
+  BASIC_AUTH: "BASIC_AUTH",
+  CLIENT_CERTIFICATE_TLS_AUTH: "CLIENT_CERTIFICATE_TLS_AUTH",
+  SASL_SCRAM_256_AUTH: "SASL_SCRAM_256_AUTH",
+  SASL_SCRAM_512_AUTH: "SASL_SCRAM_512_AUTH",
+  SERVER_ROOT_CA_CERTIFICATE: "SERVER_ROOT_CA_CERTIFICATE",
+  VIRTUAL_HOST: "VIRTUAL_HOST",
+  VPC_SECURITY_GROUP: "VPC_SECURITY_GROUP",
+  VPC_SUBNET: "VPC_SUBNET"
+};
+var EventSourcePosition = {
+  AT_TIMESTAMP: "AT_TIMESTAMP",
+  LATEST: "LATEST",
+  TRIM_HORIZON: "TRIM_HORIZON"
+};
+var _CodeSigningConfigNotFoundException = class _CodeSigningConfigNotFoundException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "CodeSigningConfigNotFoundException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "CodeSigningConfigNotFoundException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _CodeSigningConfigNotFoundException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_CodeSigningConfigNotFoundException, "CodeSigningConfigNotFoundException");
+var CodeSigningConfigNotFoundException = _CodeSigningConfigNotFoundException;
+var _CodeStorageExceededException = class _CodeStorageExceededException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "CodeStorageExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "CodeStorageExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _CodeStorageExceededException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_CodeStorageExceededException, "CodeStorageExceededException");
+var CodeStorageExceededException = _CodeStorageExceededException;
+var _CodeVerificationFailedException = class _CodeVerificationFailedException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "CodeVerificationFailedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "CodeVerificationFailedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _CodeVerificationFailedException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_CodeVerificationFailedException, "CodeVerificationFailedException");
+var CodeVerificationFailedException = _CodeVerificationFailedException;
+var LogFormat = {
+  Json: "JSON",
+  Text: "Text"
+};
+var SystemLogLevel = {
+  Debug: "DEBUG",
+  Info: "INFO",
+  Warn: "WARN"
+};
+var PackageType = {
+  Image: "Image",
+  Zip: "Zip"
+};
+var Runtime = {
+  dotnet6: "dotnet6",
+  dotnet8: "dotnet8",
+  dotnetcore10: "dotnetcore1.0",
+  dotnetcore20: "dotnetcore2.0",
+  dotnetcore21: "dotnetcore2.1",
+  dotnetcore31: "dotnetcore3.1",
+  go1x: "go1.x",
+  java11: "java11",
+  java17: "java17",
+  java21: "java21",
+  java8: "java8",
+  java8al2: "java8.al2",
+  nodejs: "nodejs",
+  nodejs10x: "nodejs10.x",
+  nodejs12x: "nodejs12.x",
+  nodejs14x: "nodejs14.x",
+  nodejs16x: "nodejs16.x",
+  nodejs18x: "nodejs18.x",
+  nodejs20x: "nodejs20.x",
+  nodejs43: "nodejs4.3",
+  nodejs43edge: "nodejs4.3-edge",
+  nodejs610: "nodejs6.10",
+  nodejs810: "nodejs8.10",
+  provided: "provided",
+  providedal2: "provided.al2",
+  providedal2023: "provided.al2023",
+  python27: "python2.7",
+  python310: "python3.10",
+  python311: "python3.11",
+  python312: "python3.12",
+  python36: "python3.6",
+  python37: "python3.7",
+  python38: "python3.8",
+  python39: "python3.9",
+  ruby25: "ruby2.5",
+  ruby27: "ruby2.7",
+  ruby32: "ruby3.2",
+  ruby33: "ruby3.3"
+};
+var SnapStartApplyOn = {
+  None: "None",
+  PublishedVersions: "PublishedVersions"
+};
+var TracingMode = {
+  Active: "Active",
+  PassThrough: "PassThrough"
+};
+var LastUpdateStatus = {
+  Failed: "Failed",
+  InProgress: "InProgress",
+  Successful: "Successful"
+};
+var LastUpdateStatusReasonCode = {
+  DisabledKMSKey: "DisabledKMSKey",
+  EFSIOError: "EFSIOError",
+  EFSMountConnectivityError: "EFSMountConnectivityError",
+  EFSMountFailure: "EFSMountFailure",
+  EFSMountTimeout: "EFSMountTimeout",
+  EniLimitExceeded: "EniLimitExceeded",
+  FunctionError: "FunctionError",
+  ImageAccessDenied: "ImageAccessDenied",
+  ImageDeleted: "ImageDeleted",
+  InsufficientRolePermissions: "InsufficientRolePermissions",
+  InternalError: "InternalError",
+  InvalidConfiguration: "InvalidConfiguration",
+  InvalidImage: "InvalidImage",
+  InvalidRuntime: "InvalidRuntime",
+  InvalidSecurityGroup: "InvalidSecurityGroup",
+  InvalidStateKMSKey: "InvalidStateKMSKey",
+  InvalidSubnet: "InvalidSubnet",
+  InvalidZipFileException: "InvalidZipFileException",
+  KMSKeyAccessDenied: "KMSKeyAccessDenied",
+  KMSKeyNotFound: "KMSKeyNotFound",
+  SubnetOutOfIPAddresses: "SubnetOutOfIPAddresses"
+};
+var SnapStartOptimizationStatus = {
+  Off: "Off",
+  On: "On"
+};
+var State = {
+  Active: "Active",
+  Failed: "Failed",
+  Inactive: "Inactive",
+  Pending: "Pending"
+};
+var StateReasonCode = {
+  Creating: "Creating",
+  DisabledKMSKey: "DisabledKMSKey",
+  EFSIOError: "EFSIOError",
+  EFSMountConnectivityError: "EFSMountConnectivityError",
+  EFSMountFailure: "EFSMountFailure",
+  EFSMountTimeout: "EFSMountTimeout",
+  EniLimitExceeded: "EniLimitExceeded",
+  FunctionError: "FunctionError",
+  Idle: "Idle",
+  ImageAccessDenied: "ImageAccessDenied",
+  ImageDeleted: "ImageDeleted",
+  InsufficientRolePermissions: "InsufficientRolePermissions",
+  InternalError: "InternalError",
+  InvalidConfiguration: "InvalidConfiguration",
+  InvalidImage: "InvalidImage",
+  InvalidRuntime: "InvalidRuntime",
+  InvalidSecurityGroup: "InvalidSecurityGroup",
+  InvalidStateKMSKey: "InvalidStateKMSKey",
+  InvalidSubnet: "InvalidSubnet",
+  InvalidZipFileException: "InvalidZipFileException",
+  KMSKeyAccessDenied: "KMSKeyAccessDenied",
+  KMSKeyNotFound: "KMSKeyNotFound",
+  Restoring: "Restoring",
+  SubnetOutOfIPAddresses: "SubnetOutOfIPAddresses"
+};
+var _InvalidCodeSignatureException = class _InvalidCodeSignatureException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidCodeSignatureException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidCodeSignatureException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidCodeSignatureException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_InvalidCodeSignatureException, "InvalidCodeSignatureException");
+var InvalidCodeSignatureException = _InvalidCodeSignatureException;
+var InvokeMode = {
+  BUFFERED: "BUFFERED",
+  RESPONSE_STREAM: "RESPONSE_STREAM"
+};
+var _ResourceInUseException = class _ResourceInUseException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ResourceInUseException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ResourceInUseException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ResourceInUseException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_ResourceInUseException, "ResourceInUseException");
+var ResourceInUseException = _ResourceInUseException;
+var ProvisionedConcurrencyStatusEnum = {
+  FAILED: "FAILED",
+  IN_PROGRESS: "IN_PROGRESS",
+  READY: "READY"
+};
+var _ProvisionedConcurrencyConfigNotFoundException = class _ProvisionedConcurrencyConfigNotFoundException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ProvisionedConcurrencyConfigNotFoundException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ProvisionedConcurrencyConfigNotFoundException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ProvisionedConcurrencyConfigNotFoundException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_ProvisionedConcurrencyConfigNotFoundException, "ProvisionedConcurrencyConfigNotFoundException");
+var ProvisionedConcurrencyConfigNotFoundException = _ProvisionedConcurrencyConfigNotFoundException;
+var UpdateRuntimeOn = {
+  Auto: "Auto",
+  FunctionUpdate: "FunctionUpdate",
+  Manual: "Manual"
+};
+var _EC2AccessDeniedException = class _EC2AccessDeniedException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "EC2AccessDeniedException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "EC2AccessDeniedException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _EC2AccessDeniedException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_EC2AccessDeniedException, "EC2AccessDeniedException");
+var EC2AccessDeniedException = _EC2AccessDeniedException;
+var _EC2ThrottledException = class _EC2ThrottledException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "EC2ThrottledException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "EC2ThrottledException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _EC2ThrottledException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_EC2ThrottledException, "EC2ThrottledException");
+var EC2ThrottledException = _EC2ThrottledException;
+var _EC2UnexpectedException = class _EC2UnexpectedException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "EC2UnexpectedException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "EC2UnexpectedException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _EC2UnexpectedException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+    this.EC2ErrorCode = opts.EC2ErrorCode;
+  }
+};
+__name(_EC2UnexpectedException, "EC2UnexpectedException");
+var EC2UnexpectedException = _EC2UnexpectedException;
+var _EFSIOException = class _EFSIOException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "EFSIOException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "EFSIOException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _EFSIOException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_EFSIOException, "EFSIOException");
+var EFSIOException = _EFSIOException;
+var _EFSMountConnectivityException = class _EFSMountConnectivityException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "EFSMountConnectivityException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "EFSMountConnectivityException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _EFSMountConnectivityException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_EFSMountConnectivityException, "EFSMountConnectivityException");
+var EFSMountConnectivityException = _EFSMountConnectivityException;
+var _EFSMountFailureException = class _EFSMountFailureException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "EFSMountFailureException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "EFSMountFailureException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _EFSMountFailureException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_EFSMountFailureException, "EFSMountFailureException");
+var EFSMountFailureException = _EFSMountFailureException;
+var _EFSMountTimeoutException = class _EFSMountTimeoutException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "EFSMountTimeoutException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "EFSMountTimeoutException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _EFSMountTimeoutException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_EFSMountTimeoutException, "EFSMountTimeoutException");
+var EFSMountTimeoutException = _EFSMountTimeoutException;
+var _ENILimitReachedException = class _ENILimitReachedException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ENILimitReachedException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "ENILimitReachedException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _ENILimitReachedException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_ENILimitReachedException, "ENILimitReachedException");
+var ENILimitReachedException = _ENILimitReachedException;
+var _InvalidRequestContentException = class _InvalidRequestContentException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidRequestContentException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidRequestContentException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidRequestContentException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_InvalidRequestContentException, "InvalidRequestContentException");
+var InvalidRequestContentException = _InvalidRequestContentException;
+var _InvalidRuntimeException = class _InvalidRuntimeException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidRuntimeException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "InvalidRuntimeException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _InvalidRuntimeException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_InvalidRuntimeException, "InvalidRuntimeException");
+var InvalidRuntimeException = _InvalidRuntimeException;
+var _InvalidSecurityGroupIDException = class _InvalidSecurityGroupIDException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidSecurityGroupIDException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "InvalidSecurityGroupIDException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _InvalidSecurityGroupIDException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_InvalidSecurityGroupIDException, "InvalidSecurityGroupIDException");
+var InvalidSecurityGroupIDException = _InvalidSecurityGroupIDException;
+var _InvalidSubnetIDException = class _InvalidSubnetIDException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidSubnetIDException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "InvalidSubnetIDException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _InvalidSubnetIDException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_InvalidSubnetIDException, "InvalidSubnetIDException");
+var InvalidSubnetIDException = _InvalidSubnetIDException;
+var _InvalidZipFileException = class _InvalidZipFileException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidZipFileException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "InvalidZipFileException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _InvalidZipFileException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_InvalidZipFileException, "InvalidZipFileException");
+var InvalidZipFileException = _InvalidZipFileException;
+var InvocationType = {
+  DryRun: "DryRun",
+  Event: "Event",
+  RequestResponse: "RequestResponse"
+};
+var LogType = {
+  None: "None",
+  Tail: "Tail"
+};
+var _KMSAccessDeniedException = class _KMSAccessDeniedException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "KMSAccessDeniedException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "KMSAccessDeniedException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _KMSAccessDeniedException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_KMSAccessDeniedException, "KMSAccessDeniedException");
+var KMSAccessDeniedException = _KMSAccessDeniedException;
+var _KMSDisabledException = class _KMSDisabledException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "KMSDisabledException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "KMSDisabledException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _KMSDisabledException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_KMSDisabledException, "KMSDisabledException");
+var KMSDisabledException = _KMSDisabledException;
+var _KMSInvalidStateException = class _KMSInvalidStateException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "KMSInvalidStateException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "KMSInvalidStateException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _KMSInvalidStateException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_KMSInvalidStateException, "KMSInvalidStateException");
+var KMSInvalidStateException = _KMSInvalidStateException;
+var _KMSNotFoundException = class _KMSNotFoundException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "KMSNotFoundException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "KMSNotFoundException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _KMSNotFoundException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_KMSNotFoundException, "KMSNotFoundException");
+var KMSNotFoundException = _KMSNotFoundException;
+var _RecursiveInvocationException = class _RecursiveInvocationException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "RecursiveInvocationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "RecursiveInvocationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _RecursiveInvocationException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_RecursiveInvocationException, "RecursiveInvocationException");
+var RecursiveInvocationException = _RecursiveInvocationException;
+var _RequestTooLargeException = class _RequestTooLargeException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "RequestTooLargeException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "RequestTooLargeException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _RequestTooLargeException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_RequestTooLargeException, "RequestTooLargeException");
+var RequestTooLargeException = _RequestTooLargeException;
+var _ResourceNotReadyException = class _ResourceNotReadyException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ResourceNotReadyException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "ResourceNotReadyException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _ResourceNotReadyException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_ResourceNotReadyException, "ResourceNotReadyException");
+var ResourceNotReadyException = _ResourceNotReadyException;
+var _SnapStartException = class _SnapStartException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "SnapStartException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "SnapStartException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _SnapStartException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_SnapStartException, "SnapStartException");
+var SnapStartException = _SnapStartException;
+var _SnapStartNotReadyException = class _SnapStartNotReadyException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "SnapStartNotReadyException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "SnapStartNotReadyException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _SnapStartNotReadyException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_SnapStartNotReadyException, "SnapStartNotReadyException");
+var SnapStartNotReadyException = _SnapStartNotReadyException;
+var _SnapStartTimeoutException = class _SnapStartTimeoutException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "SnapStartTimeoutException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "SnapStartTimeoutException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _SnapStartTimeoutException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_SnapStartTimeoutException, "SnapStartTimeoutException");
+var SnapStartTimeoutException = _SnapStartTimeoutException;
+var _SubnetIPAddressLimitReachedException = class _SubnetIPAddressLimitReachedException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "SubnetIPAddressLimitReachedException",
+      $fault: "server",
+      ...opts
+    });
+    this.name = "SubnetIPAddressLimitReachedException";
+    this.$fault = "server";
+    Object.setPrototypeOf(this, _SubnetIPAddressLimitReachedException.prototype);
+    this.Type = opts.Type;
+    this.Message = opts.Message;
+  }
+};
+__name(_SubnetIPAddressLimitReachedException, "SubnetIPAddressLimitReachedException");
+var SubnetIPAddressLimitReachedException = _SubnetIPAddressLimitReachedException;
+var _UnsupportedMediaTypeException = class _UnsupportedMediaTypeException extends LambdaServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "UnsupportedMediaTypeException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "UnsupportedMediaTypeException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _UnsupportedMediaTypeException.prototype);
+    this.Type = opts.Type;
+  }
+};
+__name(_UnsupportedMediaTypeException, "UnsupportedMediaTypeException");
+var UnsupportedMediaTypeException = _UnsupportedMediaTypeException;
+var ResponseStreamingInvocationType = {
+  DryRun: "DryRun",
+  RequestResponse: "RequestResponse"
+};
+var InvokeWithResponseStreamResponseEvent;
+((InvokeWithResponseStreamResponseEvent3) => {
+  InvokeWithResponseStreamResponseEvent3.visit = /* @__PURE__ */ __name((value, visitor) => {
+    if (value.PayloadChunk !== void 0)
+      return visitor.PayloadChunk(value.PayloadChunk);
+    if (value.InvokeComplete !== void 0)
+      return visitor.InvokeComplete(value.InvokeComplete);
+    return visitor._(value.$unknown[0], value.$unknown[1]);
+  }, "visit");
+})(InvokeWithResponseStreamResponseEvent || (InvokeWithResponseStreamResponseEvent = {}));
+var FunctionVersion = {
+  ALL: "ALL"
+};
+var FunctionCodeFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.ZipFile && { ZipFile: import_smithy_client.SENSITIVE_STRING }
+}), "FunctionCodeFilterSensitiveLog");
+var EnvironmentFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Variables && { Variables: import_smithy_client.SENSITIVE_STRING }
+}), "EnvironmentFilterSensitiveLog");
+var CreateFunctionRequestFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Code && { Code: FunctionCodeFilterSensitiveLog(obj.Code) },
+  ...obj.Environment && { Environment: EnvironmentFilterSensitiveLog(obj.Environment) }
+}), "CreateFunctionRequestFilterSensitiveLog");
+var EnvironmentErrorFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Message && { Message: import_smithy_client.SENSITIVE_STRING }
+}), "EnvironmentErrorFilterSensitiveLog");
+var EnvironmentResponseFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Variables && { Variables: import_smithy_client.SENSITIVE_STRING },
+  ...obj.Error && { Error: EnvironmentErrorFilterSensitiveLog(obj.Error) }
+}), "EnvironmentResponseFilterSensitiveLog");
+var ImageConfigErrorFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Message && { Message: import_smithy_client.SENSITIVE_STRING }
+}), "ImageConfigErrorFilterSensitiveLog");
+var ImageConfigResponseFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Error && { Error: ImageConfigErrorFilterSensitiveLog(obj.Error) }
+}), "ImageConfigResponseFilterSensitiveLog");
+var RuntimeVersionErrorFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Message && { Message: import_smithy_client.SENSITIVE_STRING }
+}), "RuntimeVersionErrorFilterSensitiveLog");
+var RuntimeVersionConfigFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Error && { Error: RuntimeVersionErrorFilterSensitiveLog(obj.Error) }
+}), "RuntimeVersionConfigFilterSensitiveLog");
+var FunctionConfigurationFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Environment && { Environment: EnvironmentResponseFilterSensitiveLog(obj.Environment) },
+  ...obj.ImageConfigResponse && {
+    ImageConfigResponse: ImageConfigResponseFilterSensitiveLog(obj.ImageConfigResponse)
+  },
+  ...obj.RuntimeVersionConfig && {
+    RuntimeVersionConfig: RuntimeVersionConfigFilterSensitiveLog(obj.RuntimeVersionConfig)
+  }
+}), "FunctionConfigurationFilterSensitiveLog");
+var GetFunctionResponseFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Configuration && { Configuration: FunctionConfigurationFilterSensitiveLog(obj.Configuration) }
+}), "GetFunctionResponseFilterSensitiveLog");
+var InvocationRequestFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Payload && { Payload: import_smithy_client.SENSITIVE_STRING }
+}), "InvocationRequestFilterSensitiveLog");
+var InvocationResponseFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Payload && { Payload: import_smithy_client.SENSITIVE_STRING }
+}), "InvocationResponseFilterSensitiveLog");
+var InvokeAsyncRequestFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj
+}), "InvokeAsyncRequestFilterSensitiveLog");
+var InvokeWithResponseStreamRequestFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Payload && { Payload: import_smithy_client.SENSITIVE_STRING }
+}), "InvokeWithResponseStreamRequestFilterSensitiveLog");
+var InvokeResponseStreamUpdateFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Payload && { Payload: import_smithy_client.SENSITIVE_STRING }
+}), "InvokeResponseStreamUpdateFilterSensitiveLog");
+var InvokeWithResponseStreamResponseEventFilterSensitiveLog = /* @__PURE__ */ __name((obj) => {
+  if (obj.PayloadChunk !== void 0)
+    return { PayloadChunk: InvokeResponseStreamUpdateFilterSensitiveLog(obj.PayloadChunk) };
+  if (obj.InvokeComplete !== void 0)
+    return { InvokeComplete: obj.InvokeComplete };
+  if (obj.$unknown !== void 0)
+    return { [obj.$unknown[0]]: "UNKNOWN" };
+}, "InvokeWithResponseStreamResponseEventFilterSensitiveLog");
+var InvokeWithResponseStreamResponseFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.EventStream && { EventStream: "STREAMING_CONTENT" }
+}), "InvokeWithResponseStreamResponseFilterSensitiveLog");
+var ListFunctionsResponseFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Functions && { Functions: obj.Functions.map((item) => FunctionConfigurationFilterSensitiveLog(item)) }
+}), "ListFunctionsResponseFilterSensitiveLog");
+var ListVersionsByFunctionResponseFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Versions && { Versions: obj.Versions.map((item) => FunctionConfigurationFilterSensitiveLog(item)) }
+}), "ListVersionsByFunctionResponseFilterSensitiveLog");
+var LayerVersionContentInputFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.ZipFile && { ZipFile: import_smithy_client.SENSITIVE_STRING }
+}), "LayerVersionContentInputFilterSensitiveLog");
+var PublishLayerVersionRequestFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Content && { Content: LayerVersionContentInputFilterSensitiveLog(obj.Content) }
+}), "PublishLayerVersionRequestFilterSensitiveLog");
+var UpdateFunctionCodeRequestFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.ZipFile && { ZipFile: import_smithy_client.SENSITIVE_STRING }
+}), "UpdateFunctionCodeRequestFilterSensitiveLog");
+var UpdateFunctionConfigurationRequestFilterSensitiveLog = /* @__PURE__ */ __name((obj) => ({
+  ...obj,
+  ...obj.Environment && { Environment: EnvironmentFilterSensitiveLog(obj.Environment) }
+}), "UpdateFunctionConfigurationRequestFilterSensitiveLog");
+
+// src/protocols/Aws_restJson1.ts
+var se_AddLayerVersionPermissionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy");
+  b.p("LayerName", () => input.LayerName, "{LayerName}", false);
+  b.p("VersionNumber", () => input.VersionNumber.toString(), "{VersionNumber}", false);
+  const query = (0, import_smithy_client.map)({
+    [_RI]: [, input[_RI]]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      Action: [],
+      OrganizationId: [],
+      Principal: [],
+      StatementId: []
+    })
+  );
+  b.m("POST").h(headers).q(query).b(body);
+  return b.build();
+}, "se_AddLayerVersionPermissionCommand");
+var se_AddPermissionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/functions/{FunctionName}/policy");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      Action: [],
+      EventSourceToken: [],
+      FunctionUrlAuthType: [],
+      Principal: [],
+      PrincipalOrgID: [],
+      RevisionId: [],
+      SourceAccount: [],
+      SourceArn: [],
+      StatementId: []
+    })
+  );
+  b.m("POST").h(headers).q(query).b(body);
+  return b.build();
+}, "se_AddPermissionCommand");
+var se_CreateAliasCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/functions/{FunctionName}/aliases");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      Description: [],
+      FunctionVersion: [],
+      Name: [],
+      RoutingConfig: (_) => se_AliasRoutingConfiguration(_, context)
+    })
+  );
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_CreateAliasCommand");
+var se_CreateCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2020-04-22/code-signing-configs");
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      AllowedPublishers: (_) => (0, import_smithy_client._json)(_),
+      CodeSigningPolicies: (_) => (0, import_smithy_client._json)(_),
+      Description: []
+    })
+  );
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_CreateCodeSigningConfigCommand");
+var se_CreateEventSourceMappingCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/event-source-mappings");
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      AmazonManagedKafkaEventSourceConfig: (_) => (0, import_smithy_client._json)(_),
+      BatchSize: [],
+      BisectBatchOnFunctionError: [],
+      DestinationConfig: (_) => (0, import_smithy_client._json)(_),
+      DocumentDBEventSourceConfig: (_) => (0, import_smithy_client._json)(_),
+      Enabled: [],
+      EventSourceArn: [],
+      FilterCriteria: (_) => (0, import_smithy_client._json)(_),
+      FunctionName: [],
+      FunctionResponseTypes: (_) => (0, import_smithy_client._json)(_),
+      MaximumBatchingWindowInSeconds: [],
+      MaximumRecordAgeInSeconds: [],
+      MaximumRetryAttempts: [],
+      ParallelizationFactor: [],
+      Queues: (_) => (0, import_smithy_client._json)(_),
+      ScalingConfig: (_) => (0, import_smithy_client._json)(_),
+      SelfManagedEventSource: (_) => (0, import_smithy_client._json)(_),
+      SelfManagedKafkaEventSourceConfig: (_) => (0, import_smithy_client._json)(_),
+      SourceAccessConfigurations: (_) => (0, import_smithy_client._json)(_),
+      StartingPosition: [],
+      StartingPositionTimestamp: (_) => _.getTime() / 1e3,
+      Topics: (_) => (0, import_smithy_client._json)(_),
+      TumblingWindowInSeconds: []
+    })
+  );
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_CreateEventSourceMappingCommand");
+var se_CreateFunctionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/functions");
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      Architectures: (_) => (0, import_smithy_client._json)(_),
+      Code: (_) => se_FunctionCode(_, context),
+      CodeSigningConfigArn: [],
+      DeadLetterConfig: (_) => (0, import_smithy_client._json)(_),
+      Description: [],
+      Environment: (_) => (0, import_smithy_client._json)(_),
+      EphemeralStorage: (_) => (0, import_smithy_client._json)(_),
+      FileSystemConfigs: (_) => (0, import_smithy_client._json)(_),
+      FunctionName: [],
+      Handler: [],
+      ImageConfig: (_) => (0, import_smithy_client._json)(_),
+      KMSKeyArn: [],
+      Layers: (_) => (0, import_smithy_client._json)(_),
+      LoggingConfig: (_) => (0, import_smithy_client._json)(_),
+      MemorySize: [],
+      PackageType: [],
+      Publish: [],
+      Role: [],
+      Runtime: [],
+      SnapStart: (_) => (0, import_smithy_client._json)(_),
+      Tags: (_) => (0, import_smithy_client._json)(_),
+      Timeout: [],
+      TracingConfig: (_) => (0, import_smithy_client._json)(_),
+      VpcConfig: (_) => (0, import_smithy_client._json)(_)
+    })
+  );
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_CreateFunctionCommand");
+var se_CreateFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2021-10-31/functions/{FunctionName}/url");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      AuthType: [],
+      Cors: (_) => (0, import_smithy_client._json)(_),
+      InvokeMode: []
+    })
+  );
+  b.m("POST").h(headers).q(query).b(body);
+  return b.build();
+}, "se_CreateFunctionUrlConfigCommand");
+var se_DeleteAliasCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}/aliases/{Name}");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  b.p("Name", () => input.Name, "{Name}", false);
+  let body;
+  b.m("DELETE").h(headers).b(body);
+  return b.build();
+}, "se_DeleteAliasCommand");
+var se_DeleteCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2020-04-22/code-signing-configs/{CodeSigningConfigArn}");
+  b.p("CodeSigningConfigArn", () => input.CodeSigningConfigArn, "{CodeSigningConfigArn}", false);
+  let body;
+  b.m("DELETE").h(headers).b(body);
+  return b.build();
+}, "se_DeleteCodeSigningConfigCommand");
+var se_DeleteEventSourceMappingCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/event-source-mappings/{UUID}");
+  b.p("UUID", () => input.UUID, "{UUID}", false);
+  let body;
+  b.m("DELETE").h(headers).b(body);
+  return b.build();
+}, "se_DeleteEventSourceMappingCommand");
+var se_DeleteFunctionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("DELETE").h(headers).q(query).b(body);
+  return b.build();
+}, "se_DeleteFunctionCommand");
+var se_DeleteFunctionCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2020-06-30/functions/{FunctionName}/code-signing-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  b.m("DELETE").h(headers).b(body);
+  return b.build();
+}, "se_DeleteFunctionCodeSigningConfigCommand");
+var se_DeleteFunctionConcurrencyCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2017-10-31/functions/{FunctionName}/concurrency");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  b.m("DELETE").h(headers).b(body);
+  return b.build();
+}, "se_DeleteFunctionConcurrencyCommand");
+var se_DeleteFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2019-09-25/functions/{FunctionName}/event-invoke-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("DELETE").h(headers).q(query).b(body);
+  return b.build();
+}, "se_DeleteFunctionEventInvokeConfigCommand");
+var se_DeleteFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2021-10-31/functions/{FunctionName}/url");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("DELETE").h(headers).q(query).b(body);
+  return b.build();
+}, "se_DeleteFunctionUrlConfigCommand");
+var se_DeleteLayerVersionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2018-10-31/layers/{LayerName}/versions/{VersionNumber}");
+  b.p("LayerName", () => input.LayerName, "{LayerName}", false);
+  b.p("VersionNumber", () => input.VersionNumber.toString(), "{VersionNumber}", false);
+  let body;
+  b.m("DELETE").h(headers).b(body);
+  return b.build();
+}, "se_DeleteLayerVersionCommand");
+var se_DeleteProvisionedConcurrencyConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2019-09-30/functions/{FunctionName}/provisioned-concurrency");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, (0, import_smithy_client.expectNonNull)(input[_Q], `Qualifier`)]
+  });
+  let body;
+  b.m("DELETE").h(headers).q(query).b(body);
+  return b.build();
+}, "se_DeleteProvisionedConcurrencyConfigCommand");
+var se_GetAccountSettingsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2016-08-19/account-settings");
+  let body;
+  body = "";
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetAccountSettingsCommand");
+var se_GetAliasCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}/aliases/{Name}");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  b.p("Name", () => input.Name, "{Name}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetAliasCommand");
+var se_GetCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2020-04-22/code-signing-configs/{CodeSigningConfigArn}");
+  b.p("CodeSigningConfigArn", () => input.CodeSigningConfigArn, "{CodeSigningConfigArn}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetCodeSigningConfigCommand");
+var se_GetEventSourceMappingCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/event-source-mappings/{UUID}");
+  b.p("UUID", () => input.UUID, "{UUID}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetEventSourceMappingCommand");
+var se_GetFunctionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetFunctionCommand");
+var se_GetFunctionCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2020-06-30/functions/{FunctionName}/code-signing-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetFunctionCodeSigningConfigCommand");
+var se_GetFunctionConcurrencyCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2019-09-30/functions/{FunctionName}/concurrency");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetFunctionConcurrencyCommand");
+var se_GetFunctionConfigurationCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}/configuration");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetFunctionConfigurationCommand");
+var se_GetFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2019-09-25/functions/{FunctionName}/event-invoke-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetFunctionEventInvokeConfigCommand");
+var se_GetFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2021-10-31/functions/{FunctionName}/url");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetFunctionUrlConfigCommand");
+var se_GetLayerVersionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2018-10-31/layers/{LayerName}/versions/{VersionNumber}");
+  b.p("LayerName", () => input.LayerName, "{LayerName}", false);
+  b.p("VersionNumber", () => input.VersionNumber.toString(), "{VersionNumber}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetLayerVersionCommand");
+var se_GetLayerVersionByArnCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2018-10-31/layers");
+  const query = (0, import_smithy_client.map)({
+    [_f]: [, "LayerVersion"],
+    [_A]: [, (0, import_smithy_client.expectNonNull)(input[_A], `Arn`)]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetLayerVersionByArnCommand");
+var se_GetLayerVersionPolicyCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy");
+  b.p("LayerName", () => input.LayerName, "{LayerName}", false);
+  b.p("VersionNumber", () => input.VersionNumber.toString(), "{VersionNumber}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_GetLayerVersionPolicyCommand");
+var se_GetPolicyCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}/policy");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetPolicyCommand");
+var se_GetProvisionedConcurrencyConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2019-09-30/functions/{FunctionName}/provisioned-concurrency");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, (0, import_smithy_client.expectNonNull)(input[_Q], `Qualifier`)]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetProvisionedConcurrencyConfigCommand");
+var se_GetRuntimeManagementConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2021-07-20/functions/{FunctionName}/runtime-management-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_GetRuntimeManagementConfigCommand");
+var se_InvokeCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = (0, import_smithy_client.map)({}, isSerializableHeaderValue, {
+    "content-type": "application/octet-stream",
+    [_xait]: input[_IT],
+    [_xalt]: input[_LT],
+    [_xacc]: input[_CC]
+  });
+  b.bp("/2015-03-31/functions/{FunctionName}/invocations");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  if (input.Payload !== void 0) {
+    body = input.Payload;
+  }
+  b.m("POST").h(headers).q(query).b(body);
+  return b.build();
+}, "se_InvokeCommand");
+var se_InvokeAsyncCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/octet-stream"
+  };
+  b.bp("/2014-11-13/functions/{FunctionName}/invoke-async");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  if (input.InvokeArgs !== void 0) {
+    body = input.InvokeArgs;
+  }
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_InvokeAsyncCommand");
+var se_InvokeWithResponseStreamCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = (0, import_smithy_client.map)({}, isSerializableHeaderValue, {
+    "content-type": "application/octet-stream",
+    [_xait]: input[_IT],
+    [_xalt]: input[_LT],
+    [_xacc]: input[_CC]
+  });
+  b.bp("/2021-11-15/functions/{FunctionName}/response-streaming-invocations");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  if (input.Payload !== void 0) {
+    body = input.Payload;
+  }
+  b.m("POST").h(headers).q(query).b(body);
+  return b.build();
+}, "se_InvokeWithResponseStreamCommand");
+var se_ListAliasesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}/aliases");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_FV]: [, input[_FV]],
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListAliasesCommand");
+var se_ListCodeSigningConfigsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2020-04-22/code-signing-configs");
+  const query = (0, import_smithy_client.map)({
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListCodeSigningConfigsCommand");
+var se_ListEventSourceMappingsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/event-source-mappings");
+  const query = (0, import_smithy_client.map)({
+    [_ESA]: [, input[_ESA]],
+    [_FN]: [, input[_FN]],
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListEventSourceMappingsCommand");
+var se_ListFunctionEventInvokeConfigsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2019-09-25/functions/{FunctionName}/event-invoke-config/list");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListFunctionEventInvokeConfigsCommand");
+var se_ListFunctionsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions");
+  const query = (0, import_smithy_client.map)({
+    [_MR]: [, input[_MR]],
+    [_FV]: [, input[_FV]],
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListFunctionsCommand");
+var se_ListFunctionsByCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2020-04-22/code-signing-configs/{CodeSigningConfigArn}/functions");
+  b.p("CodeSigningConfigArn", () => input.CodeSigningConfigArn, "{CodeSigningConfigArn}", false);
+  const query = (0, import_smithy_client.map)({
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListFunctionsByCodeSigningConfigCommand");
+var se_ListFunctionUrlConfigsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2021-10-31/functions/{FunctionName}/urls");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListFunctionUrlConfigsCommand");
+var se_ListLayersCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2018-10-31/layers");
+  const query = (0, import_smithy_client.map)({
+    [_CR]: [, input[_CR]],
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()],
+    [_CA]: [, input[_CA]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListLayersCommand");
+var se_ListLayerVersionsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2018-10-31/layers/{LayerName}/versions");
+  b.p("LayerName", () => input.LayerName, "{LayerName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_CR]: [, input[_CR]],
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()],
+    [_CA]: [, input[_CA]]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListLayerVersionsCommand");
+var se_ListProvisionedConcurrencyConfigsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2019-09-30/functions/{FunctionName}/provisioned-concurrency");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_L]: [, "ALL"],
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListProvisionedConcurrencyConfigsCommand");
+var se_ListTagsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2017-03-31/tags/{Resource}");
+  b.p("Resource", () => input.Resource, "{Resource}", false);
+  let body;
+  b.m("GET").h(headers).b(body);
+  return b.build();
+}, "se_ListTagsCommand");
+var se_ListVersionsByFunctionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}/versions");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_M]: [, input[_M]],
+    [_MI]: [() => input.MaxItems !== void 0, () => input[_MI].toString()]
+  });
+  let body;
+  b.m("GET").h(headers).q(query).b(body);
+  return b.build();
+}, "se_ListVersionsByFunctionCommand");
+var se_PublishLayerVersionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2018-10-31/layers/{LayerName}/versions");
+  b.p("LayerName", () => input.LayerName, "{LayerName}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      CompatibleArchitectures: (_) => (0, import_smithy_client._json)(_),
+      CompatibleRuntimes: (_) => (0, import_smithy_client._json)(_),
+      Content: (_) => se_LayerVersionContentInput(_, context),
+      Description: [],
+      LicenseInfo: []
+    })
+  );
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_PublishLayerVersionCommand");
+var se_PublishVersionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/functions/{FunctionName}/versions");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      CodeSha256: [],
+      Description: [],
+      RevisionId: []
+    })
+  );
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_PublishVersionCommand");
+var se_PutFunctionCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2020-06-30/functions/{FunctionName}/code-signing-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      CodeSigningConfigArn: []
+    })
+  );
+  b.m("PUT").h(headers).b(body);
+  return b.build();
+}, "se_PutFunctionCodeSigningConfigCommand");
+var se_PutFunctionConcurrencyCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2017-10-31/functions/{FunctionName}/concurrency");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      ReservedConcurrentExecutions: []
+    })
+  );
+  b.m("PUT").h(headers).b(body);
+  return b.build();
+}, "se_PutFunctionConcurrencyCommand");
+var se_PutFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2019-09-25/functions/{FunctionName}/event-invoke-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      DestinationConfig: (_) => (0, import_smithy_client._json)(_),
+      MaximumEventAgeInSeconds: [],
+      MaximumRetryAttempts: []
+    })
+  );
+  b.m("PUT").h(headers).q(query).b(body);
+  return b.build();
+}, "se_PutFunctionEventInvokeConfigCommand");
+var se_PutProvisionedConcurrencyConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2019-09-30/functions/{FunctionName}/provisioned-concurrency");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, (0, import_smithy_client.expectNonNull)(input[_Q], `Qualifier`)]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      ProvisionedConcurrentExecutions: []
+    })
+  );
+  b.m("PUT").h(headers).q(query).b(body);
+  return b.build();
+}, "se_PutProvisionedConcurrencyConfigCommand");
+var se_PutRuntimeManagementConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2021-07-20/functions/{FunctionName}/runtime-management-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      RuntimeVersionArn: [],
+      UpdateRuntimeOn: []
+    })
+  );
+  b.m("PUT").h(headers).q(query).b(body);
+  return b.build();
+}, "se_PutRuntimeManagementConfigCommand");
+var se_RemoveLayerVersionPermissionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2018-10-31/layers/{LayerName}/versions/{VersionNumber}/policy/{StatementId}");
+  b.p("LayerName", () => input.LayerName, "{LayerName}", false);
+  b.p("VersionNumber", () => input.VersionNumber.toString(), "{VersionNumber}", false);
+  b.p("StatementId", () => input.StatementId, "{StatementId}", false);
+  const query = (0, import_smithy_client.map)({
+    [_RI]: [, input[_RI]]
+  });
+  let body;
+  b.m("DELETE").h(headers).q(query).b(body);
+  return b.build();
+}, "se_RemoveLayerVersionPermissionCommand");
+var se_RemovePermissionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2015-03-31/functions/{FunctionName}/policy/{StatementId}");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  b.p("StatementId", () => input.StatementId, "{StatementId}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]],
+    [_RI]: [, input[_RI]]
+  });
+  let body;
+  b.m("DELETE").h(headers).q(query).b(body);
+  return b.build();
+}, "se_RemovePermissionCommand");
+var se_TagResourceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2017-03-31/tags/{Resource}");
+  b.p("Resource", () => input.Resource, "{Resource}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      Tags: (_) => (0, import_smithy_client._json)(_)
+    })
+  );
+  b.m("POST").h(headers).b(body);
+  return b.build();
+}, "se_TagResourceCommand");
+var se_UntagResourceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {};
+  b.bp("/2017-03-31/tags/{Resource}");
+  b.p("Resource", () => input.Resource, "{Resource}", false);
+  const query = (0, import_smithy_client.map)({
+    [_tK]: [
+      (0, import_smithy_client.expectNonNull)(input.TagKeys, `TagKeys`) != null,
+      () => (input[_TK] || []).map((_entry) => _entry)
+    ]
+  });
+  let body;
+  b.m("DELETE").h(headers).q(query).b(body);
+  return b.build();
+}, "se_UntagResourceCommand");
+var se_UpdateAliasCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/functions/{FunctionName}/aliases/{Name}");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  b.p("Name", () => input.Name, "{Name}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      Description: [],
+      FunctionVersion: [],
+      RevisionId: [],
+      RoutingConfig: (_) => se_AliasRoutingConfiguration(_, context)
+    })
+  );
+  b.m("PUT").h(headers).b(body);
+  return b.build();
+}, "se_UpdateAliasCommand");
+var se_UpdateCodeSigningConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2020-04-22/code-signing-configs/{CodeSigningConfigArn}");
+  b.p("CodeSigningConfigArn", () => input.CodeSigningConfigArn, "{CodeSigningConfigArn}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      AllowedPublishers: (_) => (0, import_smithy_client._json)(_),
+      CodeSigningPolicies: (_) => (0, import_smithy_client._json)(_),
+      Description: []
+    })
+  );
+  b.m("PUT").h(headers).b(body);
+  return b.build();
+}, "se_UpdateCodeSigningConfigCommand");
+var se_UpdateEventSourceMappingCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/event-source-mappings/{UUID}");
+  b.p("UUID", () => input.UUID, "{UUID}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      BatchSize: [],
+      BisectBatchOnFunctionError: [],
+      DestinationConfig: (_) => (0, import_smithy_client._json)(_),
+      DocumentDBEventSourceConfig: (_) => (0, import_smithy_client._json)(_),
+      Enabled: [],
+      FilterCriteria: (_) => (0, import_smithy_client._json)(_),
+      FunctionName: [],
+      FunctionResponseTypes: (_) => (0, import_smithy_client._json)(_),
+      MaximumBatchingWindowInSeconds: [],
+      MaximumRecordAgeInSeconds: [],
+      MaximumRetryAttempts: [],
+      ParallelizationFactor: [],
+      ScalingConfig: (_) => (0, import_smithy_client._json)(_),
+      SourceAccessConfigurations: (_) => (0, import_smithy_client._json)(_),
+      TumblingWindowInSeconds: []
+    })
+  );
+  b.m("PUT").h(headers).b(body);
+  return b.build();
+}, "se_UpdateEventSourceMappingCommand");
+var se_UpdateFunctionCodeCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/functions/{FunctionName}/code");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      Architectures: (_) => (0, import_smithy_client._json)(_),
+      DryRun: [],
+      ImageUri: [],
+      Publish: [],
+      RevisionId: [],
+      S3Bucket: [],
+      S3Key: [],
+      S3ObjectVersion: [],
+      ZipFile: (_) => context.base64Encoder(_)
+    })
+  );
+  b.m("PUT").h(headers).b(body);
+  return b.build();
+}, "se_UpdateFunctionCodeCommand");
+var se_UpdateFunctionConfigurationCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2015-03-31/functions/{FunctionName}/configuration");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      DeadLetterConfig: (_) => (0, import_smithy_client._json)(_),
+      Description: [],
+      Environment: (_) => (0, import_smithy_client._json)(_),
+      EphemeralStorage: (_) => (0, import_smithy_client._json)(_),
+      FileSystemConfigs: (_) => (0, import_smithy_client._json)(_),
+      Handler: [],
+      ImageConfig: (_) => (0, import_smithy_client._json)(_),
+      KMSKeyArn: [],
+      Layers: (_) => (0, import_smithy_client._json)(_),
+      LoggingConfig: (_) => (0, import_smithy_client._json)(_),
+      MemorySize: [],
+      RevisionId: [],
+      Role: [],
+      Runtime: [],
+      SnapStart: (_) => (0, import_smithy_client._json)(_),
+      Timeout: [],
+      TracingConfig: (_) => (0, import_smithy_client._json)(_),
+      VpcConfig: (_) => (0, import_smithy_client._json)(_)
+    })
+  );
+  b.m("PUT").h(headers).b(body);
+  return b.build();
+}, "se_UpdateFunctionConfigurationCommand");
+var se_UpdateFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2019-09-25/functions/{FunctionName}/event-invoke-config");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      DestinationConfig: (_) => (0, import_smithy_client._json)(_),
+      MaximumEventAgeInSeconds: [],
+      MaximumRetryAttempts: []
+    })
+  );
+  b.m("POST").h(headers).q(query).b(body);
+  return b.build();
+}, "se_UpdateFunctionEventInvokeConfigCommand");
+var se_UpdateFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const b = (0, import_core.requestBuilder)(input, context);
+  const headers = {
+    "content-type": "application/json"
+  };
+  b.bp("/2021-10-31/functions/{FunctionName}/url");
+  b.p("FunctionName", () => input.FunctionName, "{FunctionName}", false);
+  const query = (0, import_smithy_client.map)({
+    [_Q]: [, input[_Q]]
+  });
+  let body;
+  body = JSON.stringify(
+    (0, import_smithy_client.take)(input, {
+      AuthType: [],
+      Cors: (_) => (0, import_smithy_client._json)(_),
+      InvokeMode: []
+    })
+  );
+  b.m("PUT").h(headers).q(query).b(body);
+  return b.build();
+}, "se_UpdateFunctionUrlConfigCommand");
+var de_AddLayerVersionPermissionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    RevisionId: import_smithy_client.expectString,
+    Statement: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_AddLayerVersionPermissionCommand");
+var de_AddPermissionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Statement: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_AddPermissionCommand");
+var de_CreateAliasCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AliasArn: import_smithy_client.expectString,
+    Description: import_smithy_client.expectString,
+    FunctionVersion: import_smithy_client.expectString,
+    Name: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    RoutingConfig: (_) => de_AliasRoutingConfiguration(_, context)
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_CreateAliasCommand");
+var de_CreateCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CodeSigningConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_CreateCodeSigningConfigCommand");
+var de_CreateEventSourceMappingCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 202 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AmazonManagedKafkaEventSourceConfig: import_smithy_client._json,
+    BatchSize: import_smithy_client.expectInt32,
+    BisectBatchOnFunctionError: import_smithy_client.expectBoolean,
+    DestinationConfig: import_smithy_client._json,
+    DocumentDBEventSourceConfig: import_smithy_client._json,
+    EventSourceArn: import_smithy_client.expectString,
+    FilterCriteria: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionResponseTypes: import_smithy_client._json,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    LastProcessingResult: import_smithy_client.expectString,
+    MaximumBatchingWindowInSeconds: import_smithy_client.expectInt32,
+    MaximumRecordAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32,
+    ParallelizationFactor: import_smithy_client.expectInt32,
+    Queues: import_smithy_client._json,
+    ScalingConfig: import_smithy_client._json,
+    SelfManagedEventSource: import_smithy_client._json,
+    SelfManagedKafkaEventSourceConfig: import_smithy_client._json,
+    SourceAccessConfigurations: import_smithy_client._json,
+    StartingPosition: import_smithy_client.expectString,
+    StartingPositionTimestamp: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    State: import_smithy_client.expectString,
+    StateTransitionReason: import_smithy_client.expectString,
+    Topics: import_smithy_client._json,
+    TumblingWindowInSeconds: import_smithy_client.expectInt32,
+    UUID: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_CreateEventSourceMappingCommand");
+var de_CreateFunctionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Architectures: import_smithy_client._json,
+    CodeSha256: import_smithy_client.expectString,
+    CodeSize: import_smithy_client.expectLong,
+    DeadLetterConfig: import_smithy_client._json,
+    Description: import_smithy_client.expectString,
+    Environment: import_smithy_client._json,
+    EphemeralStorage: import_smithy_client._json,
+    FileSystemConfigs: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionName: import_smithy_client.expectString,
+    Handler: import_smithy_client.expectString,
+    ImageConfigResponse: import_smithy_client._json,
+    KMSKeyArn: import_smithy_client.expectString,
+    LastModified: import_smithy_client.expectString,
+    LastUpdateStatus: import_smithy_client.expectString,
+    LastUpdateStatusReason: import_smithy_client.expectString,
+    LastUpdateStatusReasonCode: import_smithy_client.expectString,
+    Layers: import_smithy_client._json,
+    LoggingConfig: import_smithy_client._json,
+    MasterArn: import_smithy_client.expectString,
+    MemorySize: import_smithy_client.expectInt32,
+    PackageType: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    Role: import_smithy_client.expectString,
+    Runtime: import_smithy_client.expectString,
+    RuntimeVersionConfig: import_smithy_client._json,
+    SigningJobArn: import_smithy_client.expectString,
+    SigningProfileVersionArn: import_smithy_client.expectString,
+    SnapStart: import_smithy_client._json,
+    State: import_smithy_client.expectString,
+    StateReason: import_smithy_client.expectString,
+    StateReasonCode: import_smithy_client.expectString,
+    Timeout: import_smithy_client.expectInt32,
+    TracingConfig: import_smithy_client._json,
+    Version: import_smithy_client.expectString,
+    VpcConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_CreateFunctionCommand");
+var de_CreateFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AuthType: import_smithy_client.expectString,
+    Cors: import_smithy_client._json,
+    CreationTime: import_smithy_client.expectString,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionUrl: import_smithy_client.expectString,
+    InvokeMode: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_CreateFunctionUrlConfigCommand");
+var de_DeleteAliasCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteAliasCommand");
+var de_DeleteCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteCodeSigningConfigCommand");
+var de_DeleteEventSourceMappingCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 202 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AmazonManagedKafkaEventSourceConfig: import_smithy_client._json,
+    BatchSize: import_smithy_client.expectInt32,
+    BisectBatchOnFunctionError: import_smithy_client.expectBoolean,
+    DestinationConfig: import_smithy_client._json,
+    DocumentDBEventSourceConfig: import_smithy_client._json,
+    EventSourceArn: import_smithy_client.expectString,
+    FilterCriteria: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionResponseTypes: import_smithy_client._json,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    LastProcessingResult: import_smithy_client.expectString,
+    MaximumBatchingWindowInSeconds: import_smithy_client.expectInt32,
+    MaximumRecordAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32,
+    ParallelizationFactor: import_smithy_client.expectInt32,
+    Queues: import_smithy_client._json,
+    ScalingConfig: import_smithy_client._json,
+    SelfManagedEventSource: import_smithy_client._json,
+    SelfManagedKafkaEventSourceConfig: import_smithy_client._json,
+    SourceAccessConfigurations: import_smithy_client._json,
+    StartingPosition: import_smithy_client.expectString,
+    StartingPositionTimestamp: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    State: import_smithy_client.expectString,
+    StateTransitionReason: import_smithy_client.expectString,
+    Topics: import_smithy_client._json,
+    TumblingWindowInSeconds: import_smithy_client.expectInt32,
+    UUID: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_DeleteEventSourceMappingCommand");
+var de_DeleteFunctionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteFunctionCommand");
+var de_DeleteFunctionCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteFunctionCodeSigningConfigCommand");
+var de_DeleteFunctionConcurrencyCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteFunctionConcurrencyCommand");
+var de_DeleteFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteFunctionEventInvokeConfigCommand");
+var de_DeleteFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteFunctionUrlConfigCommand");
+var de_DeleteLayerVersionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteLayerVersionCommand");
+var de_DeleteProvisionedConcurrencyConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_DeleteProvisionedConcurrencyConfigCommand");
+var de_GetAccountSettingsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AccountLimit: import_smithy_client._json,
+    AccountUsage: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetAccountSettingsCommand");
+var de_GetAliasCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AliasArn: import_smithy_client.expectString,
+    Description: import_smithy_client.expectString,
+    FunctionVersion: import_smithy_client.expectString,
+    Name: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    RoutingConfig: (_) => de_AliasRoutingConfiguration(_, context)
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetAliasCommand");
+var de_GetCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CodeSigningConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetCodeSigningConfigCommand");
+var de_GetEventSourceMappingCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AmazonManagedKafkaEventSourceConfig: import_smithy_client._json,
+    BatchSize: import_smithy_client.expectInt32,
+    BisectBatchOnFunctionError: import_smithy_client.expectBoolean,
+    DestinationConfig: import_smithy_client._json,
+    DocumentDBEventSourceConfig: import_smithy_client._json,
+    EventSourceArn: import_smithy_client.expectString,
+    FilterCriteria: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionResponseTypes: import_smithy_client._json,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    LastProcessingResult: import_smithy_client.expectString,
+    MaximumBatchingWindowInSeconds: import_smithy_client.expectInt32,
+    MaximumRecordAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32,
+    ParallelizationFactor: import_smithy_client.expectInt32,
+    Queues: import_smithy_client._json,
+    ScalingConfig: import_smithy_client._json,
+    SelfManagedEventSource: import_smithy_client._json,
+    SelfManagedKafkaEventSourceConfig: import_smithy_client._json,
+    SourceAccessConfigurations: import_smithy_client._json,
+    StartingPosition: import_smithy_client.expectString,
+    StartingPositionTimestamp: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    State: import_smithy_client.expectString,
+    StateTransitionReason: import_smithy_client.expectString,
+    Topics: import_smithy_client._json,
+    TumblingWindowInSeconds: import_smithy_client.expectInt32,
+    UUID: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetEventSourceMappingCommand");
+var de_GetFunctionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Code: import_smithy_client._json,
+    Concurrency: import_smithy_client._json,
+    Configuration: import_smithy_client._json,
+    Tags: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetFunctionCommand");
+var de_GetFunctionCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CodeSigningConfigArn: import_smithy_client.expectString,
+    FunctionName: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetFunctionCodeSigningConfigCommand");
+var de_GetFunctionConcurrencyCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    ReservedConcurrentExecutions: import_smithy_client.expectInt32
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetFunctionConcurrencyCommand");
+var de_GetFunctionConfigurationCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Architectures: import_smithy_client._json,
+    CodeSha256: import_smithy_client.expectString,
+    CodeSize: import_smithy_client.expectLong,
+    DeadLetterConfig: import_smithy_client._json,
+    Description: import_smithy_client.expectString,
+    Environment: import_smithy_client._json,
+    EphemeralStorage: import_smithy_client._json,
+    FileSystemConfigs: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionName: import_smithy_client.expectString,
+    Handler: import_smithy_client.expectString,
+    ImageConfigResponse: import_smithy_client._json,
+    KMSKeyArn: import_smithy_client.expectString,
+    LastModified: import_smithy_client.expectString,
+    LastUpdateStatus: import_smithy_client.expectString,
+    LastUpdateStatusReason: import_smithy_client.expectString,
+    LastUpdateStatusReasonCode: import_smithy_client.expectString,
+    Layers: import_smithy_client._json,
+    LoggingConfig: import_smithy_client._json,
+    MasterArn: import_smithy_client.expectString,
+    MemorySize: import_smithy_client.expectInt32,
+    PackageType: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    Role: import_smithy_client.expectString,
+    Runtime: import_smithy_client.expectString,
+    RuntimeVersionConfig: import_smithy_client._json,
+    SigningJobArn: import_smithy_client.expectString,
+    SigningProfileVersionArn: import_smithy_client.expectString,
+    SnapStart: import_smithy_client._json,
+    State: import_smithy_client.expectString,
+    StateReason: import_smithy_client.expectString,
+    StateReasonCode: import_smithy_client.expectString,
+    Timeout: import_smithy_client.expectInt32,
+    TracingConfig: import_smithy_client._json,
+    Version: import_smithy_client.expectString,
+    VpcConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetFunctionConfigurationCommand");
+var de_GetFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    DestinationConfig: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    MaximumEventAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetFunctionEventInvokeConfigCommand");
+var de_GetFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AuthType: import_smithy_client.expectString,
+    Cors: import_smithy_client._json,
+    CreationTime: import_smithy_client.expectString,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionUrl: import_smithy_client.expectString,
+    InvokeMode: import_smithy_client.expectString,
+    LastModifiedTime: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetFunctionUrlConfigCommand");
+var de_GetLayerVersionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CompatibleArchitectures: import_smithy_client._json,
+    CompatibleRuntimes: import_smithy_client._json,
+    Content: import_smithy_client._json,
+    CreatedDate: import_smithy_client.expectString,
+    Description: import_smithy_client.expectString,
+    LayerArn: import_smithy_client.expectString,
+    LayerVersionArn: import_smithy_client.expectString,
+    LicenseInfo: import_smithy_client.expectString,
+    Version: import_smithy_client.expectLong
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetLayerVersionCommand");
+var de_GetLayerVersionByArnCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CompatibleArchitectures: import_smithy_client._json,
+    CompatibleRuntimes: import_smithy_client._json,
+    Content: import_smithy_client._json,
+    CreatedDate: import_smithy_client.expectString,
+    Description: import_smithy_client.expectString,
+    LayerArn: import_smithy_client.expectString,
+    LayerVersionArn: import_smithy_client.expectString,
+    LicenseInfo: import_smithy_client.expectString,
+    Version: import_smithy_client.expectLong
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetLayerVersionByArnCommand");
+var de_GetLayerVersionPolicyCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Policy: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetLayerVersionPolicyCommand");
+var de_GetPolicyCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Policy: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetPolicyCommand");
+var de_GetProvisionedConcurrencyConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AllocatedProvisionedConcurrentExecutions: import_smithy_client.expectInt32,
+    AvailableProvisionedConcurrentExecutions: import_smithy_client.expectInt32,
+    LastModified: import_smithy_client.expectString,
+    RequestedProvisionedConcurrentExecutions: import_smithy_client.expectInt32,
+    Status: import_smithy_client.expectString,
+    StatusReason: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetProvisionedConcurrencyConfigCommand");
+var de_GetRuntimeManagementConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    FunctionArn: import_smithy_client.expectString,
+    RuntimeVersionArn: import_smithy_client.expectString,
+    UpdateRuntimeOn: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_GetRuntimeManagementConfigCommand");
+var de_InvokeCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output),
+    [_FE]: [, output.headers[_xafe]],
+    [_LR]: [, output.headers[_xalr]],
+    [_EV]: [, output.headers[_xaev]]
+  });
+  const data = await (0, import_smithy_client.collectBody)(output.body, context);
+  contents.Payload = data;
+  (0, import_smithy_client.map)(contents, {
+    StatusCode: [, output.statusCode]
+  });
+  return contents;
+}, "de_InvokeCommand");
+var de_InvokeAsyncCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 202 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  (0, import_smithy_client.map)(contents, {
+    Status: [, output.statusCode]
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_InvokeAsyncCommand");
+var de_InvokeWithResponseStreamCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output),
+    [_EV]: [, output.headers[_xaev]],
+    [_RSCT]: [, output.headers[_ct]]
+  });
+  const data = output.body;
+  contents.EventStream = de_InvokeWithResponseStreamResponseEvent(data, context);
+  (0, import_smithy_client.map)(contents, {
+    StatusCode: [, output.statusCode]
+  });
+  return contents;
+}, "de_InvokeWithResponseStreamCommand");
+var de_ListAliasesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Aliases: (_) => de_AliasList(_, context),
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListAliasesCommand");
+var de_ListCodeSigningConfigsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CodeSigningConfigs: import_smithy_client._json,
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListCodeSigningConfigsCommand");
+var de_ListEventSourceMappingsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    EventSourceMappings: (_) => de_EventSourceMappingsList(_, context),
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListEventSourceMappingsCommand");
+var de_ListFunctionEventInvokeConfigsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    FunctionEventInvokeConfigs: (_) => de_FunctionEventInvokeConfigList(_, context),
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListFunctionEventInvokeConfigsCommand");
+var de_ListFunctionsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Functions: import_smithy_client._json,
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListFunctionsCommand");
+var de_ListFunctionsByCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    FunctionArns: import_smithy_client._json,
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListFunctionsByCodeSigningConfigCommand");
+var de_ListFunctionUrlConfigsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    FunctionUrlConfigs: import_smithy_client._json,
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListFunctionUrlConfigsCommand");
+var de_ListLayersCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Layers: import_smithy_client._json,
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListLayersCommand");
+var de_ListLayerVersionsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    LayerVersions: import_smithy_client._json,
+    NextMarker: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListLayerVersionsCommand");
+var de_ListProvisionedConcurrencyConfigsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    NextMarker: import_smithy_client.expectString,
+    ProvisionedConcurrencyConfigs: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListProvisionedConcurrencyConfigsCommand");
+var de_ListTagsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Tags: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListTagsCommand");
+var de_ListVersionsByFunctionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    NextMarker: import_smithy_client.expectString,
+    Versions: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_ListVersionsByFunctionCommand");
+var de_PublishLayerVersionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CompatibleArchitectures: import_smithy_client._json,
+    CompatibleRuntimes: import_smithy_client._json,
+    Content: import_smithy_client._json,
+    CreatedDate: import_smithy_client.expectString,
+    Description: import_smithy_client.expectString,
+    LayerArn: import_smithy_client.expectString,
+    LayerVersionArn: import_smithy_client.expectString,
+    LicenseInfo: import_smithy_client.expectString,
+    Version: import_smithy_client.expectLong
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_PublishLayerVersionCommand");
+var de_PublishVersionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 201 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Architectures: import_smithy_client._json,
+    CodeSha256: import_smithy_client.expectString,
+    CodeSize: import_smithy_client.expectLong,
+    DeadLetterConfig: import_smithy_client._json,
+    Description: import_smithy_client.expectString,
+    Environment: import_smithy_client._json,
+    EphemeralStorage: import_smithy_client._json,
+    FileSystemConfigs: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionName: import_smithy_client.expectString,
+    Handler: import_smithy_client.expectString,
+    ImageConfigResponse: import_smithy_client._json,
+    KMSKeyArn: import_smithy_client.expectString,
+    LastModified: import_smithy_client.expectString,
+    LastUpdateStatus: import_smithy_client.expectString,
+    LastUpdateStatusReason: import_smithy_client.expectString,
+    LastUpdateStatusReasonCode: import_smithy_client.expectString,
+    Layers: import_smithy_client._json,
+    LoggingConfig: import_smithy_client._json,
+    MasterArn: import_smithy_client.expectString,
+    MemorySize: import_smithy_client.expectInt32,
+    PackageType: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    Role: import_smithy_client.expectString,
+    Runtime: import_smithy_client.expectString,
+    RuntimeVersionConfig: import_smithy_client._json,
+    SigningJobArn: import_smithy_client.expectString,
+    SigningProfileVersionArn: import_smithy_client.expectString,
+    SnapStart: import_smithy_client._json,
+    State: import_smithy_client.expectString,
+    StateReason: import_smithy_client.expectString,
+    StateReasonCode: import_smithy_client.expectString,
+    Timeout: import_smithy_client.expectInt32,
+    TracingConfig: import_smithy_client._json,
+    Version: import_smithy_client.expectString,
+    VpcConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_PublishVersionCommand");
+var de_PutFunctionCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CodeSigningConfigArn: import_smithy_client.expectString,
+    FunctionName: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_PutFunctionCodeSigningConfigCommand");
+var de_PutFunctionConcurrencyCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    ReservedConcurrentExecutions: import_smithy_client.expectInt32
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_PutFunctionConcurrencyCommand");
+var de_PutFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    DestinationConfig: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    MaximumEventAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_PutFunctionEventInvokeConfigCommand");
+var de_PutProvisionedConcurrencyConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 202 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AllocatedProvisionedConcurrentExecutions: import_smithy_client.expectInt32,
+    AvailableProvisionedConcurrentExecutions: import_smithy_client.expectInt32,
+    LastModified: import_smithy_client.expectString,
+    RequestedProvisionedConcurrentExecutions: import_smithy_client.expectInt32,
+    Status: import_smithy_client.expectString,
+    StatusReason: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_PutProvisionedConcurrencyConfigCommand");
+var de_PutRuntimeManagementConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    FunctionArn: import_smithy_client.expectString,
+    RuntimeVersionArn: import_smithy_client.expectString,
+    UpdateRuntimeOn: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_PutRuntimeManagementConfigCommand");
+var de_RemoveLayerVersionPermissionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_RemoveLayerVersionPermissionCommand");
+var de_RemovePermissionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_RemovePermissionCommand");
+var de_TagResourceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_TagResourceCommand");
+var de_UntagResourceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 204 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  return contents;
+}, "de_UntagResourceCommand");
+var de_UpdateAliasCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AliasArn: import_smithy_client.expectString,
+    Description: import_smithy_client.expectString,
+    FunctionVersion: import_smithy_client.expectString,
+    Name: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    RoutingConfig: (_) => de_AliasRoutingConfiguration(_, context)
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_UpdateAliasCommand");
+var de_UpdateCodeSigningConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    CodeSigningConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_UpdateCodeSigningConfigCommand");
+var de_UpdateEventSourceMappingCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 202 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AmazonManagedKafkaEventSourceConfig: import_smithy_client._json,
+    BatchSize: import_smithy_client.expectInt32,
+    BisectBatchOnFunctionError: import_smithy_client.expectBoolean,
+    DestinationConfig: import_smithy_client._json,
+    DocumentDBEventSourceConfig: import_smithy_client._json,
+    EventSourceArn: import_smithy_client.expectString,
+    FilterCriteria: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionResponseTypes: import_smithy_client._json,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    LastProcessingResult: import_smithy_client.expectString,
+    MaximumBatchingWindowInSeconds: import_smithy_client.expectInt32,
+    MaximumRecordAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32,
+    ParallelizationFactor: import_smithy_client.expectInt32,
+    Queues: import_smithy_client._json,
+    ScalingConfig: import_smithy_client._json,
+    SelfManagedEventSource: import_smithy_client._json,
+    SelfManagedKafkaEventSourceConfig: import_smithy_client._json,
+    SourceAccessConfigurations: import_smithy_client._json,
+    StartingPosition: import_smithy_client.expectString,
+    StartingPositionTimestamp: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    State: import_smithy_client.expectString,
+    StateTransitionReason: import_smithy_client.expectString,
+    Topics: import_smithy_client._json,
+    TumblingWindowInSeconds: import_smithy_client.expectInt32,
+    UUID: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_UpdateEventSourceMappingCommand");
+var de_UpdateFunctionCodeCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Architectures: import_smithy_client._json,
+    CodeSha256: import_smithy_client.expectString,
+    CodeSize: import_smithy_client.expectLong,
+    DeadLetterConfig: import_smithy_client._json,
+    Description: import_smithy_client.expectString,
+    Environment: import_smithy_client._json,
+    EphemeralStorage: import_smithy_client._json,
+    FileSystemConfigs: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionName: import_smithy_client.expectString,
+    Handler: import_smithy_client.expectString,
+    ImageConfigResponse: import_smithy_client._json,
+    KMSKeyArn: import_smithy_client.expectString,
+    LastModified: import_smithy_client.expectString,
+    LastUpdateStatus: import_smithy_client.expectString,
+    LastUpdateStatusReason: import_smithy_client.expectString,
+    LastUpdateStatusReasonCode: import_smithy_client.expectString,
+    Layers: import_smithy_client._json,
+    LoggingConfig: import_smithy_client._json,
+    MasterArn: import_smithy_client.expectString,
+    MemorySize: import_smithy_client.expectInt32,
+    PackageType: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    Role: import_smithy_client.expectString,
+    Runtime: import_smithy_client.expectString,
+    RuntimeVersionConfig: import_smithy_client._json,
+    SigningJobArn: import_smithy_client.expectString,
+    SigningProfileVersionArn: import_smithy_client.expectString,
+    SnapStart: import_smithy_client._json,
+    State: import_smithy_client.expectString,
+    StateReason: import_smithy_client.expectString,
+    StateReasonCode: import_smithy_client.expectString,
+    Timeout: import_smithy_client.expectInt32,
+    TracingConfig: import_smithy_client._json,
+    Version: import_smithy_client.expectString,
+    VpcConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_UpdateFunctionCodeCommand");
+var de_UpdateFunctionConfigurationCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    Architectures: import_smithy_client._json,
+    CodeSha256: import_smithy_client.expectString,
+    CodeSize: import_smithy_client.expectLong,
+    DeadLetterConfig: import_smithy_client._json,
+    Description: import_smithy_client.expectString,
+    Environment: import_smithy_client._json,
+    EphemeralStorage: import_smithy_client._json,
+    FileSystemConfigs: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionName: import_smithy_client.expectString,
+    Handler: import_smithy_client.expectString,
+    ImageConfigResponse: import_smithy_client._json,
+    KMSKeyArn: import_smithy_client.expectString,
+    LastModified: import_smithy_client.expectString,
+    LastUpdateStatus: import_smithy_client.expectString,
+    LastUpdateStatusReason: import_smithy_client.expectString,
+    LastUpdateStatusReasonCode: import_smithy_client.expectString,
+    Layers: import_smithy_client._json,
+    LoggingConfig: import_smithy_client._json,
+    MasterArn: import_smithy_client.expectString,
+    MemorySize: import_smithy_client.expectInt32,
+    PackageType: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    Role: import_smithy_client.expectString,
+    Runtime: import_smithy_client.expectString,
+    RuntimeVersionConfig: import_smithy_client._json,
+    SigningJobArn: import_smithy_client.expectString,
+    SigningProfileVersionArn: import_smithy_client.expectString,
+    SnapStart: import_smithy_client._json,
+    State: import_smithy_client.expectString,
+    StateReason: import_smithy_client.expectString,
+    StateReasonCode: import_smithy_client.expectString,
+    Timeout: import_smithy_client.expectInt32,
+    TracingConfig: import_smithy_client._json,
+    Version: import_smithy_client.expectString,
+    VpcConfig: import_smithy_client._json
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_UpdateFunctionConfigurationCommand");
+var de_UpdateFunctionEventInvokeConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    DestinationConfig: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    MaximumEventAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_UpdateFunctionEventInvokeConfigCommand");
+var de_UpdateFunctionUrlConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode !== 200 && output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const contents = (0, import_smithy_client.map)({
+    $metadata: deserializeMetadata(output)
+  });
+  const data = (0, import_smithy_client.expectNonNull)((0, import_smithy_client.expectObject)(await (0, import_core2.parseJsonBody)(output.body, context)), "body");
+  const doc = (0, import_smithy_client.take)(data, {
+    AuthType: import_smithy_client.expectString,
+    Cors: import_smithy_client._json,
+    CreationTime: import_smithy_client.expectString,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionUrl: import_smithy_client.expectString,
+    InvokeMode: import_smithy_client.expectString,
+    LastModifiedTime: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  return contents;
+}, "de_UpdateFunctionUrlConfigCommand");
+var de_CommandError = /* @__PURE__ */ __name(async (output, context) => {
+  const parsedOutput = {
+    ...output,
+    body: await (0, import_core2.parseJsonErrorBody)(output.body, context)
+  };
+  const errorCode = (0, import_core2.loadRestJsonErrorCode)(output, parsedOutput.body);
+  switch (errorCode) {
+    case "InvalidParameterValueException":
+    case "com.amazonaws.lambda#InvalidParameterValueException":
+      throw await de_InvalidParameterValueExceptionRes(parsedOutput, context);
+    case "PolicyLengthExceededException":
+    case "com.amazonaws.lambda#PolicyLengthExceededException":
+      throw await de_PolicyLengthExceededExceptionRes(parsedOutput, context);
+    case "PreconditionFailedException":
+    case "com.amazonaws.lambda#PreconditionFailedException":
+      throw await de_PreconditionFailedExceptionRes(parsedOutput, context);
+    case "ResourceConflictException":
+    case "com.amazonaws.lambda#ResourceConflictException":
+      throw await de_ResourceConflictExceptionRes(parsedOutput, context);
+    case "ResourceNotFoundException":
+    case "com.amazonaws.lambda#ResourceNotFoundException":
+      throw await de_ResourceNotFoundExceptionRes(parsedOutput, context);
+    case "ServiceException":
+    case "com.amazonaws.lambda#ServiceException":
+      throw await de_ServiceExceptionRes(parsedOutput, context);
+    case "TooManyRequestsException":
+    case "com.amazonaws.lambda#TooManyRequestsException":
+      throw await de_TooManyRequestsExceptionRes(parsedOutput, context);
+    case "CodeSigningConfigNotFoundException":
+    case "com.amazonaws.lambda#CodeSigningConfigNotFoundException":
+      throw await de_CodeSigningConfigNotFoundExceptionRes(parsedOutput, context);
+    case "CodeStorageExceededException":
+    case "com.amazonaws.lambda#CodeStorageExceededException":
+      throw await de_CodeStorageExceededExceptionRes(parsedOutput, context);
+    case "CodeVerificationFailedException":
+    case "com.amazonaws.lambda#CodeVerificationFailedException":
+      throw await de_CodeVerificationFailedExceptionRes(parsedOutput, context);
+    case "InvalidCodeSignatureException":
+    case "com.amazonaws.lambda#InvalidCodeSignatureException":
+      throw await de_InvalidCodeSignatureExceptionRes(parsedOutput, context);
+    case "ResourceInUseException":
+    case "com.amazonaws.lambda#ResourceInUseException":
+      throw await de_ResourceInUseExceptionRes(parsedOutput, context);
+    case "ProvisionedConcurrencyConfigNotFoundException":
+    case "com.amazonaws.lambda#ProvisionedConcurrencyConfigNotFoundException":
+      throw await de_ProvisionedConcurrencyConfigNotFoundExceptionRes(parsedOutput, context);
+    case "EC2AccessDeniedException":
+    case "com.amazonaws.lambda#EC2AccessDeniedException":
+      throw await de_EC2AccessDeniedExceptionRes(parsedOutput, context);
+    case "EC2ThrottledException":
+    case "com.amazonaws.lambda#EC2ThrottledException":
+      throw await de_EC2ThrottledExceptionRes(parsedOutput, context);
+    case "EC2UnexpectedException":
+    case "com.amazonaws.lambda#EC2UnexpectedException":
+      throw await de_EC2UnexpectedExceptionRes(parsedOutput, context);
+    case "EFSIOException":
+    case "com.amazonaws.lambda#EFSIOException":
+      throw await de_EFSIOExceptionRes(parsedOutput, context);
+    case "EFSMountConnectivityException":
+    case "com.amazonaws.lambda#EFSMountConnectivityException":
+      throw await de_EFSMountConnectivityExceptionRes(parsedOutput, context);
+    case "EFSMountFailureException":
+    case "com.amazonaws.lambda#EFSMountFailureException":
+      throw await de_EFSMountFailureExceptionRes(parsedOutput, context);
+    case "EFSMountTimeoutException":
+    case "com.amazonaws.lambda#EFSMountTimeoutException":
+      throw await de_EFSMountTimeoutExceptionRes(parsedOutput, context);
+    case "ENILimitReachedException":
+    case "com.amazonaws.lambda#ENILimitReachedException":
+      throw await de_ENILimitReachedExceptionRes(parsedOutput, context);
+    case "InvalidRequestContentException":
+    case "com.amazonaws.lambda#InvalidRequestContentException":
+      throw await de_InvalidRequestContentExceptionRes(parsedOutput, context);
+    case "InvalidRuntimeException":
+    case "com.amazonaws.lambda#InvalidRuntimeException":
+      throw await de_InvalidRuntimeExceptionRes(parsedOutput, context);
+    case "InvalidSecurityGroupIDException":
+    case "com.amazonaws.lambda#InvalidSecurityGroupIDException":
+      throw await de_InvalidSecurityGroupIDExceptionRes(parsedOutput, context);
+    case "InvalidSubnetIDException":
+    case "com.amazonaws.lambda#InvalidSubnetIDException":
+      throw await de_InvalidSubnetIDExceptionRes(parsedOutput, context);
+    case "InvalidZipFileException":
+    case "com.amazonaws.lambda#InvalidZipFileException":
+      throw await de_InvalidZipFileExceptionRes(parsedOutput, context);
+    case "KMSAccessDeniedException":
+    case "com.amazonaws.lambda#KMSAccessDeniedException":
+      throw await de_KMSAccessDeniedExceptionRes(parsedOutput, context);
+    case "KMSDisabledException":
+    case "com.amazonaws.lambda#KMSDisabledException":
+      throw await de_KMSDisabledExceptionRes(parsedOutput, context);
+    case "KMSInvalidStateException":
+    case "com.amazonaws.lambda#KMSInvalidStateException":
+      throw await de_KMSInvalidStateExceptionRes(parsedOutput, context);
+    case "KMSNotFoundException":
+    case "com.amazonaws.lambda#KMSNotFoundException":
+      throw await de_KMSNotFoundExceptionRes(parsedOutput, context);
+    case "RecursiveInvocationException":
+    case "com.amazonaws.lambda#RecursiveInvocationException":
+      throw await de_RecursiveInvocationExceptionRes(parsedOutput, context);
+    case "RequestTooLargeException":
+    case "com.amazonaws.lambda#RequestTooLargeException":
+      throw await de_RequestTooLargeExceptionRes(parsedOutput, context);
+    case "ResourceNotReadyException":
+    case "com.amazonaws.lambda#ResourceNotReadyException":
+      throw await de_ResourceNotReadyExceptionRes(parsedOutput, context);
+    case "SnapStartException":
+    case "com.amazonaws.lambda#SnapStartException":
+      throw await de_SnapStartExceptionRes(parsedOutput, context);
+    case "SnapStartNotReadyException":
+    case "com.amazonaws.lambda#SnapStartNotReadyException":
+      throw await de_SnapStartNotReadyExceptionRes(parsedOutput, context);
+    case "SnapStartTimeoutException":
+    case "com.amazonaws.lambda#SnapStartTimeoutException":
+      throw await de_SnapStartTimeoutExceptionRes(parsedOutput, context);
+    case "SubnetIPAddressLimitReachedException":
+    case "com.amazonaws.lambda#SubnetIPAddressLimitReachedException":
+      throw await de_SubnetIPAddressLimitReachedExceptionRes(parsedOutput, context);
+    case "UnsupportedMediaTypeException":
+    case "com.amazonaws.lambda#UnsupportedMediaTypeException":
+      throw await de_UnsupportedMediaTypeExceptionRes(parsedOutput, context);
+    default:
+      const parsedBody = parsedOutput.body;
+      return throwDefaultError({
+        output,
+        parsedBody,
+        errorCode
+      });
+  }
+}, "de_CommandError");
+var throwDefaultError = (0, import_smithy_client.withBaseException)(LambdaServiceException);
+var de_CodeSigningConfigNotFoundExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new CodeSigningConfigNotFoundException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_CodeSigningConfigNotFoundExceptionRes");
+var de_CodeStorageExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new CodeStorageExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_CodeStorageExceededExceptionRes");
+var de_CodeVerificationFailedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new CodeVerificationFailedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_CodeVerificationFailedExceptionRes");
+var de_EC2AccessDeniedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new EC2AccessDeniedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_EC2AccessDeniedExceptionRes");
+var de_EC2ThrottledExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new EC2ThrottledException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_EC2ThrottledExceptionRes");
+var de_EC2UnexpectedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    EC2ErrorCode: import_smithy_client.expectString,
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new EC2UnexpectedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_EC2UnexpectedExceptionRes");
+var de_EFSIOExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new EFSIOException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_EFSIOExceptionRes");
+var de_EFSMountConnectivityExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new EFSMountConnectivityException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_EFSMountConnectivityExceptionRes");
+var de_EFSMountFailureExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new EFSMountFailureException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_EFSMountFailureExceptionRes");
+var de_EFSMountTimeoutExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new EFSMountTimeoutException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_EFSMountTimeoutExceptionRes");
+var de_ENILimitReachedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new ENILimitReachedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_ENILimitReachedExceptionRes");
+var de_InvalidCodeSignatureExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new InvalidCodeSignatureException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_InvalidCodeSignatureExceptionRes");
+var de_InvalidParameterValueExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new InvalidParameterValueException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_InvalidParameterValueExceptionRes");
+var de_InvalidRequestContentExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new InvalidRequestContentException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_InvalidRequestContentExceptionRes");
+var de_InvalidRuntimeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new InvalidRuntimeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_InvalidRuntimeExceptionRes");
+var de_InvalidSecurityGroupIDExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new InvalidSecurityGroupIDException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_InvalidSecurityGroupIDExceptionRes");
+var de_InvalidSubnetIDExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new InvalidSubnetIDException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_InvalidSubnetIDExceptionRes");
+var de_InvalidZipFileExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new InvalidZipFileException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_InvalidZipFileExceptionRes");
+var de_KMSAccessDeniedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new KMSAccessDeniedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_KMSAccessDeniedExceptionRes");
+var de_KMSDisabledExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new KMSDisabledException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_KMSDisabledExceptionRes");
+var de_KMSInvalidStateExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new KMSInvalidStateException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_KMSInvalidStateExceptionRes");
+var de_KMSNotFoundExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new KMSNotFoundException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_KMSNotFoundExceptionRes");
+var de_PolicyLengthExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new PolicyLengthExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_PolicyLengthExceededExceptionRes");
+var de_PreconditionFailedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new PreconditionFailedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_PreconditionFailedExceptionRes");
+var de_ProvisionedConcurrencyConfigNotFoundExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new ProvisionedConcurrencyConfigNotFoundException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_ProvisionedConcurrencyConfigNotFoundExceptionRes");
+var de_RecursiveInvocationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new RecursiveInvocationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_RecursiveInvocationExceptionRes");
+var de_RequestTooLargeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new RequestTooLargeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_RequestTooLargeExceptionRes");
+var de_ResourceConflictExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new ResourceConflictException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_ResourceConflictExceptionRes");
+var de_ResourceInUseExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new ResourceInUseException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_ResourceInUseExceptionRes");
+var de_ResourceNotFoundExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new ResourceNotFoundException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_ResourceNotFoundExceptionRes");
+var de_ResourceNotReadyExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new ResourceNotReadyException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_ResourceNotReadyExceptionRes");
+var de_ServiceExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new ServiceException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_ServiceExceptionRes");
+var de_SnapStartExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new SnapStartException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_SnapStartExceptionRes");
+var de_SnapStartNotReadyExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new SnapStartNotReadyException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_SnapStartNotReadyExceptionRes");
+var de_SnapStartTimeoutExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new SnapStartTimeoutException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_SnapStartTimeoutExceptionRes");
+var de_SubnetIPAddressLimitReachedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Message: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new SubnetIPAddressLimitReachedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_SubnetIPAddressLimitReachedExceptionRes");
+var de_TooManyRequestsExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({
+    [_rAS]: [, parsedOutput.headers[_ra]]
+  });
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Reason: import_smithy_client.expectString,
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new TooManyRequestsException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_TooManyRequestsExceptionRes");
+var de_UnsupportedMediaTypeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const contents = (0, import_smithy_client.map)({});
+  const data = parsedOutput.body;
+  const doc = (0, import_smithy_client.take)(data, {
+    Type: import_smithy_client.expectString,
+    message: import_smithy_client.expectString
+  });
+  Object.assign(contents, doc);
+  const exception = new UnsupportedMediaTypeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...contents
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, parsedOutput.body);
+}, "de_UnsupportedMediaTypeExceptionRes");
+var de_InvokeWithResponseStreamResponseEvent = /* @__PURE__ */ __name((output, context) => {
+  return context.eventStreamMarshaller.deserialize(output, async (event) => {
+    if (event["PayloadChunk"] != null) {
+      return {
+        PayloadChunk: await de_InvokeResponseStreamUpdate_event(event["PayloadChunk"], context)
+      };
+    }
+    if (event["InvokeComplete"] != null) {
+      return {
+        InvokeComplete: await de_InvokeWithResponseStreamCompleteEvent_event(event["InvokeComplete"], context)
+      };
+    }
+    return { $unknown: output };
+  });
+}, "de_InvokeWithResponseStreamResponseEvent");
+var de_InvokeResponseStreamUpdate_event = /* @__PURE__ */ __name(async (output, context) => {
+  const contents = {};
+  contents.Payload = output.body;
+  return contents;
+}, "de_InvokeResponseStreamUpdate_event");
+var de_InvokeWithResponseStreamCompleteEvent_event = /* @__PURE__ */ __name(async (output, context) => {
+  const contents = {};
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  Object.assign(contents, (0, import_smithy_client._json)(data));
+  return contents;
+}, "de_InvokeWithResponseStreamCompleteEvent_event");
+var se_AdditionalVersionWeights = /* @__PURE__ */ __name((input, context) => {
+  return Object.entries(input).reduce((acc, [key, value]) => {
+    if (value === null) {
+      return acc;
+    }
+    acc[key] = (0, import_smithy_client.serializeFloat)(value);
+    return acc;
+  }, {});
+}, "se_AdditionalVersionWeights");
+var se_AliasRoutingConfiguration = /* @__PURE__ */ __name((input, context) => {
+  return (0, import_smithy_client.take)(input, {
+    AdditionalVersionWeights: (_) => se_AdditionalVersionWeights(_, context)
+  });
+}, "se_AliasRoutingConfiguration");
+var se_FunctionCode = /* @__PURE__ */ __name((input, context) => {
+  return (0, import_smithy_client.take)(input, {
+    ImageUri: [],
+    S3Bucket: [],
+    S3Key: [],
+    S3ObjectVersion: [],
+    ZipFile: context.base64Encoder
+  });
+}, "se_FunctionCode");
+var se_LayerVersionContentInput = /* @__PURE__ */ __name((input, context) => {
+  return (0, import_smithy_client.take)(input, {
+    S3Bucket: [],
+    S3Key: [],
+    S3ObjectVersion: [],
+    ZipFile: context.base64Encoder
+  });
+}, "se_LayerVersionContentInput");
+var de_AdditionalVersionWeights = /* @__PURE__ */ __name((output, context) => {
+  return Object.entries(output).reduce((acc, [key, value]) => {
+    if (value === null) {
+      return acc;
+    }
+    acc[key] = (0, import_smithy_client.limitedParseDouble)(value);
+    return acc;
+  }, {});
+}, "de_AdditionalVersionWeights");
+var de_AliasConfiguration = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    AliasArn: import_smithy_client.expectString,
+    Description: import_smithy_client.expectString,
+    FunctionVersion: import_smithy_client.expectString,
+    Name: import_smithy_client.expectString,
+    RevisionId: import_smithy_client.expectString,
+    RoutingConfig: (_) => de_AliasRoutingConfiguration(_, context)
+  });
+}, "de_AliasConfiguration");
+var de_AliasList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_AliasConfiguration(entry, context);
+  });
+  return retVal;
+}, "de_AliasList");
+var de_AliasRoutingConfiguration = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    AdditionalVersionWeights: (_) => de_AdditionalVersionWeights(_, context)
+  });
+}, "de_AliasRoutingConfiguration");
+var de_EventSourceMappingConfiguration = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    AmazonManagedKafkaEventSourceConfig: import_smithy_client._json,
+    BatchSize: import_smithy_client.expectInt32,
+    BisectBatchOnFunctionError: import_smithy_client.expectBoolean,
+    DestinationConfig: import_smithy_client._json,
+    DocumentDBEventSourceConfig: import_smithy_client._json,
+    EventSourceArn: import_smithy_client.expectString,
+    FilterCriteria: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    FunctionResponseTypes: import_smithy_client._json,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    LastProcessingResult: import_smithy_client.expectString,
+    MaximumBatchingWindowInSeconds: import_smithy_client.expectInt32,
+    MaximumRecordAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32,
+    ParallelizationFactor: import_smithy_client.expectInt32,
+    Queues: import_smithy_client._json,
+    ScalingConfig: import_smithy_client._json,
+    SelfManagedEventSource: import_smithy_client._json,
+    SelfManagedKafkaEventSourceConfig: import_smithy_client._json,
+    SourceAccessConfigurations: import_smithy_client._json,
+    StartingPosition: import_smithy_client.expectString,
+    StartingPositionTimestamp: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    State: import_smithy_client.expectString,
+    StateTransitionReason: import_smithy_client.expectString,
+    Topics: import_smithy_client._json,
+    TumblingWindowInSeconds: import_smithy_client.expectInt32,
+    UUID: import_smithy_client.expectString
+  });
+}, "de_EventSourceMappingConfiguration");
+var de_EventSourceMappingsList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_EventSourceMappingConfiguration(entry, context);
+  });
+  return retVal;
+}, "de_EventSourceMappingsList");
+var de_FunctionEventInvokeConfig = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    DestinationConfig: import_smithy_client._json,
+    FunctionArn: import_smithy_client.expectString,
+    LastModified: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    MaximumEventAgeInSeconds: import_smithy_client.expectInt32,
+    MaximumRetryAttempts: import_smithy_client.expectInt32
+  });
+}, "de_FunctionEventInvokeConfig");
+var de_FunctionEventInvokeConfigList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_FunctionEventInvokeConfig(entry, context);
+  });
+  return retVal;
+}, "de_FunctionEventInvokeConfigList");
+var deserializeMetadata = /* @__PURE__ */ __name((output) => ({
+  httpStatusCode: output.statusCode,
+  requestId: output.headers["x-amzn-requestid"] ?? output.headers["x-amzn-request-id"] ?? output.headers["x-amz-request-id"],
+  extendedRequestId: output.headers["x-amz-id-2"],
+  cfId: output.headers["x-amz-cf-id"]
+}), "deserializeMetadata");
+var isSerializableHeaderValue = /* @__PURE__ */ __name((value) => value !== void 0 && value !== null && value !== "" && (!Object.getOwnPropertyNames(value).includes("length") || value.length != 0) && (!Object.getOwnPropertyNames(value).includes("size") || value.size != 0), "isSerializableHeaderValue");
+var _A = "Arn";
+var _CA = "CompatibleArchitecture";
+var _CC = "ClientContext";
+var _CR = "CompatibleRuntime";
+var _ESA = "EventSourceArn";
+var _EV = "ExecutedVersion";
+var _FE = "FunctionError";
+var _FN = "FunctionName";
+var _FV = "FunctionVersion";
+var _IT = "InvocationType";
+var _L = "List";
+var _LR = "LogResult";
+var _LT = "LogType";
+var _M = "Marker";
+var _MI = "MaxItems";
+var _MR = "MasterRegion";
+var _Q = "Qualifier";
+var _RI = "RevisionId";
+var _RSCT = "ResponseStreamContentType";
+var _TK = "TagKeys";
+var _ct = "content-type";
+var _f = "find";
+var _rAS = "retryAfterSeconds";
+var _ra = "retry-after";
+var _tK = "tagKeys";
+var _xacc = "x-amz-client-context";
+var _xaev = "x-amz-executed-version";
+var _xafe = "x-amz-function-error";
+var _xait = "x-amz-invocation-type";
+var _xalr = "x-amz-log-result";
+var _xalt = "x-amz-log-type";
+
+// src/commands/AddLayerVersionPermissionCommand.ts
+var _AddLayerVersionPermissionCommand = class _AddLayerVersionPermissionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "AddLayerVersionPermission", {}).n("LambdaClient", "AddLayerVersionPermissionCommand").f(void 0, void 0).ser(se_AddLayerVersionPermissionCommand).de(de_AddLayerVersionPermissionCommand).build() {
+};
+__name(_AddLayerVersionPermissionCommand, "AddLayerVersionPermissionCommand");
+var AddLayerVersionPermissionCommand = _AddLayerVersionPermissionCommand;
+
+// src/commands/AddPermissionCommand.ts
+
+
+
+
+var _AddPermissionCommand = class _AddPermissionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "AddPermission", {}).n("LambdaClient", "AddPermissionCommand").f(void 0, void 0).ser(se_AddPermissionCommand).de(de_AddPermissionCommand).build() {
+};
+__name(_AddPermissionCommand, "AddPermissionCommand");
+var AddPermissionCommand = _AddPermissionCommand;
+
+// src/commands/CreateAliasCommand.ts
+
+
+
+
+var _CreateAliasCommand = class _CreateAliasCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "CreateAlias", {}).n("LambdaClient", "CreateAliasCommand").f(void 0, void 0).ser(se_CreateAliasCommand).de(de_CreateAliasCommand).build() {
+};
+__name(_CreateAliasCommand, "CreateAliasCommand");
+var CreateAliasCommand = _CreateAliasCommand;
+
+// src/commands/CreateCodeSigningConfigCommand.ts
+
+
+
+
+var _CreateCodeSigningConfigCommand = class _CreateCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "CreateCodeSigningConfig", {}).n("LambdaClient", "CreateCodeSigningConfigCommand").f(void 0, void 0).ser(se_CreateCodeSigningConfigCommand).de(de_CreateCodeSigningConfigCommand).build() {
+};
+__name(_CreateCodeSigningConfigCommand, "CreateCodeSigningConfigCommand");
+var CreateCodeSigningConfigCommand = _CreateCodeSigningConfigCommand;
+
+// src/commands/CreateEventSourceMappingCommand.ts
+
+
+
+
+var _CreateEventSourceMappingCommand = class _CreateEventSourceMappingCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "CreateEventSourceMapping", {}).n("LambdaClient", "CreateEventSourceMappingCommand").f(void 0, void 0).ser(se_CreateEventSourceMappingCommand).de(de_CreateEventSourceMappingCommand).build() {
+};
+__name(_CreateEventSourceMappingCommand, "CreateEventSourceMappingCommand");
+var CreateEventSourceMappingCommand = _CreateEventSourceMappingCommand;
+
+// src/commands/CreateFunctionCommand.ts
+
+
+
+
+var _CreateFunctionCommand = class _CreateFunctionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "CreateFunction", {}).n("LambdaClient", "CreateFunctionCommand").f(CreateFunctionRequestFilterSensitiveLog, FunctionConfigurationFilterSensitiveLog).ser(se_CreateFunctionCommand).de(de_CreateFunctionCommand).build() {
+};
+__name(_CreateFunctionCommand, "CreateFunctionCommand");
+var CreateFunctionCommand = _CreateFunctionCommand;
+
+// src/commands/CreateFunctionUrlConfigCommand.ts
+
+
+
+
+var _CreateFunctionUrlConfigCommand = class _CreateFunctionUrlConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "CreateFunctionUrlConfig", {}).n("LambdaClient", "CreateFunctionUrlConfigCommand").f(void 0, void 0).ser(se_CreateFunctionUrlConfigCommand).de(de_CreateFunctionUrlConfigCommand).build() {
+};
+__name(_CreateFunctionUrlConfigCommand, "CreateFunctionUrlConfigCommand");
+var CreateFunctionUrlConfigCommand = _CreateFunctionUrlConfigCommand;
+
+// src/commands/DeleteAliasCommand.ts
+
+
+
+
+var _DeleteAliasCommand = class _DeleteAliasCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteAlias", {}).n("LambdaClient", "DeleteAliasCommand").f(void 0, void 0).ser(se_DeleteAliasCommand).de(de_DeleteAliasCommand).build() {
+};
+__name(_DeleteAliasCommand, "DeleteAliasCommand");
+var DeleteAliasCommand = _DeleteAliasCommand;
+
+// src/commands/DeleteCodeSigningConfigCommand.ts
+
+
+
+
+var _DeleteCodeSigningConfigCommand = class _DeleteCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteCodeSigningConfig", {}).n("LambdaClient", "DeleteCodeSigningConfigCommand").f(void 0, void 0).ser(se_DeleteCodeSigningConfigCommand).de(de_DeleteCodeSigningConfigCommand).build() {
+};
+__name(_DeleteCodeSigningConfigCommand, "DeleteCodeSigningConfigCommand");
+var DeleteCodeSigningConfigCommand = _DeleteCodeSigningConfigCommand;
+
+// src/commands/DeleteEventSourceMappingCommand.ts
+
+
+
+
+var _DeleteEventSourceMappingCommand = class _DeleteEventSourceMappingCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteEventSourceMapping", {}).n("LambdaClient", "DeleteEventSourceMappingCommand").f(void 0, void 0).ser(se_DeleteEventSourceMappingCommand).de(de_DeleteEventSourceMappingCommand).build() {
+};
+__name(_DeleteEventSourceMappingCommand, "DeleteEventSourceMappingCommand");
+var DeleteEventSourceMappingCommand = _DeleteEventSourceMappingCommand;
+
+// src/commands/DeleteFunctionCodeSigningConfigCommand.ts
+
+
+
+
+var _DeleteFunctionCodeSigningConfigCommand = class _DeleteFunctionCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteFunctionCodeSigningConfig", {}).n("LambdaClient", "DeleteFunctionCodeSigningConfigCommand").f(void 0, void 0).ser(se_DeleteFunctionCodeSigningConfigCommand).de(de_DeleteFunctionCodeSigningConfigCommand).build() {
+};
+__name(_DeleteFunctionCodeSigningConfigCommand, "DeleteFunctionCodeSigningConfigCommand");
+var DeleteFunctionCodeSigningConfigCommand = _DeleteFunctionCodeSigningConfigCommand;
+
+// src/commands/DeleteFunctionCommand.ts
+
+
+
+
+var _DeleteFunctionCommand = class _DeleteFunctionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteFunction", {}).n("LambdaClient", "DeleteFunctionCommand").f(void 0, void 0).ser(se_DeleteFunctionCommand).de(de_DeleteFunctionCommand).build() {
+};
+__name(_DeleteFunctionCommand, "DeleteFunctionCommand");
+var DeleteFunctionCommand = _DeleteFunctionCommand;
+
+// src/commands/DeleteFunctionConcurrencyCommand.ts
+
+
+
+
+var _DeleteFunctionConcurrencyCommand = class _DeleteFunctionConcurrencyCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteFunctionConcurrency", {}).n("LambdaClient", "DeleteFunctionConcurrencyCommand").f(void 0, void 0).ser(se_DeleteFunctionConcurrencyCommand).de(de_DeleteFunctionConcurrencyCommand).build() {
+};
+__name(_DeleteFunctionConcurrencyCommand, "DeleteFunctionConcurrencyCommand");
+var DeleteFunctionConcurrencyCommand = _DeleteFunctionConcurrencyCommand;
+
+// src/commands/DeleteFunctionEventInvokeConfigCommand.ts
+
+
+
+
+var _DeleteFunctionEventInvokeConfigCommand = class _DeleteFunctionEventInvokeConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteFunctionEventInvokeConfig", {}).n("LambdaClient", "DeleteFunctionEventInvokeConfigCommand").f(void 0, void 0).ser(se_DeleteFunctionEventInvokeConfigCommand).de(de_DeleteFunctionEventInvokeConfigCommand).build() {
+};
+__name(_DeleteFunctionEventInvokeConfigCommand, "DeleteFunctionEventInvokeConfigCommand");
+var DeleteFunctionEventInvokeConfigCommand = _DeleteFunctionEventInvokeConfigCommand;
+
+// src/commands/DeleteFunctionUrlConfigCommand.ts
+
+
+
+
+var _DeleteFunctionUrlConfigCommand = class _DeleteFunctionUrlConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteFunctionUrlConfig", {}).n("LambdaClient", "DeleteFunctionUrlConfigCommand").f(void 0, void 0).ser(se_DeleteFunctionUrlConfigCommand).de(de_DeleteFunctionUrlConfigCommand).build() {
+};
+__name(_DeleteFunctionUrlConfigCommand, "DeleteFunctionUrlConfigCommand");
+var DeleteFunctionUrlConfigCommand = _DeleteFunctionUrlConfigCommand;
+
+// src/commands/DeleteLayerVersionCommand.ts
+
+
+
+
+var _DeleteLayerVersionCommand = class _DeleteLayerVersionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteLayerVersion", {}).n("LambdaClient", "DeleteLayerVersionCommand").f(void 0, void 0).ser(se_DeleteLayerVersionCommand).de(de_DeleteLayerVersionCommand).build() {
+};
+__name(_DeleteLayerVersionCommand, "DeleteLayerVersionCommand");
+var DeleteLayerVersionCommand = _DeleteLayerVersionCommand;
+
+// src/commands/DeleteProvisionedConcurrencyConfigCommand.ts
+
+
+
+
+var _DeleteProvisionedConcurrencyConfigCommand = class _DeleteProvisionedConcurrencyConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "DeleteProvisionedConcurrencyConfig", {}).n("LambdaClient", "DeleteProvisionedConcurrencyConfigCommand").f(void 0, void 0).ser(se_DeleteProvisionedConcurrencyConfigCommand).de(de_DeleteProvisionedConcurrencyConfigCommand).build() {
+};
+__name(_DeleteProvisionedConcurrencyConfigCommand, "DeleteProvisionedConcurrencyConfigCommand");
+var DeleteProvisionedConcurrencyConfigCommand = _DeleteProvisionedConcurrencyConfigCommand;
+
+// src/commands/GetAccountSettingsCommand.ts
+
+
+
+
+var _GetAccountSettingsCommand = class _GetAccountSettingsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetAccountSettings", {}).n("LambdaClient", "GetAccountSettingsCommand").f(void 0, void 0).ser(se_GetAccountSettingsCommand).de(de_GetAccountSettingsCommand).build() {
+};
+__name(_GetAccountSettingsCommand, "GetAccountSettingsCommand");
+var GetAccountSettingsCommand = _GetAccountSettingsCommand;
+
+// src/commands/GetAliasCommand.ts
+
+
+
+
+var _GetAliasCommand = class _GetAliasCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetAlias", {}).n("LambdaClient", "GetAliasCommand").f(void 0, void 0).ser(se_GetAliasCommand).de(de_GetAliasCommand).build() {
+};
+__name(_GetAliasCommand, "GetAliasCommand");
+var GetAliasCommand = _GetAliasCommand;
+
+// src/commands/GetCodeSigningConfigCommand.ts
+
+
+
+
+var _GetCodeSigningConfigCommand = class _GetCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetCodeSigningConfig", {}).n("LambdaClient", "GetCodeSigningConfigCommand").f(void 0, void 0).ser(se_GetCodeSigningConfigCommand).de(de_GetCodeSigningConfigCommand).build() {
+};
+__name(_GetCodeSigningConfigCommand, "GetCodeSigningConfigCommand");
+var GetCodeSigningConfigCommand = _GetCodeSigningConfigCommand;
+
+// src/commands/GetEventSourceMappingCommand.ts
+
+
+
+
+var _GetEventSourceMappingCommand = class _GetEventSourceMappingCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetEventSourceMapping", {}).n("LambdaClient", "GetEventSourceMappingCommand").f(void 0, void 0).ser(se_GetEventSourceMappingCommand).de(de_GetEventSourceMappingCommand).build() {
+};
+__name(_GetEventSourceMappingCommand, "GetEventSourceMappingCommand");
+var GetEventSourceMappingCommand = _GetEventSourceMappingCommand;
+
+// src/commands/GetFunctionCodeSigningConfigCommand.ts
+
+
+
+
+var _GetFunctionCodeSigningConfigCommand = class _GetFunctionCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetFunctionCodeSigningConfig", {}).n("LambdaClient", "GetFunctionCodeSigningConfigCommand").f(void 0, void 0).ser(se_GetFunctionCodeSigningConfigCommand).de(de_GetFunctionCodeSigningConfigCommand).build() {
+};
+__name(_GetFunctionCodeSigningConfigCommand, "GetFunctionCodeSigningConfigCommand");
+var GetFunctionCodeSigningConfigCommand = _GetFunctionCodeSigningConfigCommand;
+
+// src/commands/GetFunctionCommand.ts
+
+
+
+
+var _GetFunctionCommand = class _GetFunctionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetFunction", {}).n("LambdaClient", "GetFunctionCommand").f(void 0, GetFunctionResponseFilterSensitiveLog).ser(se_GetFunctionCommand).de(de_GetFunctionCommand).build() {
+};
+__name(_GetFunctionCommand, "GetFunctionCommand");
+var GetFunctionCommand = _GetFunctionCommand;
+
+// src/commands/GetFunctionConcurrencyCommand.ts
+
+
+
+
+var _GetFunctionConcurrencyCommand = class _GetFunctionConcurrencyCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetFunctionConcurrency", {}).n("LambdaClient", "GetFunctionConcurrencyCommand").f(void 0, void 0).ser(se_GetFunctionConcurrencyCommand).de(de_GetFunctionConcurrencyCommand).build() {
+};
+__name(_GetFunctionConcurrencyCommand, "GetFunctionConcurrencyCommand");
+var GetFunctionConcurrencyCommand = _GetFunctionConcurrencyCommand;
+
+// src/commands/GetFunctionConfigurationCommand.ts
+
+
+
+
+var _GetFunctionConfigurationCommand = class _GetFunctionConfigurationCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetFunctionConfiguration", {}).n("LambdaClient", "GetFunctionConfigurationCommand").f(void 0, FunctionConfigurationFilterSensitiveLog).ser(se_GetFunctionConfigurationCommand).de(de_GetFunctionConfigurationCommand).build() {
+};
+__name(_GetFunctionConfigurationCommand, "GetFunctionConfigurationCommand");
+var GetFunctionConfigurationCommand = _GetFunctionConfigurationCommand;
+
+// src/commands/GetFunctionEventInvokeConfigCommand.ts
+
+
+
+
+var _GetFunctionEventInvokeConfigCommand = class _GetFunctionEventInvokeConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetFunctionEventInvokeConfig", {}).n("LambdaClient", "GetFunctionEventInvokeConfigCommand").f(void 0, void 0).ser(se_GetFunctionEventInvokeConfigCommand).de(de_GetFunctionEventInvokeConfigCommand).build() {
+};
+__name(_GetFunctionEventInvokeConfigCommand, "GetFunctionEventInvokeConfigCommand");
+var GetFunctionEventInvokeConfigCommand = _GetFunctionEventInvokeConfigCommand;
+
+// src/commands/GetFunctionUrlConfigCommand.ts
+
+
+
+
+var _GetFunctionUrlConfigCommand = class _GetFunctionUrlConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetFunctionUrlConfig", {}).n("LambdaClient", "GetFunctionUrlConfigCommand").f(void 0, void 0).ser(se_GetFunctionUrlConfigCommand).de(de_GetFunctionUrlConfigCommand).build() {
+};
+__name(_GetFunctionUrlConfigCommand, "GetFunctionUrlConfigCommand");
+var GetFunctionUrlConfigCommand = _GetFunctionUrlConfigCommand;
+
+// src/commands/GetLayerVersionByArnCommand.ts
+
+
+
+
+var _GetLayerVersionByArnCommand = class _GetLayerVersionByArnCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetLayerVersionByArn", {}).n("LambdaClient", "GetLayerVersionByArnCommand").f(void 0, void 0).ser(se_GetLayerVersionByArnCommand).de(de_GetLayerVersionByArnCommand).build() {
+};
+__name(_GetLayerVersionByArnCommand, "GetLayerVersionByArnCommand");
+var GetLayerVersionByArnCommand = _GetLayerVersionByArnCommand;
+
+// src/commands/GetLayerVersionCommand.ts
+
+
+
+
+var _GetLayerVersionCommand = class _GetLayerVersionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetLayerVersion", {}).n("LambdaClient", "GetLayerVersionCommand").f(void 0, void 0).ser(se_GetLayerVersionCommand).de(de_GetLayerVersionCommand).build() {
+};
+__name(_GetLayerVersionCommand, "GetLayerVersionCommand");
+var GetLayerVersionCommand = _GetLayerVersionCommand;
+
+// src/commands/GetLayerVersionPolicyCommand.ts
+
+
+
+
+var _GetLayerVersionPolicyCommand = class _GetLayerVersionPolicyCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetLayerVersionPolicy", {}).n("LambdaClient", "GetLayerVersionPolicyCommand").f(void 0, void 0).ser(se_GetLayerVersionPolicyCommand).de(de_GetLayerVersionPolicyCommand).build() {
+};
+__name(_GetLayerVersionPolicyCommand, "GetLayerVersionPolicyCommand");
+var GetLayerVersionPolicyCommand = _GetLayerVersionPolicyCommand;
+
+// src/commands/GetPolicyCommand.ts
+
+
+
+
+var _GetPolicyCommand = class _GetPolicyCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetPolicy", {}).n("LambdaClient", "GetPolicyCommand").f(void 0, void 0).ser(se_GetPolicyCommand).de(de_GetPolicyCommand).build() {
+};
+__name(_GetPolicyCommand, "GetPolicyCommand");
+var GetPolicyCommand = _GetPolicyCommand;
+
+// src/commands/GetProvisionedConcurrencyConfigCommand.ts
+
+
+
+
+var _GetProvisionedConcurrencyConfigCommand = class _GetProvisionedConcurrencyConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetProvisionedConcurrencyConfig", {}).n("LambdaClient", "GetProvisionedConcurrencyConfigCommand").f(void 0, void 0).ser(se_GetProvisionedConcurrencyConfigCommand).de(de_GetProvisionedConcurrencyConfigCommand).build() {
+};
+__name(_GetProvisionedConcurrencyConfigCommand, "GetProvisionedConcurrencyConfigCommand");
+var GetProvisionedConcurrencyConfigCommand = _GetProvisionedConcurrencyConfigCommand;
+
+// src/commands/GetRuntimeManagementConfigCommand.ts
+
+
+
+
+var _GetRuntimeManagementConfigCommand = class _GetRuntimeManagementConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "GetRuntimeManagementConfig", {}).n("LambdaClient", "GetRuntimeManagementConfigCommand").f(void 0, void 0).ser(se_GetRuntimeManagementConfigCommand).de(de_GetRuntimeManagementConfigCommand).build() {
+};
+__name(_GetRuntimeManagementConfigCommand, "GetRuntimeManagementConfigCommand");
+var GetRuntimeManagementConfigCommand = _GetRuntimeManagementConfigCommand;
+
+// src/commands/InvokeAsyncCommand.ts
+
+
+
+
+var _InvokeAsyncCommand = class _InvokeAsyncCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "InvokeAsync", {}).n("LambdaClient", "InvokeAsyncCommand").f(InvokeAsyncRequestFilterSensitiveLog, void 0).ser(se_InvokeAsyncCommand).de(de_InvokeAsyncCommand).build() {
+};
+__name(_InvokeAsyncCommand, "InvokeAsyncCommand");
+var InvokeAsyncCommand = _InvokeAsyncCommand;
+
+// src/commands/InvokeCommand.ts
+
+
+
+
+var _InvokeCommand = class _InvokeCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "Invoke", {}).n("LambdaClient", "InvokeCommand").f(InvocationRequestFilterSensitiveLog, InvocationResponseFilterSensitiveLog).ser(se_InvokeCommand).de(de_InvokeCommand).build() {
+};
+__name(_InvokeCommand, "InvokeCommand");
+var InvokeCommand = _InvokeCommand;
+
+// src/commands/InvokeWithResponseStreamCommand.ts
+
+
+
+
+var _InvokeWithResponseStreamCommand = class _InvokeWithResponseStreamCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "InvokeWithResponseStream", {
+  /**
+   * @internal
+   */
+  eventStream: {
+    output: true
+  }
+}).n("LambdaClient", "InvokeWithResponseStreamCommand").f(InvokeWithResponseStreamRequestFilterSensitiveLog, InvokeWithResponseStreamResponseFilterSensitiveLog).ser(se_InvokeWithResponseStreamCommand).de(de_InvokeWithResponseStreamCommand).build() {
+};
+__name(_InvokeWithResponseStreamCommand, "InvokeWithResponseStreamCommand");
+var InvokeWithResponseStreamCommand = _InvokeWithResponseStreamCommand;
+
+// src/commands/ListAliasesCommand.ts
+
+
+
+
+var _ListAliasesCommand = class _ListAliasesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListAliases", {}).n("LambdaClient", "ListAliasesCommand").f(void 0, void 0).ser(se_ListAliasesCommand).de(de_ListAliasesCommand).build() {
+};
+__name(_ListAliasesCommand, "ListAliasesCommand");
+var ListAliasesCommand = _ListAliasesCommand;
+
+// src/commands/ListCodeSigningConfigsCommand.ts
+
+
+
+
+var _ListCodeSigningConfigsCommand = class _ListCodeSigningConfigsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListCodeSigningConfigs", {}).n("LambdaClient", "ListCodeSigningConfigsCommand").f(void 0, void 0).ser(se_ListCodeSigningConfigsCommand).de(de_ListCodeSigningConfigsCommand).build() {
+};
+__name(_ListCodeSigningConfigsCommand, "ListCodeSigningConfigsCommand");
+var ListCodeSigningConfigsCommand = _ListCodeSigningConfigsCommand;
+
+// src/commands/ListEventSourceMappingsCommand.ts
+
+
+
+
+var _ListEventSourceMappingsCommand = class _ListEventSourceMappingsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListEventSourceMappings", {}).n("LambdaClient", "ListEventSourceMappingsCommand").f(void 0, void 0).ser(se_ListEventSourceMappingsCommand).de(de_ListEventSourceMappingsCommand).build() {
+};
+__name(_ListEventSourceMappingsCommand, "ListEventSourceMappingsCommand");
+var ListEventSourceMappingsCommand = _ListEventSourceMappingsCommand;
+
+// src/commands/ListFunctionEventInvokeConfigsCommand.ts
+
+
+
+
+var _ListFunctionEventInvokeConfigsCommand = class _ListFunctionEventInvokeConfigsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListFunctionEventInvokeConfigs", {}).n("LambdaClient", "ListFunctionEventInvokeConfigsCommand").f(void 0, void 0).ser(se_ListFunctionEventInvokeConfigsCommand).de(de_ListFunctionEventInvokeConfigsCommand).build() {
+};
+__name(_ListFunctionEventInvokeConfigsCommand, "ListFunctionEventInvokeConfigsCommand");
+var ListFunctionEventInvokeConfigsCommand = _ListFunctionEventInvokeConfigsCommand;
+
+// src/commands/ListFunctionsByCodeSigningConfigCommand.ts
+
+
+
+
+var _ListFunctionsByCodeSigningConfigCommand = class _ListFunctionsByCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListFunctionsByCodeSigningConfig", {}).n("LambdaClient", "ListFunctionsByCodeSigningConfigCommand").f(void 0, void 0).ser(se_ListFunctionsByCodeSigningConfigCommand).de(de_ListFunctionsByCodeSigningConfigCommand).build() {
+};
+__name(_ListFunctionsByCodeSigningConfigCommand, "ListFunctionsByCodeSigningConfigCommand");
+var ListFunctionsByCodeSigningConfigCommand = _ListFunctionsByCodeSigningConfigCommand;
+
+// src/commands/ListFunctionsCommand.ts
+
+
+
+
+var _ListFunctionsCommand = class _ListFunctionsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListFunctions", {}).n("LambdaClient", "ListFunctionsCommand").f(void 0, ListFunctionsResponseFilterSensitiveLog).ser(se_ListFunctionsCommand).de(de_ListFunctionsCommand).build() {
+};
+__name(_ListFunctionsCommand, "ListFunctionsCommand");
+var ListFunctionsCommand = _ListFunctionsCommand;
+
+// src/commands/ListFunctionUrlConfigsCommand.ts
+
+
+
+
+var _ListFunctionUrlConfigsCommand = class _ListFunctionUrlConfigsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListFunctionUrlConfigs", {}).n("LambdaClient", "ListFunctionUrlConfigsCommand").f(void 0, void 0).ser(se_ListFunctionUrlConfigsCommand).de(de_ListFunctionUrlConfigsCommand).build() {
+};
+__name(_ListFunctionUrlConfigsCommand, "ListFunctionUrlConfigsCommand");
+var ListFunctionUrlConfigsCommand = _ListFunctionUrlConfigsCommand;
+
+// src/commands/ListLayersCommand.ts
+
+
+
+
+var _ListLayersCommand = class _ListLayersCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListLayers", {}).n("LambdaClient", "ListLayersCommand").f(void 0, void 0).ser(se_ListLayersCommand).de(de_ListLayersCommand).build() {
+};
+__name(_ListLayersCommand, "ListLayersCommand");
+var ListLayersCommand = _ListLayersCommand;
+
+// src/commands/ListLayerVersionsCommand.ts
+
+
+
+
+var _ListLayerVersionsCommand = class _ListLayerVersionsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListLayerVersions", {}).n("LambdaClient", "ListLayerVersionsCommand").f(void 0, void 0).ser(se_ListLayerVersionsCommand).de(de_ListLayerVersionsCommand).build() {
+};
+__name(_ListLayerVersionsCommand, "ListLayerVersionsCommand");
+var ListLayerVersionsCommand = _ListLayerVersionsCommand;
+
+// src/commands/ListProvisionedConcurrencyConfigsCommand.ts
+
+
+
+
+var _ListProvisionedConcurrencyConfigsCommand = class _ListProvisionedConcurrencyConfigsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListProvisionedConcurrencyConfigs", {}).n("LambdaClient", "ListProvisionedConcurrencyConfigsCommand").f(void 0, void 0).ser(se_ListProvisionedConcurrencyConfigsCommand).de(de_ListProvisionedConcurrencyConfigsCommand).build() {
+};
+__name(_ListProvisionedConcurrencyConfigsCommand, "ListProvisionedConcurrencyConfigsCommand");
+var ListProvisionedConcurrencyConfigsCommand = _ListProvisionedConcurrencyConfigsCommand;
+
+// src/commands/ListTagsCommand.ts
+
+
+
+
+var _ListTagsCommand = class _ListTagsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListTags", {}).n("LambdaClient", "ListTagsCommand").f(void 0, void 0).ser(se_ListTagsCommand).de(de_ListTagsCommand).build() {
+};
+__name(_ListTagsCommand, "ListTagsCommand");
+var ListTagsCommand = _ListTagsCommand;
+
+// src/commands/ListVersionsByFunctionCommand.ts
+
+
+
+
+var _ListVersionsByFunctionCommand = class _ListVersionsByFunctionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "ListVersionsByFunction", {}).n("LambdaClient", "ListVersionsByFunctionCommand").f(void 0, ListVersionsByFunctionResponseFilterSensitiveLog).ser(se_ListVersionsByFunctionCommand).de(de_ListVersionsByFunctionCommand).build() {
+};
+__name(_ListVersionsByFunctionCommand, "ListVersionsByFunctionCommand");
+var ListVersionsByFunctionCommand = _ListVersionsByFunctionCommand;
+
+// src/commands/PublishLayerVersionCommand.ts
+
+
+
+
+var _PublishLayerVersionCommand = class _PublishLayerVersionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "PublishLayerVersion", {}).n("LambdaClient", "PublishLayerVersionCommand").f(PublishLayerVersionRequestFilterSensitiveLog, void 0).ser(se_PublishLayerVersionCommand).de(de_PublishLayerVersionCommand).build() {
+};
+__name(_PublishLayerVersionCommand, "PublishLayerVersionCommand");
+var PublishLayerVersionCommand = _PublishLayerVersionCommand;
+
+// src/commands/PublishVersionCommand.ts
+
+
+
+
+var _PublishVersionCommand = class _PublishVersionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "PublishVersion", {}).n("LambdaClient", "PublishVersionCommand").f(void 0, FunctionConfigurationFilterSensitiveLog).ser(se_PublishVersionCommand).de(de_PublishVersionCommand).build() {
+};
+__name(_PublishVersionCommand, "PublishVersionCommand");
+var PublishVersionCommand = _PublishVersionCommand;
+
+// src/commands/PutFunctionCodeSigningConfigCommand.ts
+
+
+
+
+var _PutFunctionCodeSigningConfigCommand = class _PutFunctionCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "PutFunctionCodeSigningConfig", {}).n("LambdaClient", "PutFunctionCodeSigningConfigCommand").f(void 0, void 0).ser(se_PutFunctionCodeSigningConfigCommand).de(de_PutFunctionCodeSigningConfigCommand).build() {
+};
+__name(_PutFunctionCodeSigningConfigCommand, "PutFunctionCodeSigningConfigCommand");
+var PutFunctionCodeSigningConfigCommand = _PutFunctionCodeSigningConfigCommand;
+
+// src/commands/PutFunctionConcurrencyCommand.ts
+
+
+
+
+var _PutFunctionConcurrencyCommand = class _PutFunctionConcurrencyCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "PutFunctionConcurrency", {}).n("LambdaClient", "PutFunctionConcurrencyCommand").f(void 0, void 0).ser(se_PutFunctionConcurrencyCommand).de(de_PutFunctionConcurrencyCommand).build() {
+};
+__name(_PutFunctionConcurrencyCommand, "PutFunctionConcurrencyCommand");
+var PutFunctionConcurrencyCommand = _PutFunctionConcurrencyCommand;
+
+// src/commands/PutFunctionEventInvokeConfigCommand.ts
+
+
+
+
+var _PutFunctionEventInvokeConfigCommand = class _PutFunctionEventInvokeConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "PutFunctionEventInvokeConfig", {}).n("LambdaClient", "PutFunctionEventInvokeConfigCommand").f(void 0, void 0).ser(se_PutFunctionEventInvokeConfigCommand).de(de_PutFunctionEventInvokeConfigCommand).build() {
+};
+__name(_PutFunctionEventInvokeConfigCommand, "PutFunctionEventInvokeConfigCommand");
+var PutFunctionEventInvokeConfigCommand = _PutFunctionEventInvokeConfigCommand;
+
+// src/commands/PutProvisionedConcurrencyConfigCommand.ts
+
+
+
+
+var _PutProvisionedConcurrencyConfigCommand = class _PutProvisionedConcurrencyConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "PutProvisionedConcurrencyConfig", {}).n("LambdaClient", "PutProvisionedConcurrencyConfigCommand").f(void 0, void 0).ser(se_PutProvisionedConcurrencyConfigCommand).de(de_PutProvisionedConcurrencyConfigCommand).build() {
+};
+__name(_PutProvisionedConcurrencyConfigCommand, "PutProvisionedConcurrencyConfigCommand");
+var PutProvisionedConcurrencyConfigCommand = _PutProvisionedConcurrencyConfigCommand;
+
+// src/commands/PutRuntimeManagementConfigCommand.ts
+
+
+
+
+var _PutRuntimeManagementConfigCommand = class _PutRuntimeManagementConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "PutRuntimeManagementConfig", {}).n("LambdaClient", "PutRuntimeManagementConfigCommand").f(void 0, void 0).ser(se_PutRuntimeManagementConfigCommand).de(de_PutRuntimeManagementConfigCommand).build() {
+};
+__name(_PutRuntimeManagementConfigCommand, "PutRuntimeManagementConfigCommand");
+var PutRuntimeManagementConfigCommand = _PutRuntimeManagementConfigCommand;
+
+// src/commands/RemoveLayerVersionPermissionCommand.ts
+
+
+
+
+var _RemoveLayerVersionPermissionCommand = class _RemoveLayerVersionPermissionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "RemoveLayerVersionPermission", {}).n("LambdaClient", "RemoveLayerVersionPermissionCommand").f(void 0, void 0).ser(se_RemoveLayerVersionPermissionCommand).de(de_RemoveLayerVersionPermissionCommand).build() {
+};
+__name(_RemoveLayerVersionPermissionCommand, "RemoveLayerVersionPermissionCommand");
+var RemoveLayerVersionPermissionCommand = _RemoveLayerVersionPermissionCommand;
+
+// src/commands/RemovePermissionCommand.ts
+
+
+
+
+var _RemovePermissionCommand = class _RemovePermissionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "RemovePermission", {}).n("LambdaClient", "RemovePermissionCommand").f(void 0, void 0).ser(se_RemovePermissionCommand).de(de_RemovePermissionCommand).build() {
+};
+__name(_RemovePermissionCommand, "RemovePermissionCommand");
+var RemovePermissionCommand = _RemovePermissionCommand;
+
+// src/commands/TagResourceCommand.ts
+
+
+
+
+var _TagResourceCommand = class _TagResourceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "TagResource", {}).n("LambdaClient", "TagResourceCommand").f(void 0, void 0).ser(se_TagResourceCommand).de(de_TagResourceCommand).build() {
+};
+__name(_TagResourceCommand, "TagResourceCommand");
+var TagResourceCommand = _TagResourceCommand;
+
+// src/commands/UntagResourceCommand.ts
+
+
+
+
+var _UntagResourceCommand = class _UntagResourceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UntagResource", {}).n("LambdaClient", "UntagResourceCommand").f(void 0, void 0).ser(se_UntagResourceCommand).de(de_UntagResourceCommand).build() {
+};
+__name(_UntagResourceCommand, "UntagResourceCommand");
+var UntagResourceCommand = _UntagResourceCommand;
+
+// src/commands/UpdateAliasCommand.ts
+
+
+
+
+var _UpdateAliasCommand = class _UpdateAliasCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UpdateAlias", {}).n("LambdaClient", "UpdateAliasCommand").f(void 0, void 0).ser(se_UpdateAliasCommand).de(de_UpdateAliasCommand).build() {
+};
+__name(_UpdateAliasCommand, "UpdateAliasCommand");
+var UpdateAliasCommand = _UpdateAliasCommand;
+
+// src/commands/UpdateCodeSigningConfigCommand.ts
+
+
+
+
+var _UpdateCodeSigningConfigCommand = class _UpdateCodeSigningConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UpdateCodeSigningConfig", {}).n("LambdaClient", "UpdateCodeSigningConfigCommand").f(void 0, void 0).ser(se_UpdateCodeSigningConfigCommand).de(de_UpdateCodeSigningConfigCommand).build() {
+};
+__name(_UpdateCodeSigningConfigCommand, "UpdateCodeSigningConfigCommand");
+var UpdateCodeSigningConfigCommand = _UpdateCodeSigningConfigCommand;
+
+// src/commands/UpdateEventSourceMappingCommand.ts
+
+
+
+
+var _UpdateEventSourceMappingCommand = class _UpdateEventSourceMappingCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UpdateEventSourceMapping", {}).n("LambdaClient", "UpdateEventSourceMappingCommand").f(void 0, void 0).ser(se_UpdateEventSourceMappingCommand).de(de_UpdateEventSourceMappingCommand).build() {
+};
+__name(_UpdateEventSourceMappingCommand, "UpdateEventSourceMappingCommand");
+var UpdateEventSourceMappingCommand = _UpdateEventSourceMappingCommand;
+
+// src/commands/UpdateFunctionCodeCommand.ts
+
+
+
+
+var _UpdateFunctionCodeCommand = class _UpdateFunctionCodeCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UpdateFunctionCode", {}).n("LambdaClient", "UpdateFunctionCodeCommand").f(UpdateFunctionCodeRequestFilterSensitiveLog, FunctionConfigurationFilterSensitiveLog).ser(se_UpdateFunctionCodeCommand).de(de_UpdateFunctionCodeCommand).build() {
+};
+__name(_UpdateFunctionCodeCommand, "UpdateFunctionCodeCommand");
+var UpdateFunctionCodeCommand = _UpdateFunctionCodeCommand;
+
+// src/commands/UpdateFunctionConfigurationCommand.ts
+
+
+
+
+var _UpdateFunctionConfigurationCommand = class _UpdateFunctionConfigurationCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UpdateFunctionConfiguration", {}).n("LambdaClient", "UpdateFunctionConfigurationCommand").f(UpdateFunctionConfigurationRequestFilterSensitiveLog, FunctionConfigurationFilterSensitiveLog).ser(se_UpdateFunctionConfigurationCommand).de(de_UpdateFunctionConfigurationCommand).build() {
+};
+__name(_UpdateFunctionConfigurationCommand, "UpdateFunctionConfigurationCommand");
+var UpdateFunctionConfigurationCommand = _UpdateFunctionConfigurationCommand;
+
+// src/commands/UpdateFunctionEventInvokeConfigCommand.ts
+
+
+
+
+var _UpdateFunctionEventInvokeConfigCommand = class _UpdateFunctionEventInvokeConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UpdateFunctionEventInvokeConfig", {}).n("LambdaClient", "UpdateFunctionEventInvokeConfigCommand").f(void 0, void 0).ser(se_UpdateFunctionEventInvokeConfigCommand).de(de_UpdateFunctionEventInvokeConfigCommand).build() {
+};
+__name(_UpdateFunctionEventInvokeConfigCommand, "UpdateFunctionEventInvokeConfigCommand");
+var UpdateFunctionEventInvokeConfigCommand = _UpdateFunctionEventInvokeConfigCommand;
+
+// src/commands/UpdateFunctionUrlConfigCommand.ts
+
+
+
+
+var _UpdateFunctionUrlConfigCommand = class _UpdateFunctionUrlConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("AWSGirApiService", "UpdateFunctionUrlConfig", {}).n("LambdaClient", "UpdateFunctionUrlConfigCommand").f(void 0, void 0).ser(se_UpdateFunctionUrlConfigCommand).de(de_UpdateFunctionUrlConfigCommand).build() {
+};
+__name(_UpdateFunctionUrlConfigCommand, "UpdateFunctionUrlConfigCommand");
+var UpdateFunctionUrlConfigCommand = _UpdateFunctionUrlConfigCommand;
+
+// src/Lambda.ts
+var commands = {
+  AddLayerVersionPermissionCommand,
+  AddPermissionCommand,
+  CreateAliasCommand,
+  CreateCodeSigningConfigCommand,
+  CreateEventSourceMappingCommand,
+  CreateFunctionCommand,
+  CreateFunctionUrlConfigCommand,
+  DeleteAliasCommand,
+  DeleteCodeSigningConfigCommand,
+  DeleteEventSourceMappingCommand,
+  DeleteFunctionCommand,
+  DeleteFunctionCodeSigningConfigCommand,
+  DeleteFunctionConcurrencyCommand,
+  DeleteFunctionEventInvokeConfigCommand,
+  DeleteFunctionUrlConfigCommand,
+  DeleteLayerVersionCommand,
+  DeleteProvisionedConcurrencyConfigCommand,
+  GetAccountSettingsCommand,
+  GetAliasCommand,
+  GetCodeSigningConfigCommand,
+  GetEventSourceMappingCommand,
+  GetFunctionCommand,
+  GetFunctionCodeSigningConfigCommand,
+  GetFunctionConcurrencyCommand,
+  GetFunctionConfigurationCommand,
+  GetFunctionEventInvokeConfigCommand,
+  GetFunctionUrlConfigCommand,
+  GetLayerVersionCommand,
+  GetLayerVersionByArnCommand,
+  GetLayerVersionPolicyCommand,
+  GetPolicyCommand,
+  GetProvisionedConcurrencyConfigCommand,
+  GetRuntimeManagementConfigCommand,
+  InvokeCommand,
+  InvokeAsyncCommand,
+  InvokeWithResponseStreamCommand,
+  ListAliasesCommand,
+  ListCodeSigningConfigsCommand,
+  ListEventSourceMappingsCommand,
+  ListFunctionEventInvokeConfigsCommand,
+  ListFunctionsCommand,
+  ListFunctionsByCodeSigningConfigCommand,
+  ListFunctionUrlConfigsCommand,
+  ListLayersCommand,
+  ListLayerVersionsCommand,
+  ListProvisionedConcurrencyConfigsCommand,
+  ListTagsCommand,
+  ListVersionsByFunctionCommand,
+  PublishLayerVersionCommand,
+  PublishVersionCommand,
+  PutFunctionCodeSigningConfigCommand,
+  PutFunctionConcurrencyCommand,
+  PutFunctionEventInvokeConfigCommand,
+  PutProvisionedConcurrencyConfigCommand,
+  PutRuntimeManagementConfigCommand,
+  RemoveLayerVersionPermissionCommand,
+  RemovePermissionCommand,
+  TagResourceCommand,
+  UntagResourceCommand,
+  UpdateAliasCommand,
+  UpdateCodeSigningConfigCommand,
+  UpdateEventSourceMappingCommand,
+  UpdateFunctionCodeCommand,
+  UpdateFunctionConfigurationCommand,
+  UpdateFunctionEventInvokeConfigCommand,
+  UpdateFunctionUrlConfigCommand
+};
+var _Lambda = class _Lambda extends LambdaClient {
+};
+__name(_Lambda, "Lambda");
+var Lambda = _Lambda;
+(0, import_smithy_client.createAggregatedClient)(commands, Lambda);
+
+// src/pagination/ListAliasesPaginator.ts
+
+var paginateListAliases = (0, import_core.createPaginator)(LambdaClient, ListAliasesCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListCodeSigningConfigsPaginator.ts
+
+var paginateListCodeSigningConfigs = (0, import_core.createPaginator)(LambdaClient, ListCodeSigningConfigsCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListEventSourceMappingsPaginator.ts
+
+var paginateListEventSourceMappings = (0, import_core.createPaginator)(LambdaClient, ListEventSourceMappingsCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListFunctionEventInvokeConfigsPaginator.ts
+
+var paginateListFunctionEventInvokeConfigs = (0, import_core.createPaginator)(LambdaClient, ListFunctionEventInvokeConfigsCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListFunctionUrlConfigsPaginator.ts
+
+var paginateListFunctionUrlConfigs = (0, import_core.createPaginator)(LambdaClient, ListFunctionUrlConfigsCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListFunctionsByCodeSigningConfigPaginator.ts
+
+var paginateListFunctionsByCodeSigningConfig = (0, import_core.createPaginator)(LambdaClient, ListFunctionsByCodeSigningConfigCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListFunctionsPaginator.ts
+
+var paginateListFunctions = (0, import_core.createPaginator)(LambdaClient, ListFunctionsCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListLayerVersionsPaginator.ts
+
+var paginateListLayerVersions = (0, import_core.createPaginator)(LambdaClient, ListLayerVersionsCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListLayersPaginator.ts
+
+var paginateListLayers = (0, import_core.createPaginator)(LambdaClient, ListLayersCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListProvisionedConcurrencyConfigsPaginator.ts
+
+var paginateListProvisionedConcurrencyConfigs = (0, import_core.createPaginator)(LambdaClient, ListProvisionedConcurrencyConfigsCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/pagination/ListVersionsByFunctionPaginator.ts
+
+var paginateListVersionsByFunction = (0, import_core.createPaginator)(LambdaClient, ListVersionsByFunctionCommand, "Marker", "NextMarker", "MaxItems");
+
+// src/waiters/waitForFunctionActive.ts
+var import_util_waiter = __nccwpck_require__(8011);
+var checkState = /* @__PURE__ */ __name(async (client, input) => {
+  let reason;
+  try {
+    const result = await client.send(new GetFunctionConfigurationCommand(input));
+    reason = result;
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.State;
+      }, "returnComparator");
+      if (returnComparator() === "Active") {
+        return { state: import_util_waiter.WaiterState.SUCCESS, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.State;
+      }, "returnComparator");
+      if (returnComparator() === "Failed") {
+        return { state: import_util_waiter.WaiterState.FAILURE, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.State;
+      }, "returnComparator");
+      if (returnComparator() === "Pending") {
+        return { state: import_util_waiter.WaiterState.RETRY, reason };
+      }
+    } catch (e) {
+    }
+  } catch (exception) {
+    reason = exception;
+  }
+  return { state: import_util_waiter.WaiterState.RETRY, reason };
+}, "checkState");
+var waitForFunctionActive = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 5, maxDelay: 120 };
+  return (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState);
+}, "waitForFunctionActive");
+var waitUntilFunctionActive = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 5, maxDelay: 120 };
+  const result = await (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState);
+  return (0, import_util_waiter.checkExceptions)(result);
+}, "waitUntilFunctionActive");
+
+// src/waiters/waitForFunctionActiveV2.ts
+
+var checkState2 = /* @__PURE__ */ __name(async (client, input) => {
+  let reason;
+  try {
+    const result = await client.send(new GetFunctionCommand(input));
+    reason = result;
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.Configuration.State;
+      }, "returnComparator");
+      if (returnComparator() === "Active") {
+        return { state: import_util_waiter.WaiterState.SUCCESS, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.Configuration.State;
+      }, "returnComparator");
+      if (returnComparator() === "Failed") {
+        return { state: import_util_waiter.WaiterState.FAILURE, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.Configuration.State;
+      }, "returnComparator");
+      if (returnComparator() === "Pending") {
+        return { state: import_util_waiter.WaiterState.RETRY, reason };
+      }
+    } catch (e) {
+    }
+  } catch (exception) {
+    reason = exception;
+  }
+  return { state: import_util_waiter.WaiterState.RETRY, reason };
+}, "checkState");
+var waitForFunctionActiveV2 = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 1, maxDelay: 120 };
+  return (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState2);
+}, "waitForFunctionActiveV2");
+var waitUntilFunctionActiveV2 = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 1, maxDelay: 120 };
+  const result = await (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState2);
+  return (0, import_util_waiter.checkExceptions)(result);
+}, "waitUntilFunctionActiveV2");
+
+// src/waiters/waitForFunctionExists.ts
+
+var checkState3 = /* @__PURE__ */ __name(async (client, input) => {
+  let reason;
+  try {
+    const result = await client.send(new GetFunctionCommand(input));
+    reason = result;
+    return { state: import_util_waiter.WaiterState.SUCCESS, reason };
+  } catch (exception) {
+    reason = exception;
+    if (exception.name && exception.name == "ResourceNotFoundException") {
+      return { state: import_util_waiter.WaiterState.RETRY, reason };
+    }
+  }
+  return { state: import_util_waiter.WaiterState.RETRY, reason };
+}, "checkState");
+var waitForFunctionExists = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 1, maxDelay: 120 };
+  return (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState3);
+}, "waitForFunctionExists");
+var waitUntilFunctionExists = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 1, maxDelay: 120 };
+  const result = await (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState3);
+  return (0, import_util_waiter.checkExceptions)(result);
+}, "waitUntilFunctionExists");
+
+// src/waiters/waitForFunctionUpdated.ts
+
+var checkState4 = /* @__PURE__ */ __name(async (client, input) => {
+  let reason;
+  try {
+    const result = await client.send(new GetFunctionConfigurationCommand(input));
+    reason = result;
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.LastUpdateStatus;
+      }, "returnComparator");
+      if (returnComparator() === "Successful") {
+        return { state: import_util_waiter.WaiterState.SUCCESS, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.LastUpdateStatus;
+      }, "returnComparator");
+      if (returnComparator() === "Failed") {
+        return { state: import_util_waiter.WaiterState.FAILURE, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.LastUpdateStatus;
+      }, "returnComparator");
+      if (returnComparator() === "InProgress") {
+        return { state: import_util_waiter.WaiterState.RETRY, reason };
+      }
+    } catch (e) {
+    }
+  } catch (exception) {
+    reason = exception;
+  }
+  return { state: import_util_waiter.WaiterState.RETRY, reason };
+}, "checkState");
+var waitForFunctionUpdated = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 5, maxDelay: 120 };
+  return (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState4);
+}, "waitForFunctionUpdated");
+var waitUntilFunctionUpdated = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 5, maxDelay: 120 };
+  const result = await (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState4);
+  return (0, import_util_waiter.checkExceptions)(result);
+}, "waitUntilFunctionUpdated");
+
+// src/waiters/waitForFunctionUpdatedV2.ts
+
+var checkState5 = /* @__PURE__ */ __name(async (client, input) => {
+  let reason;
+  try {
+    const result = await client.send(new GetFunctionCommand(input));
+    reason = result;
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.Configuration.LastUpdateStatus;
+      }, "returnComparator");
+      if (returnComparator() === "Successful") {
+        return { state: import_util_waiter.WaiterState.SUCCESS, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.Configuration.LastUpdateStatus;
+      }, "returnComparator");
+      if (returnComparator() === "Failed") {
+        return { state: import_util_waiter.WaiterState.FAILURE, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.Configuration.LastUpdateStatus;
+      }, "returnComparator");
+      if (returnComparator() === "InProgress") {
+        return { state: import_util_waiter.WaiterState.RETRY, reason };
+      }
+    } catch (e) {
+    }
+  } catch (exception) {
+    reason = exception;
+  }
+  return { state: import_util_waiter.WaiterState.RETRY, reason };
+}, "checkState");
+var waitForFunctionUpdatedV2 = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 1, maxDelay: 120 };
+  return (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState5);
+}, "waitForFunctionUpdatedV2");
+var waitUntilFunctionUpdatedV2 = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 1, maxDelay: 120 };
+  const result = await (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState5);
+  return (0, import_util_waiter.checkExceptions)(result);
+}, "waitUntilFunctionUpdatedV2");
+
+// src/waiters/waitForPublishedVersionActive.ts
+
+var checkState6 = /* @__PURE__ */ __name(async (client, input) => {
+  let reason;
+  try {
+    const result = await client.send(new GetFunctionConfigurationCommand(input));
+    reason = result;
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.State;
+      }, "returnComparator");
+      if (returnComparator() === "Active") {
+        return { state: import_util_waiter.WaiterState.SUCCESS, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.State;
+      }, "returnComparator");
+      if (returnComparator() === "Failed") {
+        return { state: import_util_waiter.WaiterState.FAILURE, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.State;
+      }, "returnComparator");
+      if (returnComparator() === "Pending") {
+        return { state: import_util_waiter.WaiterState.RETRY, reason };
+      }
+    } catch (e) {
+    }
+  } catch (exception) {
+    reason = exception;
+  }
+  return { state: import_util_waiter.WaiterState.RETRY, reason };
+}, "checkState");
+var waitForPublishedVersionActive = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 5, maxDelay: 120 };
+  return (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState6);
+}, "waitForPublishedVersionActive");
+var waitUntilPublishedVersionActive = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 5, maxDelay: 120 };
+  const result = await (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState6);
+  return (0, import_util_waiter.checkExceptions)(result);
+}, "waitUntilPublishedVersionActive");
+// Annotate the CommonJS export names for ESM import in node:
+
+0 && (0);
+
+
+
+/***/ }),
+
+/***/ 3612:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRuntimeConfig = void 0;
+const tslib_1 = __nccwpck_require__(4351);
+const package_json_1 = tslib_1.__importDefault(__nccwpck_require__(2805));
+const core_1 = __nccwpck_require__(9963);
+const credential_provider_node_1 = __nccwpck_require__(5531);
+const util_user_agent_node_1 = __nccwpck_require__(8095);
+const config_resolver_1 = __nccwpck_require__(3098);
+const eventstream_serde_node_1 = __nccwpck_require__(7682);
+const hash_node_1 = __nccwpck_require__(3081);
+const middleware_retry_1 = __nccwpck_require__(6039);
+const node_config_provider_1 = __nccwpck_require__(3461);
+const node_http_handler_1 = __nccwpck_require__(258);
+const util_body_length_node_1 = __nccwpck_require__(8075);
+const util_retry_1 = __nccwpck_require__(4902);
+const runtimeConfig_shared_1 = __nccwpck_require__(1438);
+const smithy_client_1 = __nccwpck_require__(3570);
+const util_defaults_mode_node_1 = __nccwpck_require__(2429);
+const smithy_client_2 = __nccwpck_require__(3570);
+const getRuntimeConfig = (config) => {
+    (0, smithy_client_2.emitWarningIfUnsupportedVersion)(process.version);
+    const defaultsMode = (0, util_defaults_mode_node_1.resolveDefaultsModeConfig)(config);
+    const defaultConfigProvider = () => defaultsMode().then(smithy_client_1.loadConfigsForDefaultMode);
+    const clientSharedValues = (0, runtimeConfig_shared_1.getRuntimeConfig)(config);
+    (0, core_1.emitWarningIfUnsupportedVersion)(process.version);
+    return {
+        ...clientSharedValues,
+        ...config,
+        runtime: "node",
+        defaultsMode,
+        bodyLengthChecker: config?.bodyLengthChecker ?? util_body_length_node_1.calculateBodyLength,
+        credentialDefaultProvider: config?.credentialDefaultProvider ?? credential_provider_node_1.defaultProvider,
+        defaultUserAgentProvider: config?.defaultUserAgentProvider ??
+            (0, util_user_agent_node_1.defaultUserAgent)({ serviceId: clientSharedValues.serviceId, clientVersion: package_json_1.default.version }),
+        eventStreamSerdeProvider: config?.eventStreamSerdeProvider ?? eventstream_serde_node_1.eventStreamSerdeProvider,
+        maxAttempts: config?.maxAttempts ?? (0, node_config_provider_1.loadConfig)(middleware_retry_1.NODE_MAX_ATTEMPT_CONFIG_OPTIONS),
+        region: config?.region ?? (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_REGION_CONFIG_OPTIONS, config_resolver_1.NODE_REGION_CONFIG_FILE_OPTIONS),
+        requestHandler: node_http_handler_1.NodeHttpHandler.create(config?.requestHandler ?? defaultConfigProvider),
+        retryMode: config?.retryMode ??
+            (0, node_config_provider_1.loadConfig)({
+                ...middleware_retry_1.NODE_RETRY_MODE_CONFIG_OPTIONS,
+                default: async () => (await defaultConfigProvider()).retryMode || util_retry_1.DEFAULT_RETRY_MODE,
+            }),
+        sha256: config?.sha256 ?? hash_node_1.Hash.bind(null, "sha256"),
+        streamCollector: config?.streamCollector ?? node_http_handler_1.streamCollector,
+        useDualstackEndpoint: config?.useDualstackEndpoint ?? (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS),
+        useFipsEndpoint: config?.useFipsEndpoint ?? (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS),
+    };
+};
+exports.getRuntimeConfig = getRuntimeConfig;
+
+
+/***/ }),
+
+/***/ 1438:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRuntimeConfig = void 0;
+const core_1 = __nccwpck_require__(9963);
+const smithy_client_1 = __nccwpck_require__(3570);
+const url_parser_1 = __nccwpck_require__(4681);
+const util_base64_1 = __nccwpck_require__(5600);
+const util_utf8_1 = __nccwpck_require__(1895);
+const httpAuthSchemeProvider_1 = __nccwpck_require__(5506);
+const endpointResolver_1 = __nccwpck_require__(5060);
+const getRuntimeConfig = (config) => {
+    return {
+        apiVersion: "2015-03-31",
+        base64Decoder: config?.base64Decoder ?? util_base64_1.fromBase64,
+        base64Encoder: config?.base64Encoder ?? util_base64_1.toBase64,
+        disableHostPrefix: config?.disableHostPrefix ?? false,
+        endpointProvider: config?.endpointProvider ?? endpointResolver_1.defaultEndpointResolver,
+        extensions: config?.extensions ?? [],
+        httpAuthSchemeProvider: config?.httpAuthSchemeProvider ?? httpAuthSchemeProvider_1.defaultLambdaHttpAuthSchemeProvider,
+        httpAuthSchemes: config?.httpAuthSchemes ?? [
+            {
+                schemeId: "aws.auth#sigv4",
+                identityProvider: (ipc) => ipc.getIdentityProvider("aws.auth#sigv4"),
+                signer: new core_1.AwsSdkSigV4Signer(),
+            },
+        ],
+        logger: config?.logger ?? new smithy_client_1.NoOpLogger(),
+        serviceId: config?.serviceId ?? "Lambda",
+        urlParser: config?.urlParser ?? url_parser_1.parseUrl,
+        utf8Decoder: config?.utf8Decoder ?? util_utf8_1.fromUtf8,
+        utf8Encoder: config?.utf8Encoder ?? util_utf8_1.toUtf8,
+    };
+};
+exports.getRuntimeConfig = getRuntimeConfig;
+
+
+/***/ }),
+
 /***/ 7307:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
@@ -9611,6 +16450,97 @@ var defaultUserAgent = /* @__PURE__ */ __name(({ serviceId, clientVersion }) => 
 
 /***/ }),
 
+/***/ 8172:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.toUtf8 = exports.fromUtf8 = void 0;
+const pureJs_1 = __nccwpck_require__(1590);
+const whatwgEncodingApi_1 = __nccwpck_require__(9215);
+const fromUtf8 = (input) => typeof TextEncoder === "function" ? (0, whatwgEncodingApi_1.fromUtf8)(input) : (0, pureJs_1.fromUtf8)(input);
+exports.fromUtf8 = fromUtf8;
+const toUtf8 = (input) => typeof TextDecoder === "function" ? (0, whatwgEncodingApi_1.toUtf8)(input) : (0, pureJs_1.toUtf8)(input);
+exports.toUtf8 = toUtf8;
+
+
+/***/ }),
+
+/***/ 1590:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.toUtf8 = exports.fromUtf8 = void 0;
+const fromUtf8 = (input) => {
+    const bytes = [];
+    for (let i = 0, len = input.length; i < len; i++) {
+        const value = input.charCodeAt(i);
+        if (value < 0x80) {
+            bytes.push(value);
+        }
+        else if (value < 0x800) {
+            bytes.push((value >> 6) | 0b11000000, (value & 0b111111) | 0b10000000);
+        }
+        else if (i + 1 < input.length && (value & 0xfc00) === 0xd800 && (input.charCodeAt(i + 1) & 0xfc00) === 0xdc00) {
+            const surrogatePair = 0x10000 + ((value & 0b1111111111) << 10) + (input.charCodeAt(++i) & 0b1111111111);
+            bytes.push((surrogatePair >> 18) | 0b11110000, ((surrogatePair >> 12) & 0b111111) | 0b10000000, ((surrogatePair >> 6) & 0b111111) | 0b10000000, (surrogatePair & 0b111111) | 0b10000000);
+        }
+        else {
+            bytes.push((value >> 12) | 0b11100000, ((value >> 6) & 0b111111) | 0b10000000, (value & 0b111111) | 0b10000000);
+        }
+    }
+    return Uint8Array.from(bytes);
+};
+exports.fromUtf8 = fromUtf8;
+const toUtf8 = (input) => {
+    let decoded = "";
+    for (let i = 0, len = input.length; i < len; i++) {
+        const byte = input[i];
+        if (byte < 0x80) {
+            decoded += String.fromCharCode(byte);
+        }
+        else if (0b11000000 <= byte && byte < 0b11100000) {
+            const nextByte = input[++i];
+            decoded += String.fromCharCode(((byte & 0b11111) << 6) | (nextByte & 0b111111));
+        }
+        else if (0b11110000 <= byte && byte < 0b101101101) {
+            const surrogatePair = [byte, input[++i], input[++i], input[++i]];
+            const encoded = "%" + surrogatePair.map((byteValue) => byteValue.toString(16)).join("%");
+            decoded += decodeURIComponent(encoded);
+        }
+        else {
+            decoded += String.fromCharCode(((byte & 0b1111) << 12) | ((input[++i] & 0b111111) << 6) | (input[++i] & 0b111111));
+        }
+    }
+    return decoded;
+};
+exports.toUtf8 = toUtf8;
+
+
+/***/ }),
+
+/***/ 9215:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.toUtf8 = exports.fromUtf8 = void 0;
+function fromUtf8(input) {
+    return new TextEncoder().encode(input);
+}
+exports.fromUtf8 = fromUtf8;
+function toUtf8(input) {
+    return new TextDecoder("utf-8").decode(input);
+}
+exports.toUtf8 = toUtf8;
+
+
+/***/ }),
+
 /***/ 3098:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
@@ -10745,6 +17675,793 @@ var getCredentialsFromProfile = /* @__PURE__ */ __name(async (profile, options, 
   }
   return fromImdsCredentials(credentialsResponse);
 }, "getCredentialsFromProfile");
+// Annotate the CommonJS export names for ESM import in node:
+
+0 && (0);
+
+
+
+/***/ }),
+
+/***/ 6459:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  EventStreamCodec: () => EventStreamCodec,
+  HeaderMarshaller: () => HeaderMarshaller,
+  Int64: () => Int64,
+  MessageDecoderStream: () => MessageDecoderStream,
+  MessageEncoderStream: () => MessageEncoderStream,
+  SmithyMessageDecoderStream: () => SmithyMessageDecoderStream,
+  SmithyMessageEncoderStream: () => SmithyMessageEncoderStream
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/EventStreamCodec.ts
+var import_crc322 = __nccwpck_require__(7327);
+
+// src/HeaderMarshaller.ts
+
+
+// src/Int64.ts
+var import_util_hex_encoding = __nccwpck_require__(5364);
+var _Int64 = class _Int64 {
+  constructor(bytes) {
+    this.bytes = bytes;
+    if (bytes.byteLength !== 8) {
+      throw new Error("Int64 buffers must be exactly 8 bytes");
+    }
+  }
+  static fromNumber(number) {
+    if (number > 9223372036854776e3 || number < -9223372036854776e3) {
+      throw new Error(`${number} is too large (or, if negative, too small) to represent as an Int64`);
+    }
+    const bytes = new Uint8Array(8);
+    for (let i = 7, remaining = Math.abs(Math.round(number)); i > -1 && remaining > 0; i--, remaining /= 256) {
+      bytes[i] = remaining;
+    }
+    if (number < 0) {
+      negate(bytes);
+    }
+    return new _Int64(bytes);
+  }
+  /**
+   * Called implicitly by infix arithmetic operators.
+   */
+  valueOf() {
+    const bytes = this.bytes.slice(0);
+    const negative = bytes[0] & 128;
+    if (negative) {
+      negate(bytes);
+    }
+    return parseInt((0, import_util_hex_encoding.toHex)(bytes), 16) * (negative ? -1 : 1);
+  }
+  toString() {
+    return String(this.valueOf());
+  }
+};
+__name(_Int64, "Int64");
+var Int64 = _Int64;
+function negate(bytes) {
+  for (let i = 0; i < 8; i++) {
+    bytes[i] ^= 255;
+  }
+  for (let i = 7; i > -1; i--) {
+    bytes[i]++;
+    if (bytes[i] !== 0)
+      break;
+  }
+}
+__name(negate, "negate");
+
+// src/HeaderMarshaller.ts
+var _HeaderMarshaller = class _HeaderMarshaller {
+  constructor(toUtf8, fromUtf8) {
+    this.toUtf8 = toUtf8;
+    this.fromUtf8 = fromUtf8;
+  }
+  format(headers) {
+    const chunks = [];
+    for (const headerName of Object.keys(headers)) {
+      const bytes = this.fromUtf8(headerName);
+      chunks.push(Uint8Array.from([bytes.byteLength]), bytes, this.formatHeaderValue(headers[headerName]));
+    }
+    const out = new Uint8Array(chunks.reduce((carry, bytes) => carry + bytes.byteLength, 0));
+    let position = 0;
+    for (const chunk of chunks) {
+      out.set(chunk, position);
+      position += chunk.byteLength;
+    }
+    return out;
+  }
+  formatHeaderValue(header) {
+    switch (header.type) {
+      case "boolean":
+        return Uint8Array.from([header.value ? 0 /* boolTrue */ : 1 /* boolFalse */]);
+      case "byte":
+        return Uint8Array.from([2 /* byte */, header.value]);
+      case "short":
+        const shortView = new DataView(new ArrayBuffer(3));
+        shortView.setUint8(0, 3 /* short */);
+        shortView.setInt16(1, header.value, false);
+        return new Uint8Array(shortView.buffer);
+      case "integer":
+        const intView = new DataView(new ArrayBuffer(5));
+        intView.setUint8(0, 4 /* integer */);
+        intView.setInt32(1, header.value, false);
+        return new Uint8Array(intView.buffer);
+      case "long":
+        const longBytes = new Uint8Array(9);
+        longBytes[0] = 5 /* long */;
+        longBytes.set(header.value.bytes, 1);
+        return longBytes;
+      case "binary":
+        const binView = new DataView(new ArrayBuffer(3 + header.value.byteLength));
+        binView.setUint8(0, 6 /* byteArray */);
+        binView.setUint16(1, header.value.byteLength, false);
+        const binBytes = new Uint8Array(binView.buffer);
+        binBytes.set(header.value, 3);
+        return binBytes;
+      case "string":
+        const utf8Bytes = this.fromUtf8(header.value);
+        const strView = new DataView(new ArrayBuffer(3 + utf8Bytes.byteLength));
+        strView.setUint8(0, 7 /* string */);
+        strView.setUint16(1, utf8Bytes.byteLength, false);
+        const strBytes = new Uint8Array(strView.buffer);
+        strBytes.set(utf8Bytes, 3);
+        return strBytes;
+      case "timestamp":
+        const tsBytes = new Uint8Array(9);
+        tsBytes[0] = 8 /* timestamp */;
+        tsBytes.set(Int64.fromNumber(header.value.valueOf()).bytes, 1);
+        return tsBytes;
+      case "uuid":
+        if (!UUID_PATTERN.test(header.value)) {
+          throw new Error(`Invalid UUID received: ${header.value}`);
+        }
+        const uuidBytes = new Uint8Array(17);
+        uuidBytes[0] = 9 /* uuid */;
+        uuidBytes.set((0, import_util_hex_encoding.fromHex)(header.value.replace(/\-/g, "")), 1);
+        return uuidBytes;
+    }
+  }
+  parse(headers) {
+    const out = {};
+    let position = 0;
+    while (position < headers.byteLength) {
+      const nameLength = headers.getUint8(position++);
+      const name = this.toUtf8(new Uint8Array(headers.buffer, headers.byteOffset + position, nameLength));
+      position += nameLength;
+      switch (headers.getUint8(position++)) {
+        case 0 /* boolTrue */:
+          out[name] = {
+            type: BOOLEAN_TAG,
+            value: true
+          };
+          break;
+        case 1 /* boolFalse */:
+          out[name] = {
+            type: BOOLEAN_TAG,
+            value: false
+          };
+          break;
+        case 2 /* byte */:
+          out[name] = {
+            type: BYTE_TAG,
+            value: headers.getInt8(position++)
+          };
+          break;
+        case 3 /* short */:
+          out[name] = {
+            type: SHORT_TAG,
+            value: headers.getInt16(position, false)
+          };
+          position += 2;
+          break;
+        case 4 /* integer */:
+          out[name] = {
+            type: INT_TAG,
+            value: headers.getInt32(position, false)
+          };
+          position += 4;
+          break;
+        case 5 /* long */:
+          out[name] = {
+            type: LONG_TAG,
+            value: new Int64(new Uint8Array(headers.buffer, headers.byteOffset + position, 8))
+          };
+          position += 8;
+          break;
+        case 6 /* byteArray */:
+          const binaryLength = headers.getUint16(position, false);
+          position += 2;
+          out[name] = {
+            type: BINARY_TAG,
+            value: new Uint8Array(headers.buffer, headers.byteOffset + position, binaryLength)
+          };
+          position += binaryLength;
+          break;
+        case 7 /* string */:
+          const stringLength = headers.getUint16(position, false);
+          position += 2;
+          out[name] = {
+            type: STRING_TAG,
+            value: this.toUtf8(new Uint8Array(headers.buffer, headers.byteOffset + position, stringLength))
+          };
+          position += stringLength;
+          break;
+        case 8 /* timestamp */:
+          out[name] = {
+            type: TIMESTAMP_TAG,
+            value: new Date(new Int64(new Uint8Array(headers.buffer, headers.byteOffset + position, 8)).valueOf())
+          };
+          position += 8;
+          break;
+        case 9 /* uuid */:
+          const uuidBytes = new Uint8Array(headers.buffer, headers.byteOffset + position, 16);
+          position += 16;
+          out[name] = {
+            type: UUID_TAG,
+            value: `${(0, import_util_hex_encoding.toHex)(uuidBytes.subarray(0, 4))}-${(0, import_util_hex_encoding.toHex)(uuidBytes.subarray(4, 6))}-${(0, import_util_hex_encoding.toHex)(
+              uuidBytes.subarray(6, 8)
+            )}-${(0, import_util_hex_encoding.toHex)(uuidBytes.subarray(8, 10))}-${(0, import_util_hex_encoding.toHex)(uuidBytes.subarray(10))}`
+          };
+          break;
+        default:
+          throw new Error(`Unrecognized header type tag`);
+      }
+    }
+    return out;
+  }
+};
+__name(_HeaderMarshaller, "HeaderMarshaller");
+var HeaderMarshaller = _HeaderMarshaller;
+var BOOLEAN_TAG = "boolean";
+var BYTE_TAG = "byte";
+var SHORT_TAG = "short";
+var INT_TAG = "integer";
+var LONG_TAG = "long";
+var BINARY_TAG = "binary";
+var STRING_TAG = "string";
+var TIMESTAMP_TAG = "timestamp";
+var UUID_TAG = "uuid";
+var UUID_PATTERN = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
+
+// src/splitMessage.ts
+var import_crc32 = __nccwpck_require__(7327);
+var PRELUDE_MEMBER_LENGTH = 4;
+var PRELUDE_LENGTH = PRELUDE_MEMBER_LENGTH * 2;
+var CHECKSUM_LENGTH = 4;
+var MINIMUM_MESSAGE_LENGTH = PRELUDE_LENGTH + CHECKSUM_LENGTH * 2;
+function splitMessage({ byteLength, byteOffset, buffer }) {
+  if (byteLength < MINIMUM_MESSAGE_LENGTH) {
+    throw new Error("Provided message too short to accommodate event stream message overhead");
+  }
+  const view = new DataView(buffer, byteOffset, byteLength);
+  const messageLength = view.getUint32(0, false);
+  if (byteLength !== messageLength) {
+    throw new Error("Reported message length does not match received message length");
+  }
+  const headerLength = view.getUint32(PRELUDE_MEMBER_LENGTH, false);
+  const expectedPreludeChecksum = view.getUint32(PRELUDE_LENGTH, false);
+  const expectedMessageChecksum = view.getUint32(byteLength - CHECKSUM_LENGTH, false);
+  const checksummer = new import_crc32.Crc32().update(new Uint8Array(buffer, byteOffset, PRELUDE_LENGTH));
+  if (expectedPreludeChecksum !== checksummer.digest()) {
+    throw new Error(
+      `The prelude checksum specified in the message (${expectedPreludeChecksum}) does not match the calculated CRC32 checksum (${checksummer.digest()})`
+    );
+  }
+  checksummer.update(
+    new Uint8Array(buffer, byteOffset + PRELUDE_LENGTH, byteLength - (PRELUDE_LENGTH + CHECKSUM_LENGTH))
+  );
+  if (expectedMessageChecksum !== checksummer.digest()) {
+    throw new Error(
+      `The message checksum (${checksummer.digest()}) did not match the expected value of ${expectedMessageChecksum}`
+    );
+  }
+  return {
+    headers: new DataView(buffer, byteOffset + PRELUDE_LENGTH + CHECKSUM_LENGTH, headerLength),
+    body: new Uint8Array(
+      buffer,
+      byteOffset + PRELUDE_LENGTH + CHECKSUM_LENGTH + headerLength,
+      messageLength - headerLength - (PRELUDE_LENGTH + CHECKSUM_LENGTH + CHECKSUM_LENGTH)
+    )
+  };
+}
+__name(splitMessage, "splitMessage");
+
+// src/EventStreamCodec.ts
+var _EventStreamCodec = class _EventStreamCodec {
+  constructor(toUtf8, fromUtf8) {
+    this.headerMarshaller = new HeaderMarshaller(toUtf8, fromUtf8);
+    this.messageBuffer = [];
+    this.isEndOfStream = false;
+  }
+  feed(message) {
+    this.messageBuffer.push(this.decode(message));
+  }
+  endOfStream() {
+    this.isEndOfStream = true;
+  }
+  getMessage() {
+    const message = this.messageBuffer.pop();
+    const isEndOfStream = this.isEndOfStream;
+    return {
+      getMessage() {
+        return message;
+      },
+      isEndOfStream() {
+        return isEndOfStream;
+      }
+    };
+  }
+  getAvailableMessages() {
+    const messages = this.messageBuffer;
+    this.messageBuffer = [];
+    const isEndOfStream = this.isEndOfStream;
+    return {
+      getMessages() {
+        return messages;
+      },
+      isEndOfStream() {
+        return isEndOfStream;
+      }
+    };
+  }
+  /**
+   * Convert a structured JavaScript object with tagged headers into a binary
+   * event stream message.
+   */
+  encode({ headers: rawHeaders, body }) {
+    const headers = this.headerMarshaller.format(rawHeaders);
+    const length = headers.byteLength + body.byteLength + 16;
+    const out = new Uint8Array(length);
+    const view = new DataView(out.buffer, out.byteOffset, out.byteLength);
+    const checksum = new import_crc322.Crc32();
+    view.setUint32(0, length, false);
+    view.setUint32(4, headers.byteLength, false);
+    view.setUint32(8, checksum.update(out.subarray(0, 8)).digest(), false);
+    out.set(headers, 12);
+    out.set(body, headers.byteLength + 12);
+    view.setUint32(length - 4, checksum.update(out.subarray(8, length - 4)).digest(), false);
+    return out;
+  }
+  /**
+   * Convert a binary event stream message into a JavaScript object with an
+   * opaque, binary body and tagged, parsed headers.
+   */
+  decode(message) {
+    const { headers, body } = splitMessage(message);
+    return { headers: this.headerMarshaller.parse(headers), body };
+  }
+  /**
+   * Convert a structured JavaScript object with tagged headers into a binary
+   * event stream message header.
+   */
+  formatHeaders(rawHeaders) {
+    return this.headerMarshaller.format(rawHeaders);
+  }
+};
+__name(_EventStreamCodec, "EventStreamCodec");
+var EventStreamCodec = _EventStreamCodec;
+
+// src/MessageDecoderStream.ts
+var _MessageDecoderStream = class _MessageDecoderStream {
+  constructor(options) {
+    this.options = options;
+  }
+  [Symbol.asyncIterator]() {
+    return this.asyncIterator();
+  }
+  async *asyncIterator() {
+    for await (const bytes of this.options.inputStream) {
+      const decoded = this.options.decoder.decode(bytes);
+      yield decoded;
+    }
+  }
+};
+__name(_MessageDecoderStream, "MessageDecoderStream");
+var MessageDecoderStream = _MessageDecoderStream;
+
+// src/MessageEncoderStream.ts
+var _MessageEncoderStream = class _MessageEncoderStream {
+  constructor(options) {
+    this.options = options;
+  }
+  [Symbol.asyncIterator]() {
+    return this.asyncIterator();
+  }
+  async *asyncIterator() {
+    for await (const msg of this.options.messageStream) {
+      const encoded = this.options.encoder.encode(msg);
+      yield encoded;
+    }
+    if (this.options.includeEndFrame) {
+      yield new Uint8Array(0);
+    }
+  }
+};
+__name(_MessageEncoderStream, "MessageEncoderStream");
+var MessageEncoderStream = _MessageEncoderStream;
+
+// src/SmithyMessageDecoderStream.ts
+var _SmithyMessageDecoderStream = class _SmithyMessageDecoderStream {
+  constructor(options) {
+    this.options = options;
+  }
+  [Symbol.asyncIterator]() {
+    return this.asyncIterator();
+  }
+  async *asyncIterator() {
+    for await (const message of this.options.messageStream) {
+      const deserialized = await this.options.deserializer(message);
+      if (deserialized === void 0)
+        continue;
+      yield deserialized;
+    }
+  }
+};
+__name(_SmithyMessageDecoderStream, "SmithyMessageDecoderStream");
+var SmithyMessageDecoderStream = _SmithyMessageDecoderStream;
+
+// src/SmithyMessageEncoderStream.ts
+var _SmithyMessageEncoderStream = class _SmithyMessageEncoderStream {
+  constructor(options) {
+    this.options = options;
+  }
+  [Symbol.asyncIterator]() {
+    return this.asyncIterator();
+  }
+  async *asyncIterator() {
+    for await (const chunk of this.options.inputStream) {
+      const payloadBuf = this.options.serializer(chunk);
+      yield payloadBuf;
+    }
+  }
+};
+__name(_SmithyMessageEncoderStream, "SmithyMessageEncoderStream");
+var SmithyMessageEncoderStream = _SmithyMessageEncoderStream;
+// Annotate the CommonJS export names for ESM import in node:
+
+0 && (0);
+
+
+
+/***/ }),
+
+/***/ 6181:
+/***/ ((module) => {
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  resolveEventStreamSerdeConfig: () => resolveEventStreamSerdeConfig
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/EventStreamSerdeConfig.ts
+var resolveEventStreamSerdeConfig = /* @__PURE__ */ __name((input) => ({
+  ...input,
+  eventStreamMarshaller: input.eventStreamSerdeProvider(input)
+}), "resolveEventStreamSerdeConfig");
+// Annotate the CommonJS export names for ESM import in node:
+
+0 && (0);
+
+
+
+/***/ }),
+
+/***/ 7682:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  EventStreamMarshaller: () => EventStreamMarshaller,
+  eventStreamSerdeProvider: () => eventStreamSerdeProvider
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/EventStreamMarshaller.ts
+var import_eventstream_serde_universal = __nccwpck_require__(6673);
+var import_stream = __nccwpck_require__(2781);
+
+// src/utils.ts
+async function* readabletoIterable(readStream) {
+  let streamEnded = false;
+  let generationEnded = false;
+  const records = new Array();
+  readStream.on("error", (err) => {
+    if (!streamEnded) {
+      streamEnded = true;
+    }
+    if (err) {
+      throw err;
+    }
+  });
+  readStream.on("data", (data) => {
+    records.push(data);
+  });
+  readStream.on("end", () => {
+    streamEnded = true;
+  });
+  while (!generationEnded) {
+    const value = await new Promise((resolve) => setTimeout(() => resolve(records.shift()), 0));
+    if (value) {
+      yield value;
+    }
+    generationEnded = streamEnded && records.length === 0;
+  }
+}
+__name(readabletoIterable, "readabletoIterable");
+
+// src/EventStreamMarshaller.ts
+var _EventStreamMarshaller = class _EventStreamMarshaller {
+  constructor({ utf8Encoder, utf8Decoder }) {
+    this.universalMarshaller = new import_eventstream_serde_universal.EventStreamMarshaller({
+      utf8Decoder,
+      utf8Encoder
+    });
+  }
+  deserialize(body, deserializer) {
+    const bodyIterable = typeof body[Symbol.asyncIterator] === "function" ? body : readabletoIterable(body);
+    return this.universalMarshaller.deserialize(bodyIterable, deserializer);
+  }
+  serialize(input, serializer) {
+    return import_stream.Readable.from(this.universalMarshaller.serialize(input, serializer));
+  }
+};
+__name(_EventStreamMarshaller, "EventStreamMarshaller");
+var EventStreamMarshaller = _EventStreamMarshaller;
+
+// src/provider.ts
+var eventStreamSerdeProvider = /* @__PURE__ */ __name((options) => new EventStreamMarshaller(options), "eventStreamSerdeProvider");
+// Annotate the CommonJS export names for ESM import in node:
+
+0 && (0);
+
+
+
+/***/ }),
+
+/***/ 6673:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  EventStreamMarshaller: () => EventStreamMarshaller,
+  eventStreamSerdeProvider: () => eventStreamSerdeProvider
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/EventStreamMarshaller.ts
+var import_eventstream_codec = __nccwpck_require__(6459);
+
+// src/getChunkedStream.ts
+function getChunkedStream(source) {
+  let currentMessageTotalLength = 0;
+  let currentMessagePendingLength = 0;
+  let currentMessage = null;
+  let messageLengthBuffer = null;
+  const allocateMessage = /* @__PURE__ */ __name((size) => {
+    if (typeof size !== "number") {
+      throw new Error("Attempted to allocate an event message where size was not a number: " + size);
+    }
+    currentMessageTotalLength = size;
+    currentMessagePendingLength = 4;
+    currentMessage = new Uint8Array(size);
+    const currentMessageView = new DataView(currentMessage.buffer);
+    currentMessageView.setUint32(0, size, false);
+  }, "allocateMessage");
+  const iterator = /* @__PURE__ */ __name(async function* () {
+    const sourceIterator = source[Symbol.asyncIterator]();
+    while (true) {
+      const { value, done } = await sourceIterator.next();
+      if (done) {
+        if (!currentMessageTotalLength) {
+          return;
+        } else if (currentMessageTotalLength === currentMessagePendingLength) {
+          yield currentMessage;
+        } else {
+          throw new Error("Truncated event message received.");
+        }
+        return;
+      }
+      const chunkLength = value.length;
+      let currentOffset = 0;
+      while (currentOffset < chunkLength) {
+        if (!currentMessage) {
+          const bytesRemaining = chunkLength - currentOffset;
+          if (!messageLengthBuffer) {
+            messageLengthBuffer = new Uint8Array(4);
+          }
+          const numBytesForTotal = Math.min(
+            4 - currentMessagePendingLength,
+            // remaining bytes to fill the messageLengthBuffer
+            bytesRemaining
+            // bytes left in chunk
+          );
+          messageLengthBuffer.set(
+            // @ts-ignore error TS2532: Object is possibly 'undefined' for value
+            value.slice(currentOffset, currentOffset + numBytesForTotal),
+            currentMessagePendingLength
+          );
+          currentMessagePendingLength += numBytesForTotal;
+          currentOffset += numBytesForTotal;
+          if (currentMessagePendingLength < 4) {
+            break;
+          }
+          allocateMessage(new DataView(messageLengthBuffer.buffer).getUint32(0, false));
+          messageLengthBuffer = null;
+        }
+        const numBytesToWrite = Math.min(
+          currentMessageTotalLength - currentMessagePendingLength,
+          // number of bytes left to complete message
+          chunkLength - currentOffset
+          // number of bytes left in the original chunk
+        );
+        currentMessage.set(
+          // @ts-ignore error TS2532: Object is possibly 'undefined' for value
+          value.slice(currentOffset, currentOffset + numBytesToWrite),
+          currentMessagePendingLength
+        );
+        currentMessagePendingLength += numBytesToWrite;
+        currentOffset += numBytesToWrite;
+        if (currentMessageTotalLength && currentMessageTotalLength === currentMessagePendingLength) {
+          yield currentMessage;
+          currentMessage = null;
+          currentMessageTotalLength = 0;
+          currentMessagePendingLength = 0;
+        }
+      }
+    }
+  }, "iterator");
+  return {
+    [Symbol.asyncIterator]: iterator
+  };
+}
+__name(getChunkedStream, "getChunkedStream");
+
+// src/getUnmarshalledStream.ts
+function getMessageUnmarshaller(deserializer, toUtf8) {
+  return async function(message) {
+    const { value: messageType } = message.headers[":message-type"];
+    if (messageType === "error") {
+      const unmodeledError = new Error(message.headers[":error-message"].value || "UnknownError");
+      unmodeledError.name = message.headers[":error-code"].value;
+      throw unmodeledError;
+    } else if (messageType === "exception") {
+      const code = message.headers[":exception-type"].value;
+      const exception = { [code]: message };
+      const deserializedException = await deserializer(exception);
+      if (deserializedException.$unknown) {
+        const error = new Error(toUtf8(message.body));
+        error.name = code;
+        throw error;
+      }
+      throw deserializedException[code];
+    } else if (messageType === "event") {
+      const event = {
+        [message.headers[":event-type"].value]: message
+      };
+      const deserialized = await deserializer(event);
+      if (deserialized.$unknown)
+        return;
+      return deserialized;
+    } else {
+      throw Error(`Unrecognizable event type: ${message.headers[":event-type"].value}`);
+    }
+  };
+}
+__name(getMessageUnmarshaller, "getMessageUnmarshaller");
+
+// src/EventStreamMarshaller.ts
+var _EventStreamMarshaller = class _EventStreamMarshaller {
+  constructor({ utf8Encoder, utf8Decoder }) {
+    this.eventStreamCodec = new import_eventstream_codec.EventStreamCodec(utf8Encoder, utf8Decoder);
+    this.utfEncoder = utf8Encoder;
+  }
+  deserialize(body, deserializer) {
+    const inputStream = getChunkedStream(body);
+    return new import_eventstream_codec.SmithyMessageDecoderStream({
+      messageStream: new import_eventstream_codec.MessageDecoderStream({ inputStream, decoder: this.eventStreamCodec }),
+      // @ts-expect-error Type 'T' is not assignable to type 'Record<string, any>'
+      deserializer: getMessageUnmarshaller(deserializer, this.utfEncoder)
+    });
+  }
+  serialize(inputStream, serializer) {
+    return new import_eventstream_codec.MessageEncoderStream({
+      messageStream: new import_eventstream_codec.SmithyMessageEncoderStream({ inputStream, serializer }),
+      encoder: this.eventStreamCodec,
+      includeEndFrame: true
+    });
+  }
+};
+__name(_EventStreamMarshaller, "EventStreamMarshaller");
+var EventStreamMarshaller = _EventStreamMarshaller;
+
+// src/provider.ts
+var eventStreamSerdeProvider = /* @__PURE__ */ __name((options) => new EventStreamMarshaller(options), "eventStreamSerdeProvider");
 // Annotate the CommonJS export names for ESM import in node:
 
 0 && (0);
@@ -18441,6 +26158,163 @@ var toUtf8 = /* @__PURE__ */ __name((input) => {
   }
   return (0, import_util_buffer_from.fromArrayBuffer)(input.buffer, input.byteOffset, input.byteLength).toString("utf8");
 }, "toUtf8");
+// Annotate the CommonJS export names for ESM import in node:
+
+0 && (0);
+
+
+
+/***/ }),
+
+/***/ 8011:
+/***/ ((module) => {
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  WaiterState: () => WaiterState,
+  checkExceptions: () => checkExceptions,
+  createWaiter: () => createWaiter,
+  waiterServiceDefaults: () => waiterServiceDefaults
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/utils/sleep.ts
+var sleep = /* @__PURE__ */ __name((seconds) => {
+  return new Promise((resolve) => setTimeout(resolve, seconds * 1e3));
+}, "sleep");
+
+// src/waiter.ts
+var waiterServiceDefaults = {
+  minDelay: 2,
+  maxDelay: 120
+};
+var WaiterState = /* @__PURE__ */ ((WaiterState2) => {
+  WaiterState2["ABORTED"] = "ABORTED";
+  WaiterState2["FAILURE"] = "FAILURE";
+  WaiterState2["SUCCESS"] = "SUCCESS";
+  WaiterState2["RETRY"] = "RETRY";
+  WaiterState2["TIMEOUT"] = "TIMEOUT";
+  return WaiterState2;
+})(WaiterState || {});
+var checkExceptions = /* @__PURE__ */ __name((result) => {
+  if (result.state === "ABORTED" /* ABORTED */) {
+    const abortError = new Error(
+      `${JSON.stringify({
+        ...result,
+        reason: "Request was aborted"
+      })}`
+    );
+    abortError.name = "AbortError";
+    throw abortError;
+  } else if (result.state === "TIMEOUT" /* TIMEOUT */) {
+    const timeoutError = new Error(
+      `${JSON.stringify({
+        ...result,
+        reason: "Waiter has timed out"
+      })}`
+    );
+    timeoutError.name = "TimeoutError";
+    throw timeoutError;
+  } else if (result.state !== "SUCCESS" /* SUCCESS */) {
+    throw new Error(`${JSON.stringify({ result })}`);
+  }
+  return result;
+}, "checkExceptions");
+
+// src/poller.ts
+var exponentialBackoffWithJitter = /* @__PURE__ */ __name((minDelay, maxDelay, attemptCeiling, attempt) => {
+  if (attempt > attemptCeiling)
+    return maxDelay;
+  const delay = minDelay * 2 ** (attempt - 1);
+  return randomInRange(minDelay, delay);
+}, "exponentialBackoffWithJitter");
+var randomInRange = /* @__PURE__ */ __name((min, max) => min + Math.random() * (max - min), "randomInRange");
+var runPolling = /* @__PURE__ */ __name(async ({ minDelay, maxDelay, maxWaitTime, abortController, client, abortSignal }, input, acceptorChecks) => {
+  var _a;
+  const { state, reason } = await acceptorChecks(client, input);
+  if (state !== "RETRY" /* RETRY */) {
+    return { state, reason };
+  }
+  let currentAttempt = 1;
+  const waitUntil = Date.now() + maxWaitTime * 1e3;
+  const attemptCeiling = Math.log(maxDelay / minDelay) / Math.log(2) + 1;
+  while (true) {
+    if (((_a = abortController == null ? void 0 : abortController.signal) == null ? void 0 : _a.aborted) || (abortSignal == null ? void 0 : abortSignal.aborted)) {
+      return { state: "ABORTED" /* ABORTED */ };
+    }
+    const delay = exponentialBackoffWithJitter(minDelay, maxDelay, attemptCeiling, currentAttempt);
+    if (Date.now() + delay * 1e3 > waitUntil) {
+      return { state: "TIMEOUT" /* TIMEOUT */ };
+    }
+    await sleep(delay);
+    const { state: state2, reason: reason2 } = await acceptorChecks(client, input);
+    if (state2 !== "RETRY" /* RETRY */) {
+      return { state: state2, reason: reason2 };
+    }
+    currentAttempt += 1;
+  }
+}, "runPolling");
+
+// src/utils/validate.ts
+var validateWaiterOptions = /* @__PURE__ */ __name((options) => {
+  if (options.maxWaitTime < 1) {
+    throw new Error(`WaiterConfiguration.maxWaitTime must be greater than 0`);
+  } else if (options.minDelay < 1) {
+    throw new Error(`WaiterConfiguration.minDelay must be greater than 0`);
+  } else if (options.maxDelay < 1) {
+    throw new Error(`WaiterConfiguration.maxDelay must be greater than 0`);
+  } else if (options.maxWaitTime <= options.minDelay) {
+    throw new Error(
+      `WaiterConfiguration.maxWaitTime [${options.maxWaitTime}] must be greater than WaiterConfiguration.minDelay [${options.minDelay}] for this waiter`
+    );
+  } else if (options.maxDelay < options.minDelay) {
+    throw new Error(
+      `WaiterConfiguration.maxDelay [${options.maxDelay}] must be greater than WaiterConfiguration.minDelay [${options.minDelay}] for this waiter`
+    );
+  }
+}, "validateWaiterOptions");
+
+// src/createWaiter.ts
+var abortTimeout = /* @__PURE__ */ __name(async (abortSignal) => {
+  return new Promise((resolve) => {
+    abortSignal.onabort = () => resolve({ state: "ABORTED" /* ABORTED */ });
+  });
+}, "abortTimeout");
+var createWaiter = /* @__PURE__ */ __name(async (options, input, acceptorChecks) => {
+  const params = {
+    ...waiterServiceDefaults,
+    ...options
+  };
+  validateWaiterOptions(params);
+  const exitConditions = [runPolling(params, input, acceptorChecks)];
+  if (options.abortController) {
+    exitConditions.push(abortTimeout(options.abortController.signal));
+  }
+  if (options.abortSignal) {
+    exitConditions.push(abortTimeout(options.abortSignal));
+  }
+  return Promise.race(exitConditions);
+}, "createWaiter");
 // Annotate the CommonJS export names for ESM import in node:
 
 0 && (0);
@@ -44054,28 +51928,4422 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 4752:
+/***/ 892:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ZodError = exports.quotelessJson = exports.ZodIssueCode = void 0;
+const util_1 = __nccwpck_require__(985);
+exports.ZodIssueCode = util_1.util.arrayToEnum([
+    "invalid_type",
+    "invalid_literal",
+    "custom",
+    "invalid_union",
+    "invalid_union_discriminator",
+    "invalid_enum_value",
+    "unrecognized_keys",
+    "invalid_arguments",
+    "invalid_return_type",
+    "invalid_date",
+    "invalid_string",
+    "too_small",
+    "too_big",
+    "invalid_intersection_types",
+    "not_multiple_of",
+    "not_finite",
+]);
+const quotelessJson = (obj) => {
+    const json = JSON.stringify(obj, null, 2);
+    return json.replace(/"([^"]+)":/g, "$1:");
+};
+exports.quotelessJson = quotelessJson;
+class ZodError extends Error {
+    constructor(issues) {
+        super();
+        this.issues = [];
+        this.addIssue = (sub) => {
+            this.issues = [...this.issues, sub];
+        };
+        this.addIssues = (subs = []) => {
+            this.issues = [...this.issues, ...subs];
+        };
+        const actualProto = new.target.prototype;
+        if (Object.setPrototypeOf) {
+            // eslint-disable-next-line ban/ban
+            Object.setPrototypeOf(this, actualProto);
+        }
+        else {
+            this.__proto__ = actualProto;
+        }
+        this.name = "ZodError";
+        this.issues = issues;
+    }
+    get errors() {
+        return this.issues;
+    }
+    format(_mapper) {
+        const mapper = _mapper ||
+            function (issue) {
+                return issue.message;
+            };
+        const fieldErrors = { _errors: [] };
+        const processError = (error) => {
+            for (const issue of error.issues) {
+                if (issue.code === "invalid_union") {
+                    issue.unionErrors.map(processError);
+                }
+                else if (issue.code === "invalid_return_type") {
+                    processError(issue.returnTypeError);
+                }
+                else if (issue.code === "invalid_arguments") {
+                    processError(issue.argumentsError);
+                }
+                else if (issue.path.length === 0) {
+                    fieldErrors._errors.push(mapper(issue));
+                }
+                else {
+                    let curr = fieldErrors;
+                    let i = 0;
+                    while (i < issue.path.length) {
+                        const el = issue.path[i];
+                        const terminal = i === issue.path.length - 1;
+                        if (!terminal) {
+                            curr[el] = curr[el] || { _errors: [] };
+                            // if (typeof el === "string") {
+                            //   curr[el] = curr[el] || { _errors: [] };
+                            // } else if (typeof el === "number") {
+                            //   const errorArray: any = [];
+                            //   errorArray._errors = [];
+                            //   curr[el] = curr[el] || errorArray;
+                            // }
+                        }
+                        else {
+                            curr[el] = curr[el] || { _errors: [] };
+                            curr[el]._errors.push(mapper(issue));
+                        }
+                        curr = curr[el];
+                        i++;
+                    }
+                }
+            }
+        };
+        processError(this);
+        return fieldErrors;
+    }
+    static assert(value) {
+        if (!(value instanceof ZodError)) {
+            throw new Error(`Not a ZodError: ${value}`);
+        }
+    }
+    toString() {
+        return this.message;
+    }
+    get message() {
+        return JSON.stringify(this.issues, util_1.util.jsonStringifyReplacer, 2);
+    }
+    get isEmpty() {
+        return this.issues.length === 0;
+    }
+    flatten(mapper = (issue) => issue.message) {
+        const fieldErrors = {};
+        const formErrors = [];
+        for (const sub of this.issues) {
+            if (sub.path.length > 0) {
+                fieldErrors[sub.path[0]] = fieldErrors[sub.path[0]] || [];
+                fieldErrors[sub.path[0]].push(mapper(sub));
+            }
+            else {
+                formErrors.push(mapper(sub));
+            }
+        }
+        return { formErrors, fieldErrors };
+    }
+    get formErrors() {
+        return this.flatten();
+    }
+}
+exports.ZodError = ZodError;
+ZodError.create = (issues) => {
+    const error = new ZodError(issues);
+    return error;
+};
+
+
+/***/ }),
+
+/***/ 566:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getErrorMap = exports.setErrorMap = exports.defaultErrorMap = void 0;
+const en_1 = __importDefault(__nccwpck_require__(468));
+exports.defaultErrorMap = en_1.default;
+let overrideErrorMap = en_1.default;
+function setErrorMap(map) {
+    overrideErrorMap = map;
+}
+exports.setErrorMap = setErrorMap;
+function getErrorMap() {
+    return overrideErrorMap;
+}
+exports.getErrorMap = getErrorMap;
+
+
+/***/ }),
+
+/***/ 906:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+__exportStar(__nccwpck_require__(566), exports);
+__exportStar(__nccwpck_require__(88), exports);
+__exportStar(__nccwpck_require__(449), exports);
+__exportStar(__nccwpck_require__(985), exports);
+__exportStar(__nccwpck_require__(335), exports);
+__exportStar(__nccwpck_require__(892), exports);
+
+
+/***/ }),
+
+/***/ 513:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.errorUtil = void 0;
+var errorUtil;
+(function (errorUtil) {
+    errorUtil.errToObj = (message) => typeof message === "string" ? { message } : message || {};
+    errorUtil.toString = (message) => typeof message === "string" ? message : message === null || message === void 0 ? void 0 : message.message;
+})(errorUtil = exports.errorUtil || (exports.errorUtil = {}));
+
+
+/***/ }),
+
+/***/ 88:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.isAsync = exports.isValid = exports.isDirty = exports.isAborted = exports.OK = exports.DIRTY = exports.INVALID = exports.ParseStatus = exports.addIssueToContext = exports.EMPTY_PATH = exports.makeIssue = void 0;
+const errors_1 = __nccwpck_require__(566);
+const en_1 = __importDefault(__nccwpck_require__(468));
+const makeIssue = (params) => {
+    const { data, path, errorMaps, issueData } = params;
+    const fullPath = [...path, ...(issueData.path || [])];
+    const fullIssue = {
+        ...issueData,
+        path: fullPath,
+    };
+    if (issueData.message !== undefined) {
+        return {
+            ...issueData,
+            path: fullPath,
+            message: issueData.message,
+        };
+    }
+    let errorMessage = "";
+    const maps = errorMaps
+        .filter((m) => !!m)
+        .slice()
+        .reverse();
+    for (const map of maps) {
+        errorMessage = map(fullIssue, { data, defaultError: errorMessage }).message;
+    }
+    return {
+        ...issueData,
+        path: fullPath,
+        message: errorMessage,
+    };
+};
+exports.makeIssue = makeIssue;
+exports.EMPTY_PATH = [];
+function addIssueToContext(ctx, issueData) {
+    const overrideMap = (0, errors_1.getErrorMap)();
+    const issue = (0, exports.makeIssue)({
+        issueData: issueData,
+        data: ctx.data,
+        path: ctx.path,
+        errorMaps: [
+            ctx.common.contextualErrorMap,
+            ctx.schemaErrorMap,
+            overrideMap,
+            overrideMap === en_1.default ? undefined : en_1.default, // then global default map
+        ].filter((x) => !!x),
+    });
+    ctx.common.issues.push(issue);
+}
+exports.addIssueToContext = addIssueToContext;
+class ParseStatus {
+    constructor() {
+        this.value = "valid";
+    }
+    dirty() {
+        if (this.value === "valid")
+            this.value = "dirty";
+    }
+    abort() {
+        if (this.value !== "aborted")
+            this.value = "aborted";
+    }
+    static mergeArray(status, results) {
+        const arrayValue = [];
+        for (const s of results) {
+            if (s.status === "aborted")
+                return exports.INVALID;
+            if (s.status === "dirty")
+                status.dirty();
+            arrayValue.push(s.value);
+        }
+        return { status: status.value, value: arrayValue };
+    }
+    static async mergeObjectAsync(status, pairs) {
+        const syncPairs = [];
+        for (const pair of pairs) {
+            const key = await pair.key;
+            const value = await pair.value;
+            syncPairs.push({
+                key,
+                value,
+            });
+        }
+        return ParseStatus.mergeObjectSync(status, syncPairs);
+    }
+    static mergeObjectSync(status, pairs) {
+        const finalObject = {};
+        for (const pair of pairs) {
+            const { key, value } = pair;
+            if (key.status === "aborted")
+                return exports.INVALID;
+            if (value.status === "aborted")
+                return exports.INVALID;
+            if (key.status === "dirty")
+                status.dirty();
+            if (value.status === "dirty")
+                status.dirty();
+            if (key.value !== "__proto__" &&
+                (typeof value.value !== "undefined" || pair.alwaysSet)) {
+                finalObject[key.value] = value.value;
+            }
+        }
+        return { status: status.value, value: finalObject };
+    }
+}
+exports.ParseStatus = ParseStatus;
+exports.INVALID = Object.freeze({
+    status: "aborted",
+});
+const DIRTY = (value) => ({ status: "dirty", value });
+exports.DIRTY = DIRTY;
+const OK = (value) => ({ status: "valid", value });
+exports.OK = OK;
+const isAborted = (x) => x.status === "aborted";
+exports.isAborted = isAborted;
+const isDirty = (x) => x.status === "dirty";
+exports.isDirty = isDirty;
+const isValid = (x) => x.status === "valid";
+exports.isValid = isValid;
+const isAsync = (x) => typeof Promise !== "undefined" && x instanceof Promise;
+exports.isAsync = isAsync;
+
+
+/***/ }),
+
+/***/ 449:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+
+
+/***/ }),
+
+/***/ 985:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getParsedType = exports.ZodParsedType = exports.objectUtil = exports.util = void 0;
+var util;
+(function (util) {
+    util.assertEqual = (val) => val;
+    function assertIs(_arg) { }
+    util.assertIs = assertIs;
+    function assertNever(_x) {
+        throw new Error();
+    }
+    util.assertNever = assertNever;
+    util.arrayToEnum = (items) => {
+        const obj = {};
+        for (const item of items) {
+            obj[item] = item;
+        }
+        return obj;
+    };
+    util.getValidEnumValues = (obj) => {
+        const validKeys = util.objectKeys(obj).filter((k) => typeof obj[obj[k]] !== "number");
+        const filtered = {};
+        for (const k of validKeys) {
+            filtered[k] = obj[k];
+        }
+        return util.objectValues(filtered);
+    };
+    util.objectValues = (obj) => {
+        return util.objectKeys(obj).map(function (e) {
+            return obj[e];
+        });
+    };
+    util.objectKeys = typeof Object.keys === "function" // eslint-disable-line ban/ban
+        ? (obj) => Object.keys(obj) // eslint-disable-line ban/ban
+        : (object) => {
+            const keys = [];
+            for (const key in object) {
+                if (Object.prototype.hasOwnProperty.call(object, key)) {
+                    keys.push(key);
+                }
+            }
+            return keys;
+        };
+    util.find = (arr, checker) => {
+        for (const item of arr) {
+            if (checker(item))
+                return item;
+        }
+        return undefined;
+    };
+    util.isInteger = typeof Number.isInteger === "function"
+        ? (val) => Number.isInteger(val) // eslint-disable-line ban/ban
+        : (val) => typeof val === "number" && isFinite(val) && Math.floor(val) === val;
+    function joinValues(array, separator = " | ") {
+        return array
+            .map((val) => (typeof val === "string" ? `'${val}'` : val))
+            .join(separator);
+    }
+    util.joinValues = joinValues;
+    util.jsonStringifyReplacer = (_, value) => {
+        if (typeof value === "bigint") {
+            return value.toString();
+        }
+        return value;
+    };
+})(util = exports.util || (exports.util = {}));
+var objectUtil;
+(function (objectUtil) {
+    objectUtil.mergeShapes = (first, second) => {
+        return {
+            ...first,
+            ...second, // second overwrites first
+        };
+    };
+})(objectUtil = exports.objectUtil || (exports.objectUtil = {}));
+exports.ZodParsedType = util.arrayToEnum([
+    "string",
+    "nan",
+    "number",
+    "integer",
+    "float",
+    "boolean",
+    "date",
+    "bigint",
+    "symbol",
+    "function",
+    "undefined",
+    "null",
+    "array",
+    "object",
+    "unknown",
+    "promise",
+    "void",
+    "never",
+    "map",
+    "set",
+]);
+const getParsedType = (data) => {
+    const t = typeof data;
+    switch (t) {
+        case "undefined":
+            return exports.ZodParsedType.undefined;
+        case "string":
+            return exports.ZodParsedType.string;
+        case "number":
+            return isNaN(data) ? exports.ZodParsedType.nan : exports.ZodParsedType.number;
+        case "boolean":
+            return exports.ZodParsedType.boolean;
+        case "function":
+            return exports.ZodParsedType.function;
+        case "bigint":
+            return exports.ZodParsedType.bigint;
+        case "symbol":
+            return exports.ZodParsedType.symbol;
+        case "object":
+            if (Array.isArray(data)) {
+                return exports.ZodParsedType.array;
+            }
+            if (data === null) {
+                return exports.ZodParsedType.null;
+            }
+            if (data.then &&
+                typeof data.then === "function" &&
+                data.catch &&
+                typeof data.catch === "function") {
+                return exports.ZodParsedType.promise;
+            }
+            if (typeof Map !== "undefined" && data instanceof Map) {
+                return exports.ZodParsedType.map;
+            }
+            if (typeof Set !== "undefined" && data instanceof Set) {
+                return exports.ZodParsedType.set;
+            }
+            if (typeof Date !== "undefined" && data instanceof Date) {
+                return exports.ZodParsedType.date;
+            }
+            return exports.ZodParsedType.object;
+        default:
+            return exports.ZodParsedType.unknown;
+    }
+};
+exports.getParsedType = getParsedType;
+
+
+/***/ }),
+
+/***/ 301:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.z = void 0;
+const z = __importStar(__nccwpck_require__(906));
+exports.z = z;
+__exportStar(__nccwpck_require__(906), exports);
+exports["default"] = z;
+
+
+/***/ }),
+
+/***/ 468:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const util_1 = __nccwpck_require__(985);
+const ZodError_1 = __nccwpck_require__(892);
+const errorMap = (issue, _ctx) => {
+    let message;
+    switch (issue.code) {
+        case ZodError_1.ZodIssueCode.invalid_type:
+            if (issue.received === util_1.ZodParsedType.undefined) {
+                message = "Required";
+            }
+            else {
+                message = `Expected ${issue.expected}, received ${issue.received}`;
+            }
+            break;
+        case ZodError_1.ZodIssueCode.invalid_literal:
+            message = `Invalid literal value, expected ${JSON.stringify(issue.expected, util_1.util.jsonStringifyReplacer)}`;
+            break;
+        case ZodError_1.ZodIssueCode.unrecognized_keys:
+            message = `Unrecognized key(s) in object: ${util_1.util.joinValues(issue.keys, ", ")}`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_union:
+            message = `Invalid input`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_union_discriminator:
+            message = `Invalid discriminator value. Expected ${util_1.util.joinValues(issue.options)}`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_enum_value:
+            message = `Invalid enum value. Expected ${util_1.util.joinValues(issue.options)}, received '${issue.received}'`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_arguments:
+            message = `Invalid function arguments`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_return_type:
+            message = `Invalid function return type`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_date:
+            message = `Invalid date`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_string:
+            if (typeof issue.validation === "object") {
+                if ("includes" in issue.validation) {
+                    message = `Invalid input: must include "${issue.validation.includes}"`;
+                    if (typeof issue.validation.position === "number") {
+                        message = `${message} at one or more positions greater than or equal to ${issue.validation.position}`;
+                    }
+                }
+                else if ("startsWith" in issue.validation) {
+                    message = `Invalid input: must start with "${issue.validation.startsWith}"`;
+                }
+                else if ("endsWith" in issue.validation) {
+                    message = `Invalid input: must end with "${issue.validation.endsWith}"`;
+                }
+                else {
+                    util_1.util.assertNever(issue.validation);
+                }
+            }
+            else if (issue.validation !== "regex") {
+                message = `Invalid ${issue.validation}`;
+            }
+            else {
+                message = "Invalid";
+            }
+            break;
+        case ZodError_1.ZodIssueCode.too_small:
+            if (issue.type === "array")
+                message = `Array must contain ${issue.exact ? "exactly" : issue.inclusive ? `at least` : `more than`} ${issue.minimum} element(s)`;
+            else if (issue.type === "string")
+                message = `String must contain ${issue.exact ? "exactly" : issue.inclusive ? `at least` : `over`} ${issue.minimum} character(s)`;
+            else if (issue.type === "number")
+                message = `Number must be ${issue.exact
+                    ? `exactly equal to `
+                    : issue.inclusive
+                        ? `greater than or equal to `
+                        : `greater than `}${issue.minimum}`;
+            else if (issue.type === "date")
+                message = `Date must be ${issue.exact
+                    ? `exactly equal to `
+                    : issue.inclusive
+                        ? `greater than or equal to `
+                        : `greater than `}${new Date(Number(issue.minimum))}`;
+            else
+                message = "Invalid input";
+            break;
+        case ZodError_1.ZodIssueCode.too_big:
+            if (issue.type === "array")
+                message = `Array must contain ${issue.exact ? `exactly` : issue.inclusive ? `at most` : `less than`} ${issue.maximum} element(s)`;
+            else if (issue.type === "string")
+                message = `String must contain ${issue.exact ? `exactly` : issue.inclusive ? `at most` : `under`} ${issue.maximum} character(s)`;
+            else if (issue.type === "number")
+                message = `Number must be ${issue.exact
+                    ? `exactly`
+                    : issue.inclusive
+                        ? `less than or equal to`
+                        : `less than`} ${issue.maximum}`;
+            else if (issue.type === "bigint")
+                message = `BigInt must be ${issue.exact
+                    ? `exactly`
+                    : issue.inclusive
+                        ? `less than or equal to`
+                        : `less than`} ${issue.maximum}`;
+            else if (issue.type === "date")
+                message = `Date must be ${issue.exact
+                    ? `exactly`
+                    : issue.inclusive
+                        ? `smaller than or equal to`
+                        : `smaller than`} ${new Date(Number(issue.maximum))}`;
+            else
+                message = "Invalid input";
+            break;
+        case ZodError_1.ZodIssueCode.custom:
+            message = `Invalid input`;
+            break;
+        case ZodError_1.ZodIssueCode.invalid_intersection_types:
+            message = `Intersection results could not be merged`;
+            break;
+        case ZodError_1.ZodIssueCode.not_multiple_of:
+            message = `Number must be a multiple of ${issue.multipleOf}`;
+            break;
+        case ZodError_1.ZodIssueCode.not_finite:
+            message = "Number must be finite";
+            break;
+        default:
+            message = _ctx.defaultError;
+            util_1.util.assertNever(issue);
+    }
+    return { message };
+};
+exports["default"] = errorMap;
+
+
+/***/ }),
+
+/***/ 335:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __classPrivateFieldGet = (this && this.__classPrivateFieldGet) || function (receiver, state, kind, f) {
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a getter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot read private member from an object whose class did not declare it");
+    return kind === "m" ? f : kind === "a" ? f.call(receiver) : f ? f.value : state.get(receiver);
+};
+var __classPrivateFieldSet = (this && this.__classPrivateFieldSet) || function (receiver, state, value, kind, f) {
+    if (kind === "m") throw new TypeError("Private method is not writable");
+    if (kind === "a" && !f) throw new TypeError("Private accessor was defined without a setter");
+    if (typeof state === "function" ? receiver !== state || !f : !state.has(receiver)) throw new TypeError("Cannot write private member to an object whose class did not declare it");
+    return (kind === "a" ? f.call(receiver, value) : f ? f.value = value : state.set(receiver, value)), value;
+};
+var _ZodEnum_cache, _ZodNativeEnum_cache;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.boolean = exports.bigint = exports.array = exports.any = exports.coerce = exports.ZodFirstPartyTypeKind = exports.late = exports.ZodSchema = exports.Schema = exports.custom = exports.ZodReadonly = exports.ZodPipeline = exports.ZodBranded = exports.BRAND = exports.ZodNaN = exports.ZodCatch = exports.ZodDefault = exports.ZodNullable = exports.ZodOptional = exports.ZodTransformer = exports.ZodEffects = exports.ZodPromise = exports.ZodNativeEnum = exports.ZodEnum = exports.ZodLiteral = exports.ZodLazy = exports.ZodFunction = exports.ZodSet = exports.ZodMap = exports.ZodRecord = exports.ZodTuple = exports.ZodIntersection = exports.ZodDiscriminatedUnion = exports.ZodUnion = exports.ZodObject = exports.ZodArray = exports.ZodVoid = exports.ZodNever = exports.ZodUnknown = exports.ZodAny = exports.ZodNull = exports.ZodUndefined = exports.ZodSymbol = exports.ZodDate = exports.ZodBoolean = exports.ZodBigInt = exports.ZodNumber = exports.ZodString = exports.datetimeRegex = exports.ZodType = void 0;
+exports.NEVER = exports["void"] = exports.unknown = exports.union = exports.undefined = exports.tuple = exports.transformer = exports.symbol = exports.string = exports.strictObject = exports.set = exports.record = exports.promise = exports.preprocess = exports.pipeline = exports.ostring = exports.optional = exports.onumber = exports.oboolean = exports.object = exports.number = exports.nullable = exports["null"] = exports.never = exports.nativeEnum = exports.nan = exports.map = exports.literal = exports.lazy = exports.intersection = exports["instanceof"] = exports["function"] = exports["enum"] = exports.effect = exports.discriminatedUnion = exports.date = void 0;
+const errors_1 = __nccwpck_require__(566);
+const errorUtil_1 = __nccwpck_require__(513);
+const parseUtil_1 = __nccwpck_require__(88);
+const util_1 = __nccwpck_require__(985);
+const ZodError_1 = __nccwpck_require__(892);
+class ParseInputLazyPath {
+    constructor(parent, value, path, key) {
+        this._cachedPath = [];
+        this.parent = parent;
+        this.data = value;
+        this._path = path;
+        this._key = key;
+    }
+    get path() {
+        if (!this._cachedPath.length) {
+            if (this._key instanceof Array) {
+                this._cachedPath.push(...this._path, ...this._key);
+            }
+            else {
+                this._cachedPath.push(...this._path, this._key);
+            }
+        }
+        return this._cachedPath;
+    }
+}
+const handleResult = (ctx, result) => {
+    if ((0, parseUtil_1.isValid)(result)) {
+        return { success: true, data: result.value };
+    }
+    else {
+        if (!ctx.common.issues.length) {
+            throw new Error("Validation failed but no issues detected.");
+        }
+        return {
+            success: false,
+            get error() {
+                if (this._error)
+                    return this._error;
+                const error = new ZodError_1.ZodError(ctx.common.issues);
+                this._error = error;
+                return this._error;
+            },
+        };
+    }
+};
+function processCreateParams(params) {
+    if (!params)
+        return {};
+    const { errorMap, invalid_type_error, required_error, description } = params;
+    if (errorMap && (invalid_type_error || required_error)) {
+        throw new Error(`Can't use "invalid_type_error" or "required_error" in conjunction with custom error map.`);
+    }
+    if (errorMap)
+        return { errorMap: errorMap, description };
+    const customMap = (iss, ctx) => {
+        var _a, _b;
+        const { message } = params;
+        if (iss.code === "invalid_enum_value") {
+            return { message: message !== null && message !== void 0 ? message : ctx.defaultError };
+        }
+        if (typeof ctx.data === "undefined") {
+            return { message: (_a = message !== null && message !== void 0 ? message : required_error) !== null && _a !== void 0 ? _a : ctx.defaultError };
+        }
+        if (iss.code !== "invalid_type")
+            return { message: ctx.defaultError };
+        return { message: (_b = message !== null && message !== void 0 ? message : invalid_type_error) !== null && _b !== void 0 ? _b : ctx.defaultError };
+    };
+    return { errorMap: customMap, description };
+}
+class ZodType {
+    constructor(def) {
+        /** Alias of safeParseAsync */
+        this.spa = this.safeParseAsync;
+        this._def = def;
+        this.parse = this.parse.bind(this);
+        this.safeParse = this.safeParse.bind(this);
+        this.parseAsync = this.parseAsync.bind(this);
+        this.safeParseAsync = this.safeParseAsync.bind(this);
+        this.spa = this.spa.bind(this);
+        this.refine = this.refine.bind(this);
+        this.refinement = this.refinement.bind(this);
+        this.superRefine = this.superRefine.bind(this);
+        this.optional = this.optional.bind(this);
+        this.nullable = this.nullable.bind(this);
+        this.nullish = this.nullish.bind(this);
+        this.array = this.array.bind(this);
+        this.promise = this.promise.bind(this);
+        this.or = this.or.bind(this);
+        this.and = this.and.bind(this);
+        this.transform = this.transform.bind(this);
+        this.brand = this.brand.bind(this);
+        this.default = this.default.bind(this);
+        this.catch = this.catch.bind(this);
+        this.describe = this.describe.bind(this);
+        this.pipe = this.pipe.bind(this);
+        this.readonly = this.readonly.bind(this);
+        this.isNullable = this.isNullable.bind(this);
+        this.isOptional = this.isOptional.bind(this);
+    }
+    get description() {
+        return this._def.description;
+    }
+    _getType(input) {
+        return (0, util_1.getParsedType)(input.data);
+    }
+    _getOrReturnCtx(input, ctx) {
+        return (ctx || {
+            common: input.parent.common,
+            data: input.data,
+            parsedType: (0, util_1.getParsedType)(input.data),
+            schemaErrorMap: this._def.errorMap,
+            path: input.path,
+            parent: input.parent,
+        });
+    }
+    _processInputParams(input) {
+        return {
+            status: new parseUtil_1.ParseStatus(),
+            ctx: {
+                common: input.parent.common,
+                data: input.data,
+                parsedType: (0, util_1.getParsedType)(input.data),
+                schemaErrorMap: this._def.errorMap,
+                path: input.path,
+                parent: input.parent,
+            },
+        };
+    }
+    _parseSync(input) {
+        const result = this._parse(input);
+        if ((0, parseUtil_1.isAsync)(result)) {
+            throw new Error("Synchronous parse encountered promise.");
+        }
+        return result;
+    }
+    _parseAsync(input) {
+        const result = this._parse(input);
+        return Promise.resolve(result);
+    }
+    parse(data, params) {
+        const result = this.safeParse(data, params);
+        if (result.success)
+            return result.data;
+        throw result.error;
+    }
+    safeParse(data, params) {
+        var _a;
+        const ctx = {
+            common: {
+                issues: [],
+                async: (_a = params === null || params === void 0 ? void 0 : params.async) !== null && _a !== void 0 ? _a : false,
+                contextualErrorMap: params === null || params === void 0 ? void 0 : params.errorMap,
+            },
+            path: (params === null || params === void 0 ? void 0 : params.path) || [],
+            schemaErrorMap: this._def.errorMap,
+            parent: null,
+            data,
+            parsedType: (0, util_1.getParsedType)(data),
+        };
+        const result = this._parseSync({ data, path: ctx.path, parent: ctx });
+        return handleResult(ctx, result);
+    }
+    async parseAsync(data, params) {
+        const result = await this.safeParseAsync(data, params);
+        if (result.success)
+            return result.data;
+        throw result.error;
+    }
+    async safeParseAsync(data, params) {
+        const ctx = {
+            common: {
+                issues: [],
+                contextualErrorMap: params === null || params === void 0 ? void 0 : params.errorMap,
+                async: true,
+            },
+            path: (params === null || params === void 0 ? void 0 : params.path) || [],
+            schemaErrorMap: this._def.errorMap,
+            parent: null,
+            data,
+            parsedType: (0, util_1.getParsedType)(data),
+        };
+        const maybeAsyncResult = this._parse({ data, path: ctx.path, parent: ctx });
+        const result = await ((0, parseUtil_1.isAsync)(maybeAsyncResult)
+            ? maybeAsyncResult
+            : Promise.resolve(maybeAsyncResult));
+        return handleResult(ctx, result);
+    }
+    refine(check, message) {
+        const getIssueProperties = (val) => {
+            if (typeof message === "string" || typeof message === "undefined") {
+                return { message };
+            }
+            else if (typeof message === "function") {
+                return message(val);
+            }
+            else {
+                return message;
+            }
+        };
+        return this._refinement((val, ctx) => {
+            const result = check(val);
+            const setError = () => ctx.addIssue({
+                code: ZodError_1.ZodIssueCode.custom,
+                ...getIssueProperties(val),
+            });
+            if (typeof Promise !== "undefined" && result instanceof Promise) {
+                return result.then((data) => {
+                    if (!data) {
+                        setError();
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                });
+            }
+            if (!result) {
+                setError();
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
+    }
+    refinement(check, refinementData) {
+        return this._refinement((val, ctx) => {
+            if (!check(val)) {
+                ctx.addIssue(typeof refinementData === "function"
+                    ? refinementData(val, ctx)
+                    : refinementData);
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
+    }
+    _refinement(refinement) {
+        return new ZodEffects({
+            schema: this,
+            typeName: ZodFirstPartyTypeKind.ZodEffects,
+            effect: { type: "refinement", refinement },
+        });
+    }
+    superRefine(refinement) {
+        return this._refinement(refinement);
+    }
+    optional() {
+        return ZodOptional.create(this, this._def);
+    }
+    nullable() {
+        return ZodNullable.create(this, this._def);
+    }
+    nullish() {
+        return this.nullable().optional();
+    }
+    array() {
+        return ZodArray.create(this, this._def);
+    }
+    promise() {
+        return ZodPromise.create(this, this._def);
+    }
+    or(option) {
+        return ZodUnion.create([this, option], this._def);
+    }
+    and(incoming) {
+        return ZodIntersection.create(this, incoming, this._def);
+    }
+    transform(transform) {
+        return new ZodEffects({
+            ...processCreateParams(this._def),
+            schema: this,
+            typeName: ZodFirstPartyTypeKind.ZodEffects,
+            effect: { type: "transform", transform },
+        });
+    }
+    default(def) {
+        const defaultValueFunc = typeof def === "function" ? def : () => def;
+        return new ZodDefault({
+            ...processCreateParams(this._def),
+            innerType: this,
+            defaultValue: defaultValueFunc,
+            typeName: ZodFirstPartyTypeKind.ZodDefault,
+        });
+    }
+    brand() {
+        return new ZodBranded({
+            typeName: ZodFirstPartyTypeKind.ZodBranded,
+            type: this,
+            ...processCreateParams(this._def),
+        });
+    }
+    catch(def) {
+        const catchValueFunc = typeof def === "function" ? def : () => def;
+        return new ZodCatch({
+            ...processCreateParams(this._def),
+            innerType: this,
+            catchValue: catchValueFunc,
+            typeName: ZodFirstPartyTypeKind.ZodCatch,
+        });
+    }
+    describe(description) {
+        const This = this.constructor;
+        return new This({
+            ...this._def,
+            description,
+        });
+    }
+    pipe(target) {
+        return ZodPipeline.create(this, target);
+    }
+    readonly() {
+        return ZodReadonly.create(this);
+    }
+    isOptional() {
+        return this.safeParse(undefined).success;
+    }
+    isNullable() {
+        return this.safeParse(null).success;
+    }
+}
+exports.ZodType = ZodType;
+exports.Schema = ZodType;
+exports.ZodSchema = ZodType;
+const cuidRegex = /^c[^\s-]{8,}$/i;
+const cuid2Regex = /^[0-9a-z]+$/;
+const ulidRegex = /^[0-9A-HJKMNP-TV-Z]{26}$/;
+// const uuidRegex =
+//   /^([a-f0-9]{8}-[a-f0-9]{4}-[1-5][a-f0-9]{3}-[a-f0-9]{4}-[a-f0-9]{12}|00000000-0000-0000-0000-000000000000)$/i;
+const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
+const nanoidRegex = /^[a-z0-9_-]{21}$/i;
+const durationRegex = /^[-+]?P(?!$)(?:(?:[-+]?\d+Y)|(?:[-+]?\d+[.,]\d+Y$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:(?:[-+]?\d+W)|(?:[-+]?\d+[.,]\d+W$))?(?:(?:[-+]?\d+D)|(?:[-+]?\d+[.,]\d+D$))?(?:T(?=[\d+-])(?:(?:[-+]?\d+H)|(?:[-+]?\d+[.,]\d+H$))?(?:(?:[-+]?\d+M)|(?:[-+]?\d+[.,]\d+M$))?(?:[-+]?\d+(?:[.,]\d+)?S)?)??$/;
+// from https://stackoverflow.com/a/46181/1550155
+// old version: too slow, didn't support unicode
+// const emailRegex = /^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$/i;
+//old email regex
+// const emailRegex = /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@((?!-)([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{1,})[^-<>()[\].,;:\s@"]$/i;
+// eslint-disable-next-line
+// const emailRegex =
+//   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\])|(\[IPv6:(([a-f0-9]{1,4}:){7}|::([a-f0-9]{1,4}:){0,6}|([a-f0-9]{1,4}:){1}:([a-f0-9]{1,4}:){0,5}|([a-f0-9]{1,4}:){2}:([a-f0-9]{1,4}:){0,4}|([a-f0-9]{1,4}:){3}:([a-f0-9]{1,4}:){0,3}|([a-f0-9]{1,4}:){4}:([a-f0-9]{1,4}:){0,2}|([a-f0-9]{1,4}:){5}:([a-f0-9]{1,4}:){0,1})([a-f0-9]{1,4}|(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2})))\])|([A-Za-z0-9]([A-Za-z0-9-]*[A-Za-z0-9])*(\.[A-Za-z]{2,})+))$/;
+// const emailRegex =
+//   /^[a-zA-Z0-9\.\!\#\$\%\&\'\*\+\/\=\?\^\_\`\{\|\}\~\-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+// const emailRegex =
+//   /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/i;
+const emailRegex = /^(?!\.)(?!.*\.\.)([A-Z0-9_'+\-\.]*)[A-Z0-9_+-]@([A-Z0-9][A-Z0-9\-]*\.)+[A-Z]{2,}$/i;
+// const emailRegex =
+//   /^[a-z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-z0-9-]+(?:\.[a-z0-9\-]+)*$/i;
+// from https://thekevinscott.com/emojis-in-javascript/#writing-a-regular-expression
+const _emojiRegex = `^(\\p{Extended_Pictographic}|\\p{Emoji_Component})+$`;
+let emojiRegex;
+// faster, simpler, safer
+const ipv4Regex = /^(?:(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])\.){3}(?:25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$/;
+const ipv6Regex = /^(([a-f0-9]{1,4}:){7}|::([a-f0-9]{1,4}:){0,6}|([a-f0-9]{1,4}:){1}:([a-f0-9]{1,4}:){0,5}|([a-f0-9]{1,4}:){2}:([a-f0-9]{1,4}:){0,4}|([a-f0-9]{1,4}:){3}:([a-f0-9]{1,4}:){0,3}|([a-f0-9]{1,4}:){4}:([a-f0-9]{1,4}:){0,2}|([a-f0-9]{1,4}:){5}:([a-f0-9]{1,4}:){0,1})([a-f0-9]{1,4}|(((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2}))\.){3}((25[0-5])|(2[0-4][0-9])|(1[0-9]{2})|([0-9]{1,2})))$/;
+// https://stackoverflow.com/questions/7860392/determine-if-string-is-in-base64-using-javascript
+const base64Regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
+// simple
+// const dateRegexSource = `\\d{4}-\\d{2}-\\d{2}`;
+// no leap year validation
+// const dateRegexSource = `\\d{4}-((0[13578]|10|12)-31|(0[13-9]|1[0-2])-30|(0[1-9]|1[0-2])-(0[1-9]|1\\d|2\\d))`;
+// with leap year validation
+const dateRegexSource = `((\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-((0[13578]|1[02])-(0[1-9]|[12]\\d|3[01])|(0[469]|11)-(0[1-9]|[12]\\d|30)|(02)-(0[1-9]|1\\d|2[0-8])))`;
+const dateRegex = new RegExp(`^${dateRegexSource}$`);
+function timeRegexSource(args) {
+    // let regex = `\\d{2}:\\d{2}:\\d{2}`;
+    let regex = `([01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d`;
+    if (args.precision) {
+        regex = `${regex}\\.\\d{${args.precision}}`;
+    }
+    else if (args.precision == null) {
+        regex = `${regex}(\\.\\d+)?`;
+    }
+    return regex;
+}
+function timeRegex(args) {
+    return new RegExp(`^${timeRegexSource(args)}$`);
+}
+// Adapted from https://stackoverflow.com/a/3143231
+function datetimeRegex(args) {
+    let regex = `${dateRegexSource}T${timeRegexSource(args)}`;
+    const opts = [];
+    opts.push(args.local ? `Z?` : `Z`);
+    if (args.offset)
+        opts.push(`([+-]\\d{2}:?\\d{2})`);
+    regex = `${regex}(${opts.join("|")})`;
+    return new RegExp(`^${regex}$`);
+}
+exports.datetimeRegex = datetimeRegex;
+function isValidIP(ip, version) {
+    if ((version === "v4" || !version) && ipv4Regex.test(ip)) {
+        return true;
+    }
+    if ((version === "v6" || !version) && ipv6Regex.test(ip)) {
+        return true;
+    }
+    return false;
+}
+class ZodString extends ZodType {
+    _parse(input) {
+        if (this._def.coerce) {
+            input.data = String(input.data);
+        }
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.string) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.string,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const status = new parseUtil_1.ParseStatus();
+        let ctx = undefined;
+        for (const check of this._def.checks) {
+            if (check.kind === "min") {
+                if (input.data.length < check.value) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_small,
+                        minimum: check.value,
+                        type: "string",
+                        inclusive: true,
+                        exact: false,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "max") {
+                if (input.data.length > check.value) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_big,
+                        maximum: check.value,
+                        type: "string",
+                        inclusive: true,
+                        exact: false,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "length") {
+                const tooBig = input.data.length > check.value;
+                const tooSmall = input.data.length < check.value;
+                if (tooBig || tooSmall) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    if (tooBig) {
+                        (0, parseUtil_1.addIssueToContext)(ctx, {
+                            code: ZodError_1.ZodIssueCode.too_big,
+                            maximum: check.value,
+                            type: "string",
+                            inclusive: true,
+                            exact: true,
+                            message: check.message,
+                        });
+                    }
+                    else if (tooSmall) {
+                        (0, parseUtil_1.addIssueToContext)(ctx, {
+                            code: ZodError_1.ZodIssueCode.too_small,
+                            minimum: check.value,
+                            type: "string",
+                            inclusive: true,
+                            exact: true,
+                            message: check.message,
+                        });
+                    }
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "email") {
+                if (!emailRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "email",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "emoji") {
+                if (!emojiRegex) {
+                    emojiRegex = new RegExp(_emojiRegex, "u");
+                }
+                if (!emojiRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "emoji",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "uuid") {
+                if (!uuidRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "uuid",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "nanoid") {
+                if (!nanoidRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "nanoid",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "cuid") {
+                if (!cuidRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "cuid",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "cuid2") {
+                if (!cuid2Regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "cuid2",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "ulid") {
+                if (!ulidRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "ulid",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "url") {
+                try {
+                    new URL(input.data);
+                }
+                catch (_a) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "url",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "regex") {
+                check.regex.lastIndex = 0;
+                const testResult = check.regex.test(input.data);
+                if (!testResult) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "regex",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "trim") {
+                input.data = input.data.trim();
+            }
+            else if (check.kind === "includes") {
+                if (!input.data.includes(check.value, check.position)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        validation: { includes: check.value, position: check.position },
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "toLowerCase") {
+                input.data = input.data.toLowerCase();
+            }
+            else if (check.kind === "toUpperCase") {
+                input.data = input.data.toUpperCase();
+            }
+            else if (check.kind === "startsWith") {
+                if (!input.data.startsWith(check.value)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        validation: { startsWith: check.value },
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "endsWith") {
+                if (!input.data.endsWith(check.value)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        validation: { endsWith: check.value },
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "datetime") {
+                const regex = datetimeRegex(check);
+                if (!regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        validation: "datetime",
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "date") {
+                const regex = dateRegex;
+                if (!regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        validation: "date",
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "time") {
+                const regex = timeRegex(check);
+                if (!regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        validation: "time",
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "duration") {
+                if (!durationRegex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "duration",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "ip") {
+                if (!isValidIP(input.data, check.version)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "ip",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "base64") {
+                if (!base64Regex.test(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        validation: "base64",
+                        code: ZodError_1.ZodIssueCode.invalid_string,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else {
+                util_1.util.assertNever(check);
+            }
+        }
+        return { status: status.value, value: input.data };
+    }
+    _regex(regex, validation, message) {
+        return this.refinement((data) => regex.test(data), {
+            validation,
+            code: ZodError_1.ZodIssueCode.invalid_string,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
+    _addCheck(check) {
+        return new ZodString({
+            ...this._def,
+            checks: [...this._def.checks, check],
+        });
+    }
+    email(message) {
+        return this._addCheck({ kind: "email", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    url(message) {
+        return this._addCheck({ kind: "url", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    emoji(message) {
+        return this._addCheck({ kind: "emoji", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    uuid(message) {
+        return this._addCheck({ kind: "uuid", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    nanoid(message) {
+        return this._addCheck({ kind: "nanoid", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    cuid(message) {
+        return this._addCheck({ kind: "cuid", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    cuid2(message) {
+        return this._addCheck({ kind: "cuid2", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    ulid(message) {
+        return this._addCheck({ kind: "ulid", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    base64(message) {
+        return this._addCheck({ kind: "base64", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    ip(options) {
+        return this._addCheck({ kind: "ip", ...errorUtil_1.errorUtil.errToObj(options) });
+    }
+    datetime(options) {
+        var _a, _b;
+        if (typeof options === "string") {
+            return this._addCheck({
+                kind: "datetime",
+                precision: null,
+                offset: false,
+                local: false,
+                message: options,
+            });
+        }
+        return this._addCheck({
+            kind: "datetime",
+            precision: typeof (options === null || options === void 0 ? void 0 : options.precision) === "undefined" ? null : options === null || options === void 0 ? void 0 : options.precision,
+            offset: (_a = options === null || options === void 0 ? void 0 : options.offset) !== null && _a !== void 0 ? _a : false,
+            local: (_b = options === null || options === void 0 ? void 0 : options.local) !== null && _b !== void 0 ? _b : false,
+            ...errorUtil_1.errorUtil.errToObj(options === null || options === void 0 ? void 0 : options.message),
+        });
+    }
+    date(message) {
+        return this._addCheck({ kind: "date", message });
+    }
+    time(options) {
+        if (typeof options === "string") {
+            return this._addCheck({
+                kind: "time",
+                precision: null,
+                message: options,
+            });
+        }
+        return this._addCheck({
+            kind: "time",
+            precision: typeof (options === null || options === void 0 ? void 0 : options.precision) === "undefined" ? null : options === null || options === void 0 ? void 0 : options.precision,
+            ...errorUtil_1.errorUtil.errToObj(options === null || options === void 0 ? void 0 : options.message),
+        });
+    }
+    duration(message) {
+        return this._addCheck({ kind: "duration", ...errorUtil_1.errorUtil.errToObj(message) });
+    }
+    regex(regex, message) {
+        return this._addCheck({
+            kind: "regex",
+            regex: regex,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
+    includes(value, options) {
+        return this._addCheck({
+            kind: "includes",
+            value: value,
+            position: options === null || options === void 0 ? void 0 : options.position,
+            ...errorUtil_1.errorUtil.errToObj(options === null || options === void 0 ? void 0 : options.message),
+        });
+    }
+    startsWith(value, message) {
+        return this._addCheck({
+            kind: "startsWith",
+            value: value,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
+    endsWith(value, message) {
+        return this._addCheck({
+            kind: "endsWith",
+            value: value,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
+    min(minLength, message) {
+        return this._addCheck({
+            kind: "min",
+            value: minLength,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
+    max(maxLength, message) {
+        return this._addCheck({
+            kind: "max",
+            value: maxLength,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
+    length(len, message) {
+        return this._addCheck({
+            kind: "length",
+            value: len,
+            ...errorUtil_1.errorUtil.errToObj(message),
+        });
+    }
+    /**
+     * @deprecated Use z.string().min(1) instead.
+     * @see {@link ZodString.min}
+     */
+    nonempty(message) {
+        return this.min(1, errorUtil_1.errorUtil.errToObj(message));
+    }
+    trim() {
+        return new ZodString({
+            ...this._def,
+            checks: [...this._def.checks, { kind: "trim" }],
+        });
+    }
+    toLowerCase() {
+        return new ZodString({
+            ...this._def,
+            checks: [...this._def.checks, { kind: "toLowerCase" }],
+        });
+    }
+    toUpperCase() {
+        return new ZodString({
+            ...this._def,
+            checks: [...this._def.checks, { kind: "toUpperCase" }],
+        });
+    }
+    get isDatetime() {
+        return !!this._def.checks.find((ch) => ch.kind === "datetime");
+    }
+    get isDate() {
+        return !!this._def.checks.find((ch) => ch.kind === "date");
+    }
+    get isTime() {
+        return !!this._def.checks.find((ch) => ch.kind === "time");
+    }
+    get isDuration() {
+        return !!this._def.checks.find((ch) => ch.kind === "duration");
+    }
+    get isEmail() {
+        return !!this._def.checks.find((ch) => ch.kind === "email");
+    }
+    get isURL() {
+        return !!this._def.checks.find((ch) => ch.kind === "url");
+    }
+    get isEmoji() {
+        return !!this._def.checks.find((ch) => ch.kind === "emoji");
+    }
+    get isUUID() {
+        return !!this._def.checks.find((ch) => ch.kind === "uuid");
+    }
+    get isNANOID() {
+        return !!this._def.checks.find((ch) => ch.kind === "nanoid");
+    }
+    get isCUID() {
+        return !!this._def.checks.find((ch) => ch.kind === "cuid");
+    }
+    get isCUID2() {
+        return !!this._def.checks.find((ch) => ch.kind === "cuid2");
+    }
+    get isULID() {
+        return !!this._def.checks.find((ch) => ch.kind === "ulid");
+    }
+    get isIP() {
+        return !!this._def.checks.find((ch) => ch.kind === "ip");
+    }
+    get isBase64() {
+        return !!this._def.checks.find((ch) => ch.kind === "base64");
+    }
+    get minLength() {
+        let min = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "min") {
+                if (min === null || ch.value > min)
+                    min = ch.value;
+            }
+        }
+        return min;
+    }
+    get maxLength() {
+        let max = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "max") {
+                if (max === null || ch.value < max)
+                    max = ch.value;
+            }
+        }
+        return max;
+    }
+}
+exports.ZodString = ZodString;
+ZodString.create = (params) => {
+    var _a;
+    return new ZodString({
+        checks: [],
+        typeName: ZodFirstPartyTypeKind.ZodString,
+        coerce: (_a = params === null || params === void 0 ? void 0 : params.coerce) !== null && _a !== void 0 ? _a : false,
+        ...processCreateParams(params),
+    });
+};
+// https://stackoverflow.com/questions/3966484/why-does-modulus-operator-return-fractional-number-in-javascript/31711034#31711034
+function floatSafeRemainder(val, step) {
+    const valDecCount = (val.toString().split(".")[1] || "").length;
+    const stepDecCount = (step.toString().split(".")[1] || "").length;
+    const decCount = valDecCount > stepDecCount ? valDecCount : stepDecCount;
+    const valInt = parseInt(val.toFixed(decCount).replace(".", ""));
+    const stepInt = parseInt(step.toFixed(decCount).replace(".", ""));
+    return (valInt % stepInt) / Math.pow(10, decCount);
+}
+class ZodNumber extends ZodType {
+    constructor() {
+        super(...arguments);
+        this.min = this.gte;
+        this.max = this.lte;
+        this.step = this.multipleOf;
+    }
+    _parse(input) {
+        if (this._def.coerce) {
+            input.data = Number(input.data);
+        }
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.number) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.number,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        let ctx = undefined;
+        const status = new parseUtil_1.ParseStatus();
+        for (const check of this._def.checks) {
+            if (check.kind === "int") {
+                if (!util_1.util.isInteger(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.invalid_type,
+                        expected: "integer",
+                        received: "float",
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "min") {
+                const tooSmall = check.inclusive
+                    ? input.data < check.value
+                    : input.data <= check.value;
+                if (tooSmall) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_small,
+                        minimum: check.value,
+                        type: "number",
+                        inclusive: check.inclusive,
+                        exact: false,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "max") {
+                const tooBig = check.inclusive
+                    ? input.data > check.value
+                    : input.data >= check.value;
+                if (tooBig) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_big,
+                        maximum: check.value,
+                        type: "number",
+                        inclusive: check.inclusive,
+                        exact: false,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "multipleOf") {
+                if (floatSafeRemainder(input.data, check.value) !== 0) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.not_multiple_of,
+                        multipleOf: check.value,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "finite") {
+                if (!Number.isFinite(input.data)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.not_finite,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else {
+                util_1.util.assertNever(check);
+            }
+        }
+        return { status: status.value, value: input.data };
+    }
+    gte(value, message) {
+        return this.setLimit("min", value, true, errorUtil_1.errorUtil.toString(message));
+    }
+    gt(value, message) {
+        return this.setLimit("min", value, false, errorUtil_1.errorUtil.toString(message));
+    }
+    lte(value, message) {
+        return this.setLimit("max", value, true, errorUtil_1.errorUtil.toString(message));
+    }
+    lt(value, message) {
+        return this.setLimit("max", value, false, errorUtil_1.errorUtil.toString(message));
+    }
+    setLimit(kind, value, inclusive, message) {
+        return new ZodNumber({
+            ...this._def,
+            checks: [
+                ...this._def.checks,
+                {
+                    kind,
+                    value,
+                    inclusive,
+                    message: errorUtil_1.errorUtil.toString(message),
+                },
+            ],
+        });
+    }
+    _addCheck(check) {
+        return new ZodNumber({
+            ...this._def,
+            checks: [...this._def.checks, check],
+        });
+    }
+    int(message) {
+        return this._addCheck({
+            kind: "int",
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    positive(message) {
+        return this._addCheck({
+            kind: "min",
+            value: 0,
+            inclusive: false,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    negative(message) {
+        return this._addCheck({
+            kind: "max",
+            value: 0,
+            inclusive: false,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    nonpositive(message) {
+        return this._addCheck({
+            kind: "max",
+            value: 0,
+            inclusive: true,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    nonnegative(message) {
+        return this._addCheck({
+            kind: "min",
+            value: 0,
+            inclusive: true,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    multipleOf(value, message) {
+        return this._addCheck({
+            kind: "multipleOf",
+            value: value,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    finite(message) {
+        return this._addCheck({
+            kind: "finite",
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    safe(message) {
+        return this._addCheck({
+            kind: "min",
+            inclusive: true,
+            value: Number.MIN_SAFE_INTEGER,
+            message: errorUtil_1.errorUtil.toString(message),
+        })._addCheck({
+            kind: "max",
+            inclusive: true,
+            value: Number.MAX_SAFE_INTEGER,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    get minValue() {
+        let min = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "min") {
+                if (min === null || ch.value > min)
+                    min = ch.value;
+            }
+        }
+        return min;
+    }
+    get maxValue() {
+        let max = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "max") {
+                if (max === null || ch.value < max)
+                    max = ch.value;
+            }
+        }
+        return max;
+    }
+    get isInt() {
+        return !!this._def.checks.find((ch) => ch.kind === "int" ||
+            (ch.kind === "multipleOf" && util_1.util.isInteger(ch.value)));
+    }
+    get isFinite() {
+        let max = null, min = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "finite" ||
+                ch.kind === "int" ||
+                ch.kind === "multipleOf") {
+                return true;
+            }
+            else if (ch.kind === "min") {
+                if (min === null || ch.value > min)
+                    min = ch.value;
+            }
+            else if (ch.kind === "max") {
+                if (max === null || ch.value < max)
+                    max = ch.value;
+            }
+        }
+        return Number.isFinite(min) && Number.isFinite(max);
+    }
+}
+exports.ZodNumber = ZodNumber;
+ZodNumber.create = (params) => {
+    return new ZodNumber({
+        checks: [],
+        typeName: ZodFirstPartyTypeKind.ZodNumber,
+        coerce: (params === null || params === void 0 ? void 0 : params.coerce) || false,
+        ...processCreateParams(params),
+    });
+};
+class ZodBigInt extends ZodType {
+    constructor() {
+        super(...arguments);
+        this.min = this.gte;
+        this.max = this.lte;
+    }
+    _parse(input) {
+        if (this._def.coerce) {
+            input.data = BigInt(input.data);
+        }
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.bigint) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.bigint,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        let ctx = undefined;
+        const status = new parseUtil_1.ParseStatus();
+        for (const check of this._def.checks) {
+            if (check.kind === "min") {
+                const tooSmall = check.inclusive
+                    ? input.data < check.value
+                    : input.data <= check.value;
+                if (tooSmall) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_small,
+                        type: "bigint",
+                        minimum: check.value,
+                        inclusive: check.inclusive,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "max") {
+                const tooBig = check.inclusive
+                    ? input.data > check.value
+                    : input.data >= check.value;
+                if (tooBig) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_big,
+                        type: "bigint",
+                        maximum: check.value,
+                        inclusive: check.inclusive,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "multipleOf") {
+                if (input.data % check.value !== BigInt(0)) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.not_multiple_of,
+                        multipleOf: check.value,
+                        message: check.message,
+                    });
+                    status.dirty();
+                }
+            }
+            else {
+                util_1.util.assertNever(check);
+            }
+        }
+        return { status: status.value, value: input.data };
+    }
+    gte(value, message) {
+        return this.setLimit("min", value, true, errorUtil_1.errorUtil.toString(message));
+    }
+    gt(value, message) {
+        return this.setLimit("min", value, false, errorUtil_1.errorUtil.toString(message));
+    }
+    lte(value, message) {
+        return this.setLimit("max", value, true, errorUtil_1.errorUtil.toString(message));
+    }
+    lt(value, message) {
+        return this.setLimit("max", value, false, errorUtil_1.errorUtil.toString(message));
+    }
+    setLimit(kind, value, inclusive, message) {
+        return new ZodBigInt({
+            ...this._def,
+            checks: [
+                ...this._def.checks,
+                {
+                    kind,
+                    value,
+                    inclusive,
+                    message: errorUtil_1.errorUtil.toString(message),
+                },
+            ],
+        });
+    }
+    _addCheck(check) {
+        return new ZodBigInt({
+            ...this._def,
+            checks: [...this._def.checks, check],
+        });
+    }
+    positive(message) {
+        return this._addCheck({
+            kind: "min",
+            value: BigInt(0),
+            inclusive: false,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    negative(message) {
+        return this._addCheck({
+            kind: "max",
+            value: BigInt(0),
+            inclusive: false,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    nonpositive(message) {
+        return this._addCheck({
+            kind: "max",
+            value: BigInt(0),
+            inclusive: true,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    nonnegative(message) {
+        return this._addCheck({
+            kind: "min",
+            value: BigInt(0),
+            inclusive: true,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    multipleOf(value, message) {
+        return this._addCheck({
+            kind: "multipleOf",
+            value,
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    get minValue() {
+        let min = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "min") {
+                if (min === null || ch.value > min)
+                    min = ch.value;
+            }
+        }
+        return min;
+    }
+    get maxValue() {
+        let max = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "max") {
+                if (max === null || ch.value < max)
+                    max = ch.value;
+            }
+        }
+        return max;
+    }
+}
+exports.ZodBigInt = ZodBigInt;
+ZodBigInt.create = (params) => {
+    var _a;
+    return new ZodBigInt({
+        checks: [],
+        typeName: ZodFirstPartyTypeKind.ZodBigInt,
+        coerce: (_a = params === null || params === void 0 ? void 0 : params.coerce) !== null && _a !== void 0 ? _a : false,
+        ...processCreateParams(params),
+    });
+};
+class ZodBoolean extends ZodType {
+    _parse(input) {
+        if (this._def.coerce) {
+            input.data = Boolean(input.data);
+        }
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.boolean) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.boolean,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return (0, parseUtil_1.OK)(input.data);
+    }
+}
+exports.ZodBoolean = ZodBoolean;
+ZodBoolean.create = (params) => {
+    return new ZodBoolean({
+        typeName: ZodFirstPartyTypeKind.ZodBoolean,
+        coerce: (params === null || params === void 0 ? void 0 : params.coerce) || false,
+        ...processCreateParams(params),
+    });
+};
+class ZodDate extends ZodType {
+    _parse(input) {
+        if (this._def.coerce) {
+            input.data = new Date(input.data);
+        }
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.date) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.date,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        if (isNaN(input.data.getTime())) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_date,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const status = new parseUtil_1.ParseStatus();
+        let ctx = undefined;
+        for (const check of this._def.checks) {
+            if (check.kind === "min") {
+                if (input.data.getTime() < check.value) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_small,
+                        message: check.message,
+                        inclusive: true,
+                        exact: false,
+                        minimum: check.value,
+                        type: "date",
+                    });
+                    status.dirty();
+                }
+            }
+            else if (check.kind === "max") {
+                if (input.data.getTime() > check.value) {
+                    ctx = this._getOrReturnCtx(input, ctx);
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.too_big,
+                        message: check.message,
+                        inclusive: true,
+                        exact: false,
+                        maximum: check.value,
+                        type: "date",
+                    });
+                    status.dirty();
+                }
+            }
+            else {
+                util_1.util.assertNever(check);
+            }
+        }
+        return {
+            status: status.value,
+            value: new Date(input.data.getTime()),
+        };
+    }
+    _addCheck(check) {
+        return new ZodDate({
+            ...this._def,
+            checks: [...this._def.checks, check],
+        });
+    }
+    min(minDate, message) {
+        return this._addCheck({
+            kind: "min",
+            value: minDate.getTime(),
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    max(maxDate, message) {
+        return this._addCheck({
+            kind: "max",
+            value: maxDate.getTime(),
+            message: errorUtil_1.errorUtil.toString(message),
+        });
+    }
+    get minDate() {
+        let min = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "min") {
+                if (min === null || ch.value > min)
+                    min = ch.value;
+            }
+        }
+        return min != null ? new Date(min) : null;
+    }
+    get maxDate() {
+        let max = null;
+        for (const ch of this._def.checks) {
+            if (ch.kind === "max") {
+                if (max === null || ch.value < max)
+                    max = ch.value;
+            }
+        }
+        return max != null ? new Date(max) : null;
+    }
+}
+exports.ZodDate = ZodDate;
+ZodDate.create = (params) => {
+    return new ZodDate({
+        checks: [],
+        coerce: (params === null || params === void 0 ? void 0 : params.coerce) || false,
+        typeName: ZodFirstPartyTypeKind.ZodDate,
+        ...processCreateParams(params),
+    });
+};
+class ZodSymbol extends ZodType {
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.symbol) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.symbol,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return (0, parseUtil_1.OK)(input.data);
+    }
+}
+exports.ZodSymbol = ZodSymbol;
+ZodSymbol.create = (params) => {
+    return new ZodSymbol({
+        typeName: ZodFirstPartyTypeKind.ZodSymbol,
+        ...processCreateParams(params),
+    });
+};
+class ZodUndefined extends ZodType {
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.undefined) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.undefined,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return (0, parseUtil_1.OK)(input.data);
+    }
+}
+exports.ZodUndefined = ZodUndefined;
+ZodUndefined.create = (params) => {
+    return new ZodUndefined({
+        typeName: ZodFirstPartyTypeKind.ZodUndefined,
+        ...processCreateParams(params),
+    });
+};
+class ZodNull extends ZodType {
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.null) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.null,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return (0, parseUtil_1.OK)(input.data);
+    }
+}
+exports.ZodNull = ZodNull;
+ZodNull.create = (params) => {
+    return new ZodNull({
+        typeName: ZodFirstPartyTypeKind.ZodNull,
+        ...processCreateParams(params),
+    });
+};
+class ZodAny extends ZodType {
+    constructor() {
+        super(...arguments);
+        // to prevent instances of other classes from extending ZodAny. this causes issues with catchall in ZodObject.
+        this._any = true;
+    }
+    _parse(input) {
+        return (0, parseUtil_1.OK)(input.data);
+    }
+}
+exports.ZodAny = ZodAny;
+ZodAny.create = (params) => {
+    return new ZodAny({
+        typeName: ZodFirstPartyTypeKind.ZodAny,
+        ...processCreateParams(params),
+    });
+};
+class ZodUnknown extends ZodType {
+    constructor() {
+        super(...arguments);
+        // required
+        this._unknown = true;
+    }
+    _parse(input) {
+        return (0, parseUtil_1.OK)(input.data);
+    }
+}
+exports.ZodUnknown = ZodUnknown;
+ZodUnknown.create = (params) => {
+    return new ZodUnknown({
+        typeName: ZodFirstPartyTypeKind.ZodUnknown,
+        ...processCreateParams(params),
+    });
+};
+class ZodNever extends ZodType {
+    _parse(input) {
+        const ctx = this._getOrReturnCtx(input);
+        (0, parseUtil_1.addIssueToContext)(ctx, {
+            code: ZodError_1.ZodIssueCode.invalid_type,
+            expected: util_1.ZodParsedType.never,
+            received: ctx.parsedType,
+        });
+        return parseUtil_1.INVALID;
+    }
+}
+exports.ZodNever = ZodNever;
+ZodNever.create = (params) => {
+    return new ZodNever({
+        typeName: ZodFirstPartyTypeKind.ZodNever,
+        ...processCreateParams(params),
+    });
+};
+class ZodVoid extends ZodType {
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.undefined) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.void,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return (0, parseUtil_1.OK)(input.data);
+    }
+}
+exports.ZodVoid = ZodVoid;
+ZodVoid.create = (params) => {
+    return new ZodVoid({
+        typeName: ZodFirstPartyTypeKind.ZodVoid,
+        ...processCreateParams(params),
+    });
+};
+class ZodArray extends ZodType {
+    _parse(input) {
+        const { ctx, status } = this._processInputParams(input);
+        const def = this._def;
+        if (ctx.parsedType !== util_1.ZodParsedType.array) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.array,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        if (def.exactLength !== null) {
+            const tooBig = ctx.data.length > def.exactLength.value;
+            const tooSmall = ctx.data.length < def.exactLength.value;
+            if (tooBig || tooSmall) {
+                (0, parseUtil_1.addIssueToContext)(ctx, {
+                    code: tooBig ? ZodError_1.ZodIssueCode.too_big : ZodError_1.ZodIssueCode.too_small,
+                    minimum: (tooSmall ? def.exactLength.value : undefined),
+                    maximum: (tooBig ? def.exactLength.value : undefined),
+                    type: "array",
+                    inclusive: true,
+                    exact: true,
+                    message: def.exactLength.message,
+                });
+                status.dirty();
+            }
+        }
+        if (def.minLength !== null) {
+            if (ctx.data.length < def.minLength.value) {
+                (0, parseUtil_1.addIssueToContext)(ctx, {
+                    code: ZodError_1.ZodIssueCode.too_small,
+                    minimum: def.minLength.value,
+                    type: "array",
+                    inclusive: true,
+                    exact: false,
+                    message: def.minLength.message,
+                });
+                status.dirty();
+            }
+        }
+        if (def.maxLength !== null) {
+            if (ctx.data.length > def.maxLength.value) {
+                (0, parseUtil_1.addIssueToContext)(ctx, {
+                    code: ZodError_1.ZodIssueCode.too_big,
+                    maximum: def.maxLength.value,
+                    type: "array",
+                    inclusive: true,
+                    exact: false,
+                    message: def.maxLength.message,
+                });
+                status.dirty();
+            }
+        }
+        if (ctx.common.async) {
+            return Promise.all([...ctx.data].map((item, i) => {
+                return def.type._parseAsync(new ParseInputLazyPath(ctx, item, ctx.path, i));
+            })).then((result) => {
+                return parseUtil_1.ParseStatus.mergeArray(status, result);
+            });
+        }
+        const result = [...ctx.data].map((item, i) => {
+            return def.type._parseSync(new ParseInputLazyPath(ctx, item, ctx.path, i));
+        });
+        return parseUtil_1.ParseStatus.mergeArray(status, result);
+    }
+    get element() {
+        return this._def.type;
+    }
+    min(minLength, message) {
+        return new ZodArray({
+            ...this._def,
+            minLength: { value: minLength, message: errorUtil_1.errorUtil.toString(message) },
+        });
+    }
+    max(maxLength, message) {
+        return new ZodArray({
+            ...this._def,
+            maxLength: { value: maxLength, message: errorUtil_1.errorUtil.toString(message) },
+        });
+    }
+    length(len, message) {
+        return new ZodArray({
+            ...this._def,
+            exactLength: { value: len, message: errorUtil_1.errorUtil.toString(message) },
+        });
+    }
+    nonempty(message) {
+        return this.min(1, message);
+    }
+}
+exports.ZodArray = ZodArray;
+ZodArray.create = (schema, params) => {
+    return new ZodArray({
+        type: schema,
+        minLength: null,
+        maxLength: null,
+        exactLength: null,
+        typeName: ZodFirstPartyTypeKind.ZodArray,
+        ...processCreateParams(params),
+    });
+};
+function deepPartialify(schema) {
+    if (schema instanceof ZodObject) {
+        const newShape = {};
+        for (const key in schema.shape) {
+            const fieldSchema = schema.shape[key];
+            newShape[key] = ZodOptional.create(deepPartialify(fieldSchema));
+        }
+        return new ZodObject({
+            ...schema._def,
+            shape: () => newShape,
+        });
+    }
+    else if (schema instanceof ZodArray) {
+        return new ZodArray({
+            ...schema._def,
+            type: deepPartialify(schema.element),
+        });
+    }
+    else if (schema instanceof ZodOptional) {
+        return ZodOptional.create(deepPartialify(schema.unwrap()));
+    }
+    else if (schema instanceof ZodNullable) {
+        return ZodNullable.create(deepPartialify(schema.unwrap()));
+    }
+    else if (schema instanceof ZodTuple) {
+        return ZodTuple.create(schema.items.map((item) => deepPartialify(item)));
+    }
+    else {
+        return schema;
+    }
+}
+class ZodObject extends ZodType {
+    constructor() {
+        super(...arguments);
+        this._cached = null;
+        /**
+         * @deprecated In most cases, this is no longer needed - unknown properties are now silently stripped.
+         * If you want to pass through unknown properties, use `.passthrough()` instead.
+         */
+        this.nonstrict = this.passthrough;
+        // extend<
+        //   Augmentation extends ZodRawShape,
+        //   NewOutput extends util.flatten<{
+        //     [k in keyof Augmentation | keyof Output]: k extends keyof Augmentation
+        //       ? Augmentation[k]["_output"]
+        //       : k extends keyof Output
+        //       ? Output[k]
+        //       : never;
+        //   }>,
+        //   NewInput extends util.flatten<{
+        //     [k in keyof Augmentation | keyof Input]: k extends keyof Augmentation
+        //       ? Augmentation[k]["_input"]
+        //       : k extends keyof Input
+        //       ? Input[k]
+        //       : never;
+        //   }>
+        // >(
+        //   augmentation: Augmentation
+        // ): ZodObject<
+        //   extendShape<T, Augmentation>,
+        //   UnknownKeys,
+        //   Catchall,
+        //   NewOutput,
+        //   NewInput
+        // > {
+        //   return new ZodObject({
+        //     ...this._def,
+        //     shape: () => ({
+        //       ...this._def.shape(),
+        //       ...augmentation,
+        //     }),
+        //   }) as any;
+        // }
+        /**
+         * @deprecated Use `.extend` instead
+         *  */
+        this.augment = this.extend;
+    }
+    _getCached() {
+        if (this._cached !== null)
+            return this._cached;
+        const shape = this._def.shape();
+        const keys = util_1.util.objectKeys(shape);
+        return (this._cached = { shape, keys });
+    }
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.object) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.object,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const { status, ctx } = this._processInputParams(input);
+        const { shape, keys: shapeKeys } = this._getCached();
+        const extraKeys = [];
+        if (!(this._def.catchall instanceof ZodNever &&
+            this._def.unknownKeys === "strip")) {
+            for (const key in ctx.data) {
+                if (!shapeKeys.includes(key)) {
+                    extraKeys.push(key);
+                }
+            }
+        }
+        const pairs = [];
+        for (const key of shapeKeys) {
+            const keyValidator = shape[key];
+            const value = ctx.data[key];
+            pairs.push({
+                key: { status: "valid", value: key },
+                value: keyValidator._parse(new ParseInputLazyPath(ctx, value, ctx.path, key)),
+                alwaysSet: key in ctx.data,
+            });
+        }
+        if (this._def.catchall instanceof ZodNever) {
+            const unknownKeys = this._def.unknownKeys;
+            if (unknownKeys === "passthrough") {
+                for (const key of extraKeys) {
+                    pairs.push({
+                        key: { status: "valid", value: key },
+                        value: { status: "valid", value: ctx.data[key] },
+                    });
+                }
+            }
+            else if (unknownKeys === "strict") {
+                if (extraKeys.length > 0) {
+                    (0, parseUtil_1.addIssueToContext)(ctx, {
+                        code: ZodError_1.ZodIssueCode.unrecognized_keys,
+                        keys: extraKeys,
+                    });
+                    status.dirty();
+                }
+            }
+            else if (unknownKeys === "strip") {
+            }
+            else {
+                throw new Error(`Internal ZodObject error: invalid unknownKeys value.`);
+            }
+        }
+        else {
+            // run catchall validation
+            const catchall = this._def.catchall;
+            for (const key of extraKeys) {
+                const value = ctx.data[key];
+                pairs.push({
+                    key: { status: "valid", value: key },
+                    value: catchall._parse(new ParseInputLazyPath(ctx, value, ctx.path, key) //, ctx.child(key), value, getParsedType(value)
+                    ),
+                    alwaysSet: key in ctx.data,
+                });
+            }
+        }
+        if (ctx.common.async) {
+            return Promise.resolve()
+                .then(async () => {
+                const syncPairs = [];
+                for (const pair of pairs) {
+                    const key = await pair.key;
+                    const value = await pair.value;
+                    syncPairs.push({
+                        key,
+                        value,
+                        alwaysSet: pair.alwaysSet,
+                    });
+                }
+                return syncPairs;
+            })
+                .then((syncPairs) => {
+                return parseUtil_1.ParseStatus.mergeObjectSync(status, syncPairs);
+            });
+        }
+        else {
+            return parseUtil_1.ParseStatus.mergeObjectSync(status, pairs);
+        }
+    }
+    get shape() {
+        return this._def.shape();
+    }
+    strict(message) {
+        errorUtil_1.errorUtil.errToObj;
+        return new ZodObject({
+            ...this._def,
+            unknownKeys: "strict",
+            ...(message !== undefined
+                ? {
+                    errorMap: (issue, ctx) => {
+                        var _a, _b, _c, _d;
+                        const defaultError = (_c = (_b = (_a = this._def).errorMap) === null || _b === void 0 ? void 0 : _b.call(_a, issue, ctx).message) !== null && _c !== void 0 ? _c : ctx.defaultError;
+                        if (issue.code === "unrecognized_keys")
+                            return {
+                                message: (_d = errorUtil_1.errorUtil.errToObj(message).message) !== null && _d !== void 0 ? _d : defaultError,
+                            };
+                        return {
+                            message: defaultError,
+                        };
+                    },
+                }
+                : {}),
+        });
+    }
+    strip() {
+        return new ZodObject({
+            ...this._def,
+            unknownKeys: "strip",
+        });
+    }
+    passthrough() {
+        return new ZodObject({
+            ...this._def,
+            unknownKeys: "passthrough",
+        });
+    }
+    // const AugmentFactory =
+    //   <Def extends ZodObjectDef>(def: Def) =>
+    //   <Augmentation extends ZodRawShape>(
+    //     augmentation: Augmentation
+    //   ): ZodObject<
+    //     extendShape<ReturnType<Def["shape"]>, Augmentation>,
+    //     Def["unknownKeys"],
+    //     Def["catchall"]
+    //   > => {
+    //     return new ZodObject({
+    //       ...def,
+    //       shape: () => ({
+    //         ...def.shape(),
+    //         ...augmentation,
+    //       }),
+    //     }) as any;
+    //   };
+    extend(augmentation) {
+        return new ZodObject({
+            ...this._def,
+            shape: () => ({
+                ...this._def.shape(),
+                ...augmentation,
+            }),
+        });
+    }
+    /**
+     * Prior to zod@1.0.12 there was a bug in the
+     * inferred type of merged objects. Please
+     * upgrade if you are experiencing issues.
+     */
+    merge(merging) {
+        const merged = new ZodObject({
+            unknownKeys: merging._def.unknownKeys,
+            catchall: merging._def.catchall,
+            shape: () => ({
+                ...this._def.shape(),
+                ...merging._def.shape(),
+            }),
+            typeName: ZodFirstPartyTypeKind.ZodObject,
+        });
+        return merged;
+    }
+    // merge<
+    //   Incoming extends AnyZodObject,
+    //   Augmentation extends Incoming["shape"],
+    //   NewOutput extends {
+    //     [k in keyof Augmentation | keyof Output]: k extends keyof Augmentation
+    //       ? Augmentation[k]["_output"]
+    //       : k extends keyof Output
+    //       ? Output[k]
+    //       : never;
+    //   },
+    //   NewInput extends {
+    //     [k in keyof Augmentation | keyof Input]: k extends keyof Augmentation
+    //       ? Augmentation[k]["_input"]
+    //       : k extends keyof Input
+    //       ? Input[k]
+    //       : never;
+    //   }
+    // >(
+    //   merging: Incoming
+    // ): ZodObject<
+    //   extendShape<T, ReturnType<Incoming["_def"]["shape"]>>,
+    //   Incoming["_def"]["unknownKeys"],
+    //   Incoming["_def"]["catchall"],
+    //   NewOutput,
+    //   NewInput
+    // > {
+    //   const merged: any = new ZodObject({
+    //     unknownKeys: merging._def.unknownKeys,
+    //     catchall: merging._def.catchall,
+    //     shape: () =>
+    //       objectUtil.mergeShapes(this._def.shape(), merging._def.shape()),
+    //     typeName: ZodFirstPartyTypeKind.ZodObject,
+    //   }) as any;
+    //   return merged;
+    // }
+    setKey(key, schema) {
+        return this.augment({ [key]: schema });
+    }
+    // merge<Incoming extends AnyZodObject>(
+    //   merging: Incoming
+    // ): //ZodObject<T & Incoming["_shape"], UnknownKeys, Catchall> = (merging) => {
+    // ZodObject<
+    //   extendShape<T, ReturnType<Incoming["_def"]["shape"]>>,
+    //   Incoming["_def"]["unknownKeys"],
+    //   Incoming["_def"]["catchall"]
+    // > {
+    //   // const mergedShape = objectUtil.mergeShapes(
+    //   //   this._def.shape(),
+    //   //   merging._def.shape()
+    //   // );
+    //   const merged: any = new ZodObject({
+    //     unknownKeys: merging._def.unknownKeys,
+    //     catchall: merging._def.catchall,
+    //     shape: () =>
+    //       objectUtil.mergeShapes(this._def.shape(), merging._def.shape()),
+    //     typeName: ZodFirstPartyTypeKind.ZodObject,
+    //   }) as any;
+    //   return merged;
+    // }
+    catchall(index) {
+        return new ZodObject({
+            ...this._def,
+            catchall: index,
+        });
+    }
+    pick(mask) {
+        const shape = {};
+        util_1.util.objectKeys(mask).forEach((key) => {
+            if (mask[key] && this.shape[key]) {
+                shape[key] = this.shape[key];
+            }
+        });
+        return new ZodObject({
+            ...this._def,
+            shape: () => shape,
+        });
+    }
+    omit(mask) {
+        const shape = {};
+        util_1.util.objectKeys(this.shape).forEach((key) => {
+            if (!mask[key]) {
+                shape[key] = this.shape[key];
+            }
+        });
+        return new ZodObject({
+            ...this._def,
+            shape: () => shape,
+        });
+    }
+    /**
+     * @deprecated
+     */
+    deepPartial() {
+        return deepPartialify(this);
+    }
+    partial(mask) {
+        const newShape = {};
+        util_1.util.objectKeys(this.shape).forEach((key) => {
+            const fieldSchema = this.shape[key];
+            if (mask && !mask[key]) {
+                newShape[key] = fieldSchema;
+            }
+            else {
+                newShape[key] = fieldSchema.optional();
+            }
+        });
+        return new ZodObject({
+            ...this._def,
+            shape: () => newShape,
+        });
+    }
+    required(mask) {
+        const newShape = {};
+        util_1.util.objectKeys(this.shape).forEach((key) => {
+            if (mask && !mask[key]) {
+                newShape[key] = this.shape[key];
+            }
+            else {
+                const fieldSchema = this.shape[key];
+                let newField = fieldSchema;
+                while (newField instanceof ZodOptional) {
+                    newField = newField._def.innerType;
+                }
+                newShape[key] = newField;
+            }
+        });
+        return new ZodObject({
+            ...this._def,
+            shape: () => newShape,
+        });
+    }
+    keyof() {
+        return createZodEnum(util_1.util.objectKeys(this.shape));
+    }
+}
+exports.ZodObject = ZodObject;
+ZodObject.create = (shape, params) => {
+    return new ZodObject({
+        shape: () => shape,
+        unknownKeys: "strip",
+        catchall: ZodNever.create(),
+        typeName: ZodFirstPartyTypeKind.ZodObject,
+        ...processCreateParams(params),
+    });
+};
+ZodObject.strictCreate = (shape, params) => {
+    return new ZodObject({
+        shape: () => shape,
+        unknownKeys: "strict",
+        catchall: ZodNever.create(),
+        typeName: ZodFirstPartyTypeKind.ZodObject,
+        ...processCreateParams(params),
+    });
+};
+ZodObject.lazycreate = (shape, params) => {
+    return new ZodObject({
+        shape,
+        unknownKeys: "strip",
+        catchall: ZodNever.create(),
+        typeName: ZodFirstPartyTypeKind.ZodObject,
+        ...processCreateParams(params),
+    });
+};
+class ZodUnion extends ZodType {
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        const options = this._def.options;
+        function handleResults(results) {
+            // return first issue-free validation if it exists
+            for (const result of results) {
+                if (result.result.status === "valid") {
+                    return result.result;
+                }
+            }
+            for (const result of results) {
+                if (result.result.status === "dirty") {
+                    // add issues from dirty option
+                    ctx.common.issues.push(...result.ctx.common.issues);
+                    return result.result;
+                }
+            }
+            // return invalid
+            const unionErrors = results.map((result) => new ZodError_1.ZodError(result.ctx.common.issues));
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_union,
+                unionErrors,
+            });
+            return parseUtil_1.INVALID;
+        }
+        if (ctx.common.async) {
+            return Promise.all(options.map(async (option) => {
+                const childCtx = {
+                    ...ctx,
+                    common: {
+                        ...ctx.common,
+                        issues: [],
+                    },
+                    parent: null,
+                };
+                return {
+                    result: await option._parseAsync({
+                        data: ctx.data,
+                        path: ctx.path,
+                        parent: childCtx,
+                    }),
+                    ctx: childCtx,
+                };
+            })).then(handleResults);
+        }
+        else {
+            let dirty = undefined;
+            const issues = [];
+            for (const option of options) {
+                const childCtx = {
+                    ...ctx,
+                    common: {
+                        ...ctx.common,
+                        issues: [],
+                    },
+                    parent: null,
+                };
+                const result = option._parseSync({
+                    data: ctx.data,
+                    path: ctx.path,
+                    parent: childCtx,
+                });
+                if (result.status === "valid") {
+                    return result;
+                }
+                else if (result.status === "dirty" && !dirty) {
+                    dirty = { result, ctx: childCtx };
+                }
+                if (childCtx.common.issues.length) {
+                    issues.push(childCtx.common.issues);
+                }
+            }
+            if (dirty) {
+                ctx.common.issues.push(...dirty.ctx.common.issues);
+                return dirty.result;
+            }
+            const unionErrors = issues.map((issues) => new ZodError_1.ZodError(issues));
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_union,
+                unionErrors,
+            });
+            return parseUtil_1.INVALID;
+        }
+    }
+    get options() {
+        return this._def.options;
+    }
+}
+exports.ZodUnion = ZodUnion;
+ZodUnion.create = (types, params) => {
+    return new ZodUnion({
+        options: types,
+        typeName: ZodFirstPartyTypeKind.ZodUnion,
+        ...processCreateParams(params),
+    });
+};
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+//////////                                 //////////
+//////////      ZodDiscriminatedUnion      //////////
+//////////                                 //////////
+/////////////////////////////////////////////////////
+/////////////////////////////////////////////////////
+const getDiscriminator = (type) => {
+    if (type instanceof ZodLazy) {
+        return getDiscriminator(type.schema);
+    }
+    else if (type instanceof ZodEffects) {
+        return getDiscriminator(type.innerType());
+    }
+    else if (type instanceof ZodLiteral) {
+        return [type.value];
+    }
+    else if (type instanceof ZodEnum) {
+        return type.options;
+    }
+    else if (type instanceof ZodNativeEnum) {
+        // eslint-disable-next-line ban/ban
+        return util_1.util.objectValues(type.enum);
+    }
+    else if (type instanceof ZodDefault) {
+        return getDiscriminator(type._def.innerType);
+    }
+    else if (type instanceof ZodUndefined) {
+        return [undefined];
+    }
+    else if (type instanceof ZodNull) {
+        return [null];
+    }
+    else if (type instanceof ZodOptional) {
+        return [undefined, ...getDiscriminator(type.unwrap())];
+    }
+    else if (type instanceof ZodNullable) {
+        return [null, ...getDiscriminator(type.unwrap())];
+    }
+    else if (type instanceof ZodBranded) {
+        return getDiscriminator(type.unwrap());
+    }
+    else if (type instanceof ZodReadonly) {
+        return getDiscriminator(type.unwrap());
+    }
+    else if (type instanceof ZodCatch) {
+        return getDiscriminator(type._def.innerType);
+    }
+    else {
+        return [];
+    }
+};
+class ZodDiscriminatedUnion extends ZodType {
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.object) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.object,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const discriminator = this.discriminator;
+        const discriminatorValue = ctx.data[discriminator];
+        const option = this.optionsMap.get(discriminatorValue);
+        if (!option) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_union_discriminator,
+                options: Array.from(this.optionsMap.keys()),
+                path: [discriminator],
+            });
+            return parseUtil_1.INVALID;
+        }
+        if (ctx.common.async) {
+            return option._parseAsync({
+                data: ctx.data,
+                path: ctx.path,
+                parent: ctx,
+            });
+        }
+        else {
+            return option._parseSync({
+                data: ctx.data,
+                path: ctx.path,
+                parent: ctx,
+            });
+        }
+    }
+    get discriminator() {
+        return this._def.discriminator;
+    }
+    get options() {
+        return this._def.options;
+    }
+    get optionsMap() {
+        return this._def.optionsMap;
+    }
+    /**
+     * The constructor of the discriminated union schema. Its behaviour is very similar to that of the normal z.union() constructor.
+     * However, it only allows a union of objects, all of which need to share a discriminator property. This property must
+     * have a different value for each object in the union.
+     * @param discriminator the name of the discriminator property
+     * @param types an array of object schemas
+     * @param params
+     */
+    static create(discriminator, options, params) {
+        // Get all the valid discriminator values
+        const optionsMap = new Map();
+        // try {
+        for (const type of options) {
+            const discriminatorValues = getDiscriminator(type.shape[discriminator]);
+            if (!discriminatorValues.length) {
+                throw new Error(`A discriminator value for key \`${discriminator}\` could not be extracted from all schema options`);
+            }
+            for (const value of discriminatorValues) {
+                if (optionsMap.has(value)) {
+                    throw new Error(`Discriminator property ${String(discriminator)} has duplicate value ${String(value)}`);
+                }
+                optionsMap.set(value, type);
+            }
+        }
+        return new ZodDiscriminatedUnion({
+            typeName: ZodFirstPartyTypeKind.ZodDiscriminatedUnion,
+            discriminator,
+            options,
+            optionsMap,
+            ...processCreateParams(params),
+        });
+    }
+}
+exports.ZodDiscriminatedUnion = ZodDiscriminatedUnion;
+function mergeValues(a, b) {
+    const aType = (0, util_1.getParsedType)(a);
+    const bType = (0, util_1.getParsedType)(b);
+    if (a === b) {
+        return { valid: true, data: a };
+    }
+    else if (aType === util_1.ZodParsedType.object && bType === util_1.ZodParsedType.object) {
+        const bKeys = util_1.util.objectKeys(b);
+        const sharedKeys = util_1.util
+            .objectKeys(a)
+            .filter((key) => bKeys.indexOf(key) !== -1);
+        const newObj = { ...a, ...b };
+        for (const key of sharedKeys) {
+            const sharedValue = mergeValues(a[key], b[key]);
+            if (!sharedValue.valid) {
+                return { valid: false };
+            }
+            newObj[key] = sharedValue.data;
+        }
+        return { valid: true, data: newObj };
+    }
+    else if (aType === util_1.ZodParsedType.array && bType === util_1.ZodParsedType.array) {
+        if (a.length !== b.length) {
+            return { valid: false };
+        }
+        const newArray = [];
+        for (let index = 0; index < a.length; index++) {
+            const itemA = a[index];
+            const itemB = b[index];
+            const sharedValue = mergeValues(itemA, itemB);
+            if (!sharedValue.valid) {
+                return { valid: false };
+            }
+            newArray.push(sharedValue.data);
+        }
+        return { valid: true, data: newArray };
+    }
+    else if (aType === util_1.ZodParsedType.date &&
+        bType === util_1.ZodParsedType.date &&
+        +a === +b) {
+        return { valid: true, data: a };
+    }
+    else {
+        return { valid: false };
+    }
+}
+class ZodIntersection extends ZodType {
+    _parse(input) {
+        const { status, ctx } = this._processInputParams(input);
+        const handleParsed = (parsedLeft, parsedRight) => {
+            if ((0, parseUtil_1.isAborted)(parsedLeft) || (0, parseUtil_1.isAborted)(parsedRight)) {
+                return parseUtil_1.INVALID;
+            }
+            const merged = mergeValues(parsedLeft.value, parsedRight.value);
+            if (!merged.valid) {
+                (0, parseUtil_1.addIssueToContext)(ctx, {
+                    code: ZodError_1.ZodIssueCode.invalid_intersection_types,
+                });
+                return parseUtil_1.INVALID;
+            }
+            if ((0, parseUtil_1.isDirty)(parsedLeft) || (0, parseUtil_1.isDirty)(parsedRight)) {
+                status.dirty();
+            }
+            return { status: status.value, value: merged.data };
+        };
+        if (ctx.common.async) {
+            return Promise.all([
+                this._def.left._parseAsync({
+                    data: ctx.data,
+                    path: ctx.path,
+                    parent: ctx,
+                }),
+                this._def.right._parseAsync({
+                    data: ctx.data,
+                    path: ctx.path,
+                    parent: ctx,
+                }),
+            ]).then(([left, right]) => handleParsed(left, right));
+        }
+        else {
+            return handleParsed(this._def.left._parseSync({
+                data: ctx.data,
+                path: ctx.path,
+                parent: ctx,
+            }), this._def.right._parseSync({
+                data: ctx.data,
+                path: ctx.path,
+                parent: ctx,
+            }));
+        }
+    }
+}
+exports.ZodIntersection = ZodIntersection;
+ZodIntersection.create = (left, right, params) => {
+    return new ZodIntersection({
+        left: left,
+        right: right,
+        typeName: ZodFirstPartyTypeKind.ZodIntersection,
+        ...processCreateParams(params),
+    });
+};
+class ZodTuple extends ZodType {
+    _parse(input) {
+        const { status, ctx } = this._processInputParams(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.array) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.array,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        if (ctx.data.length < this._def.items.length) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.too_small,
+                minimum: this._def.items.length,
+                inclusive: true,
+                exact: false,
+                type: "array",
+            });
+            return parseUtil_1.INVALID;
+        }
+        const rest = this._def.rest;
+        if (!rest && ctx.data.length > this._def.items.length) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.too_big,
+                maximum: this._def.items.length,
+                inclusive: true,
+                exact: false,
+                type: "array",
+            });
+            status.dirty();
+        }
+        const items = [...ctx.data]
+            .map((item, itemIndex) => {
+            const schema = this._def.items[itemIndex] || this._def.rest;
+            if (!schema)
+                return null;
+            return schema._parse(new ParseInputLazyPath(ctx, item, ctx.path, itemIndex));
+        })
+            .filter((x) => !!x); // filter nulls
+        if (ctx.common.async) {
+            return Promise.all(items).then((results) => {
+                return parseUtil_1.ParseStatus.mergeArray(status, results);
+            });
+        }
+        else {
+            return parseUtil_1.ParseStatus.mergeArray(status, items);
+        }
+    }
+    get items() {
+        return this._def.items;
+    }
+    rest(rest) {
+        return new ZodTuple({
+            ...this._def,
+            rest,
+        });
+    }
+}
+exports.ZodTuple = ZodTuple;
+ZodTuple.create = (schemas, params) => {
+    if (!Array.isArray(schemas)) {
+        throw new Error("You must pass an array of schemas to z.tuple([ ... ])");
+    }
+    return new ZodTuple({
+        items: schemas,
+        typeName: ZodFirstPartyTypeKind.ZodTuple,
+        rest: null,
+        ...processCreateParams(params),
+    });
+};
+class ZodRecord extends ZodType {
+    get keySchema() {
+        return this._def.keyType;
+    }
+    get valueSchema() {
+        return this._def.valueType;
+    }
+    _parse(input) {
+        const { status, ctx } = this._processInputParams(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.object) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.object,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const pairs = [];
+        const keyType = this._def.keyType;
+        const valueType = this._def.valueType;
+        for (const key in ctx.data) {
+            pairs.push({
+                key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, key)),
+                value: valueType._parse(new ParseInputLazyPath(ctx, ctx.data[key], ctx.path, key)),
+                alwaysSet: key in ctx.data,
+            });
+        }
+        if (ctx.common.async) {
+            return parseUtil_1.ParseStatus.mergeObjectAsync(status, pairs);
+        }
+        else {
+            return parseUtil_1.ParseStatus.mergeObjectSync(status, pairs);
+        }
+    }
+    get element() {
+        return this._def.valueType;
+    }
+    static create(first, second, third) {
+        if (second instanceof ZodType) {
+            return new ZodRecord({
+                keyType: first,
+                valueType: second,
+                typeName: ZodFirstPartyTypeKind.ZodRecord,
+                ...processCreateParams(third),
+            });
+        }
+        return new ZodRecord({
+            keyType: ZodString.create(),
+            valueType: first,
+            typeName: ZodFirstPartyTypeKind.ZodRecord,
+            ...processCreateParams(second),
+        });
+    }
+}
+exports.ZodRecord = ZodRecord;
+class ZodMap extends ZodType {
+    get keySchema() {
+        return this._def.keyType;
+    }
+    get valueSchema() {
+        return this._def.valueType;
+    }
+    _parse(input) {
+        const { status, ctx } = this._processInputParams(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.map) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.map,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const keyType = this._def.keyType;
+        const valueType = this._def.valueType;
+        const pairs = [...ctx.data.entries()].map(([key, value], index) => {
+            return {
+                key: keyType._parse(new ParseInputLazyPath(ctx, key, ctx.path, [index, "key"])),
+                value: valueType._parse(new ParseInputLazyPath(ctx, value, ctx.path, [index, "value"])),
+            };
+        });
+        if (ctx.common.async) {
+            const finalMap = new Map();
+            return Promise.resolve().then(async () => {
+                for (const pair of pairs) {
+                    const key = await pair.key;
+                    const value = await pair.value;
+                    if (key.status === "aborted" || value.status === "aborted") {
+                        return parseUtil_1.INVALID;
+                    }
+                    if (key.status === "dirty" || value.status === "dirty") {
+                        status.dirty();
+                    }
+                    finalMap.set(key.value, value.value);
+                }
+                return { status: status.value, value: finalMap };
+            });
+        }
+        else {
+            const finalMap = new Map();
+            for (const pair of pairs) {
+                const key = pair.key;
+                const value = pair.value;
+                if (key.status === "aborted" || value.status === "aborted") {
+                    return parseUtil_1.INVALID;
+                }
+                if (key.status === "dirty" || value.status === "dirty") {
+                    status.dirty();
+                }
+                finalMap.set(key.value, value.value);
+            }
+            return { status: status.value, value: finalMap };
+        }
+    }
+}
+exports.ZodMap = ZodMap;
+ZodMap.create = (keyType, valueType, params) => {
+    return new ZodMap({
+        valueType,
+        keyType,
+        typeName: ZodFirstPartyTypeKind.ZodMap,
+        ...processCreateParams(params),
+    });
+};
+class ZodSet extends ZodType {
+    _parse(input) {
+        const { status, ctx } = this._processInputParams(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.set) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.set,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const def = this._def;
+        if (def.minSize !== null) {
+            if (ctx.data.size < def.minSize.value) {
+                (0, parseUtil_1.addIssueToContext)(ctx, {
+                    code: ZodError_1.ZodIssueCode.too_small,
+                    minimum: def.minSize.value,
+                    type: "set",
+                    inclusive: true,
+                    exact: false,
+                    message: def.minSize.message,
+                });
+                status.dirty();
+            }
+        }
+        if (def.maxSize !== null) {
+            if (ctx.data.size > def.maxSize.value) {
+                (0, parseUtil_1.addIssueToContext)(ctx, {
+                    code: ZodError_1.ZodIssueCode.too_big,
+                    maximum: def.maxSize.value,
+                    type: "set",
+                    inclusive: true,
+                    exact: false,
+                    message: def.maxSize.message,
+                });
+                status.dirty();
+            }
+        }
+        const valueType = this._def.valueType;
+        function finalizeSet(elements) {
+            const parsedSet = new Set();
+            for (const element of elements) {
+                if (element.status === "aborted")
+                    return parseUtil_1.INVALID;
+                if (element.status === "dirty")
+                    status.dirty();
+                parsedSet.add(element.value);
+            }
+            return { status: status.value, value: parsedSet };
+        }
+        const elements = [...ctx.data.values()].map((item, i) => valueType._parse(new ParseInputLazyPath(ctx, item, ctx.path, i)));
+        if (ctx.common.async) {
+            return Promise.all(elements).then((elements) => finalizeSet(elements));
+        }
+        else {
+            return finalizeSet(elements);
+        }
+    }
+    min(minSize, message) {
+        return new ZodSet({
+            ...this._def,
+            minSize: { value: minSize, message: errorUtil_1.errorUtil.toString(message) },
+        });
+    }
+    max(maxSize, message) {
+        return new ZodSet({
+            ...this._def,
+            maxSize: { value: maxSize, message: errorUtil_1.errorUtil.toString(message) },
+        });
+    }
+    size(size, message) {
+        return this.min(size, message).max(size, message);
+    }
+    nonempty(message) {
+        return this.min(1, message);
+    }
+}
+exports.ZodSet = ZodSet;
+ZodSet.create = (valueType, params) => {
+    return new ZodSet({
+        valueType,
+        minSize: null,
+        maxSize: null,
+        typeName: ZodFirstPartyTypeKind.ZodSet,
+        ...processCreateParams(params),
+    });
+};
+class ZodFunction extends ZodType {
+    constructor() {
+        super(...arguments);
+        this.validate = this.implement;
+    }
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.function) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.function,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        function makeArgsIssue(args, error) {
+            return (0, parseUtil_1.makeIssue)({
+                data: args,
+                path: ctx.path,
+                errorMaps: [
+                    ctx.common.contextualErrorMap,
+                    ctx.schemaErrorMap,
+                    (0, errors_1.getErrorMap)(),
+                    errors_1.defaultErrorMap,
+                ].filter((x) => !!x),
+                issueData: {
+                    code: ZodError_1.ZodIssueCode.invalid_arguments,
+                    argumentsError: error,
+                },
+            });
+        }
+        function makeReturnsIssue(returns, error) {
+            return (0, parseUtil_1.makeIssue)({
+                data: returns,
+                path: ctx.path,
+                errorMaps: [
+                    ctx.common.contextualErrorMap,
+                    ctx.schemaErrorMap,
+                    (0, errors_1.getErrorMap)(),
+                    errors_1.defaultErrorMap,
+                ].filter((x) => !!x),
+                issueData: {
+                    code: ZodError_1.ZodIssueCode.invalid_return_type,
+                    returnTypeError: error,
+                },
+            });
+        }
+        const params = { errorMap: ctx.common.contextualErrorMap };
+        const fn = ctx.data;
+        if (this._def.returns instanceof ZodPromise) {
+            // Would love a way to avoid disabling this rule, but we need
+            // an alias (using an arrow function was what caused 2651).
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
+            const me = this;
+            return (0, parseUtil_1.OK)(async function (...args) {
+                const error = new ZodError_1.ZodError([]);
+                const parsedArgs = await me._def.args
+                    .parseAsync(args, params)
+                    .catch((e) => {
+                    error.addIssue(makeArgsIssue(args, e));
+                    throw error;
+                });
+                const result = await Reflect.apply(fn, this, parsedArgs);
+                const parsedReturns = await me._def.returns._def.type
+                    .parseAsync(result, params)
+                    .catch((e) => {
+                    error.addIssue(makeReturnsIssue(result, e));
+                    throw error;
+                });
+                return parsedReturns;
+            });
+        }
+        else {
+            // Would love a way to avoid disabling this rule, but we need
+            // an alias (using an arrow function was what caused 2651).
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
+            const me = this;
+            return (0, parseUtil_1.OK)(function (...args) {
+                const parsedArgs = me._def.args.safeParse(args, params);
+                if (!parsedArgs.success) {
+                    throw new ZodError_1.ZodError([makeArgsIssue(args, parsedArgs.error)]);
+                }
+                const result = Reflect.apply(fn, this, parsedArgs.data);
+                const parsedReturns = me._def.returns.safeParse(result, params);
+                if (!parsedReturns.success) {
+                    throw new ZodError_1.ZodError([makeReturnsIssue(result, parsedReturns.error)]);
+                }
+                return parsedReturns.data;
+            });
+        }
+    }
+    parameters() {
+        return this._def.args;
+    }
+    returnType() {
+        return this._def.returns;
+    }
+    args(...items) {
+        return new ZodFunction({
+            ...this._def,
+            args: ZodTuple.create(items).rest(ZodUnknown.create()),
+        });
+    }
+    returns(returnType) {
+        return new ZodFunction({
+            ...this._def,
+            returns: returnType,
+        });
+    }
+    implement(func) {
+        const validatedFunc = this.parse(func);
+        return validatedFunc;
+    }
+    strictImplement(func) {
+        const validatedFunc = this.parse(func);
+        return validatedFunc;
+    }
+    static create(args, returns, params) {
+        return new ZodFunction({
+            args: (args
+                ? args
+                : ZodTuple.create([]).rest(ZodUnknown.create())),
+            returns: returns || ZodUnknown.create(),
+            typeName: ZodFirstPartyTypeKind.ZodFunction,
+            ...processCreateParams(params),
+        });
+    }
+}
+exports.ZodFunction = ZodFunction;
+class ZodLazy extends ZodType {
+    get schema() {
+        return this._def.getter();
+    }
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        const lazySchema = this._def.getter();
+        return lazySchema._parse({ data: ctx.data, path: ctx.path, parent: ctx });
+    }
+}
+exports.ZodLazy = ZodLazy;
+ZodLazy.create = (getter, params) => {
+    return new ZodLazy({
+        getter: getter,
+        typeName: ZodFirstPartyTypeKind.ZodLazy,
+        ...processCreateParams(params),
+    });
+};
+class ZodLiteral extends ZodType {
+    _parse(input) {
+        if (input.data !== this._def.value) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                received: ctx.data,
+                code: ZodError_1.ZodIssueCode.invalid_literal,
+                expected: this._def.value,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return { status: "valid", value: input.data };
+    }
+    get value() {
+        return this._def.value;
+    }
+}
+exports.ZodLiteral = ZodLiteral;
+ZodLiteral.create = (value, params) => {
+    return new ZodLiteral({
+        value: value,
+        typeName: ZodFirstPartyTypeKind.ZodLiteral,
+        ...processCreateParams(params),
+    });
+};
+function createZodEnum(values, params) {
+    return new ZodEnum({
+        values,
+        typeName: ZodFirstPartyTypeKind.ZodEnum,
+        ...processCreateParams(params),
+    });
+}
+class ZodEnum extends ZodType {
+    constructor() {
+        super(...arguments);
+        _ZodEnum_cache.set(this, void 0);
+    }
+    _parse(input) {
+        if (typeof input.data !== "string") {
+            const ctx = this._getOrReturnCtx(input);
+            const expectedValues = this._def.values;
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                expected: util_1.util.joinValues(expectedValues),
+                received: ctx.parsedType,
+                code: ZodError_1.ZodIssueCode.invalid_type,
+            });
+            return parseUtil_1.INVALID;
+        }
+        if (!__classPrivateFieldGet(this, _ZodEnum_cache, "f")) {
+            __classPrivateFieldSet(this, _ZodEnum_cache, new Set(this._def.values), "f");
+        }
+        if (!__classPrivateFieldGet(this, _ZodEnum_cache, "f").has(input.data)) {
+            const ctx = this._getOrReturnCtx(input);
+            const expectedValues = this._def.values;
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                received: ctx.data,
+                code: ZodError_1.ZodIssueCode.invalid_enum_value,
+                options: expectedValues,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return (0, parseUtil_1.OK)(input.data);
+    }
+    get options() {
+        return this._def.values;
+    }
+    get enum() {
+        const enumValues = {};
+        for (const val of this._def.values) {
+            enumValues[val] = val;
+        }
+        return enumValues;
+    }
+    get Values() {
+        const enumValues = {};
+        for (const val of this._def.values) {
+            enumValues[val] = val;
+        }
+        return enumValues;
+    }
+    get Enum() {
+        const enumValues = {};
+        for (const val of this._def.values) {
+            enumValues[val] = val;
+        }
+        return enumValues;
+    }
+    extract(values, newDef = this._def) {
+        return ZodEnum.create(values, {
+            ...this._def,
+            ...newDef,
+        });
+    }
+    exclude(values, newDef = this._def) {
+        return ZodEnum.create(this.options.filter((opt) => !values.includes(opt)), {
+            ...this._def,
+            ...newDef,
+        });
+    }
+}
+exports.ZodEnum = ZodEnum;
+_ZodEnum_cache = new WeakMap();
+ZodEnum.create = createZodEnum;
+class ZodNativeEnum extends ZodType {
+    constructor() {
+        super(...arguments);
+        _ZodNativeEnum_cache.set(this, void 0);
+    }
+    _parse(input) {
+        const nativeEnumValues = util_1.util.getValidEnumValues(this._def.values);
+        const ctx = this._getOrReturnCtx(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.string &&
+            ctx.parsedType !== util_1.ZodParsedType.number) {
+            const expectedValues = util_1.util.objectValues(nativeEnumValues);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                expected: util_1.util.joinValues(expectedValues),
+                received: ctx.parsedType,
+                code: ZodError_1.ZodIssueCode.invalid_type,
+            });
+            return parseUtil_1.INVALID;
+        }
+        if (!__classPrivateFieldGet(this, _ZodNativeEnum_cache, "f")) {
+            __classPrivateFieldSet(this, _ZodNativeEnum_cache, new Set(util_1.util.getValidEnumValues(this._def.values)), "f");
+        }
+        if (!__classPrivateFieldGet(this, _ZodNativeEnum_cache, "f").has(input.data)) {
+            const expectedValues = util_1.util.objectValues(nativeEnumValues);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                received: ctx.data,
+                code: ZodError_1.ZodIssueCode.invalid_enum_value,
+                options: expectedValues,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return (0, parseUtil_1.OK)(input.data);
+    }
+    get enum() {
+        return this._def.values;
+    }
+}
+exports.ZodNativeEnum = ZodNativeEnum;
+_ZodNativeEnum_cache = new WeakMap();
+ZodNativeEnum.create = (values, params) => {
+    return new ZodNativeEnum({
+        values: values,
+        typeName: ZodFirstPartyTypeKind.ZodNativeEnum,
+        ...processCreateParams(params),
+    });
+};
+class ZodPromise extends ZodType {
+    unwrap() {
+        return this._def.type;
+    }
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        if (ctx.parsedType !== util_1.ZodParsedType.promise &&
+            ctx.common.async === false) {
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.promise,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        const promisified = ctx.parsedType === util_1.ZodParsedType.promise
+            ? ctx.data
+            : Promise.resolve(ctx.data);
+        return (0, parseUtil_1.OK)(promisified.then((data) => {
+            return this._def.type.parseAsync(data, {
+                path: ctx.path,
+                errorMap: ctx.common.contextualErrorMap,
+            });
+        }));
+    }
+}
+exports.ZodPromise = ZodPromise;
+ZodPromise.create = (schema, params) => {
+    return new ZodPromise({
+        type: schema,
+        typeName: ZodFirstPartyTypeKind.ZodPromise,
+        ...processCreateParams(params),
+    });
+};
+class ZodEffects extends ZodType {
+    innerType() {
+        return this._def.schema;
+    }
+    sourceType() {
+        return this._def.schema._def.typeName === ZodFirstPartyTypeKind.ZodEffects
+            ? this._def.schema.sourceType()
+            : this._def.schema;
+    }
+    _parse(input) {
+        const { status, ctx } = this._processInputParams(input);
+        const effect = this._def.effect || null;
+        const checkCtx = {
+            addIssue: (arg) => {
+                (0, parseUtil_1.addIssueToContext)(ctx, arg);
+                if (arg.fatal) {
+                    status.abort();
+                }
+                else {
+                    status.dirty();
+                }
+            },
+            get path() {
+                return ctx.path;
+            },
+        };
+        checkCtx.addIssue = checkCtx.addIssue.bind(checkCtx);
+        if (effect.type === "preprocess") {
+            const processed = effect.transform(ctx.data, checkCtx);
+            if (ctx.common.async) {
+                return Promise.resolve(processed).then(async (processed) => {
+                    if (status.value === "aborted")
+                        return parseUtil_1.INVALID;
+                    const result = await this._def.schema._parseAsync({
+                        data: processed,
+                        path: ctx.path,
+                        parent: ctx,
+                    });
+                    if (result.status === "aborted")
+                        return parseUtil_1.INVALID;
+                    if (result.status === "dirty")
+                        return (0, parseUtil_1.DIRTY)(result.value);
+                    if (status.value === "dirty")
+                        return (0, parseUtil_1.DIRTY)(result.value);
+                    return result;
+                });
+            }
+            else {
+                if (status.value === "aborted")
+                    return parseUtil_1.INVALID;
+                const result = this._def.schema._parseSync({
+                    data: processed,
+                    path: ctx.path,
+                    parent: ctx,
+                });
+                if (result.status === "aborted")
+                    return parseUtil_1.INVALID;
+                if (result.status === "dirty")
+                    return (0, parseUtil_1.DIRTY)(result.value);
+                if (status.value === "dirty")
+                    return (0, parseUtil_1.DIRTY)(result.value);
+                return result;
+            }
+        }
+        if (effect.type === "refinement") {
+            const executeRefinement = (acc) => {
+                const result = effect.refinement(acc, checkCtx);
+                if (ctx.common.async) {
+                    return Promise.resolve(result);
+                }
+                if (result instanceof Promise) {
+                    throw new Error("Async refinement encountered during synchronous parse operation. Use .parseAsync instead.");
+                }
+                return acc;
+            };
+            if (ctx.common.async === false) {
+                const inner = this._def.schema._parseSync({
+                    data: ctx.data,
+                    path: ctx.path,
+                    parent: ctx,
+                });
+                if (inner.status === "aborted")
+                    return parseUtil_1.INVALID;
+                if (inner.status === "dirty")
+                    status.dirty();
+                // return value is ignored
+                executeRefinement(inner.value);
+                return { status: status.value, value: inner.value };
+            }
+            else {
+                return this._def.schema
+                    ._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx })
+                    .then((inner) => {
+                    if (inner.status === "aborted")
+                        return parseUtil_1.INVALID;
+                    if (inner.status === "dirty")
+                        status.dirty();
+                    return executeRefinement(inner.value).then(() => {
+                        return { status: status.value, value: inner.value };
+                    });
+                });
+            }
+        }
+        if (effect.type === "transform") {
+            if (ctx.common.async === false) {
+                const base = this._def.schema._parseSync({
+                    data: ctx.data,
+                    path: ctx.path,
+                    parent: ctx,
+                });
+                if (!(0, parseUtil_1.isValid)(base))
+                    return base;
+                const result = effect.transform(base.value, checkCtx);
+                if (result instanceof Promise) {
+                    throw new Error(`Asynchronous transform encountered during synchronous parse operation. Use .parseAsync instead.`);
+                }
+                return { status: status.value, value: result };
+            }
+            else {
+                return this._def.schema
+                    ._parseAsync({ data: ctx.data, path: ctx.path, parent: ctx })
+                    .then((base) => {
+                    if (!(0, parseUtil_1.isValid)(base))
+                        return base;
+                    return Promise.resolve(effect.transform(base.value, checkCtx)).then((result) => ({ status: status.value, value: result }));
+                });
+            }
+        }
+        util_1.util.assertNever(effect);
+    }
+}
+exports.ZodEffects = ZodEffects;
+exports.ZodTransformer = ZodEffects;
+ZodEffects.create = (schema, effect, params) => {
+    return new ZodEffects({
+        schema,
+        typeName: ZodFirstPartyTypeKind.ZodEffects,
+        effect,
+        ...processCreateParams(params),
+    });
+};
+ZodEffects.createWithPreprocess = (preprocess, schema, params) => {
+    return new ZodEffects({
+        schema,
+        effect: { type: "preprocess", transform: preprocess },
+        typeName: ZodFirstPartyTypeKind.ZodEffects,
+        ...processCreateParams(params),
+    });
+};
+class ZodOptional extends ZodType {
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType === util_1.ZodParsedType.undefined) {
+            return (0, parseUtil_1.OK)(undefined);
+        }
+        return this._def.innerType._parse(input);
+    }
+    unwrap() {
+        return this._def.innerType;
+    }
+}
+exports.ZodOptional = ZodOptional;
+ZodOptional.create = (type, params) => {
+    return new ZodOptional({
+        innerType: type,
+        typeName: ZodFirstPartyTypeKind.ZodOptional,
+        ...processCreateParams(params),
+    });
+};
+class ZodNullable extends ZodType {
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType === util_1.ZodParsedType.null) {
+            return (0, parseUtil_1.OK)(null);
+        }
+        return this._def.innerType._parse(input);
+    }
+    unwrap() {
+        return this._def.innerType;
+    }
+}
+exports.ZodNullable = ZodNullable;
+ZodNullable.create = (type, params) => {
+    return new ZodNullable({
+        innerType: type,
+        typeName: ZodFirstPartyTypeKind.ZodNullable,
+        ...processCreateParams(params),
+    });
+};
+class ZodDefault extends ZodType {
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        let data = ctx.data;
+        if (ctx.parsedType === util_1.ZodParsedType.undefined) {
+            data = this._def.defaultValue();
+        }
+        return this._def.innerType._parse({
+            data,
+            path: ctx.path,
+            parent: ctx,
+        });
+    }
+    removeDefault() {
+        return this._def.innerType;
+    }
+}
+exports.ZodDefault = ZodDefault;
+ZodDefault.create = (type, params) => {
+    return new ZodDefault({
+        innerType: type,
+        typeName: ZodFirstPartyTypeKind.ZodDefault,
+        defaultValue: typeof params.default === "function"
+            ? params.default
+            : () => params.default,
+        ...processCreateParams(params),
+    });
+};
+class ZodCatch extends ZodType {
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        // newCtx is used to not collect issues from inner types in ctx
+        const newCtx = {
+            ...ctx,
+            common: {
+                ...ctx.common,
+                issues: [],
+            },
+        };
+        const result = this._def.innerType._parse({
+            data: newCtx.data,
+            path: newCtx.path,
+            parent: {
+                ...newCtx,
+            },
+        });
+        if ((0, parseUtil_1.isAsync)(result)) {
+            return result.then((result) => {
+                return {
+                    status: "valid",
+                    value: result.status === "valid"
+                        ? result.value
+                        : this._def.catchValue({
+                            get error() {
+                                return new ZodError_1.ZodError(newCtx.common.issues);
+                            },
+                            input: newCtx.data,
+                        }),
+                };
+            });
+        }
+        else {
+            return {
+                status: "valid",
+                value: result.status === "valid"
+                    ? result.value
+                    : this._def.catchValue({
+                        get error() {
+                            return new ZodError_1.ZodError(newCtx.common.issues);
+                        },
+                        input: newCtx.data,
+                    }),
+            };
+        }
+    }
+    removeCatch() {
+        return this._def.innerType;
+    }
+}
+exports.ZodCatch = ZodCatch;
+ZodCatch.create = (type, params) => {
+    return new ZodCatch({
+        innerType: type,
+        typeName: ZodFirstPartyTypeKind.ZodCatch,
+        catchValue: typeof params.catch === "function" ? params.catch : () => params.catch,
+        ...processCreateParams(params),
+    });
+};
+class ZodNaN extends ZodType {
+    _parse(input) {
+        const parsedType = this._getType(input);
+        if (parsedType !== util_1.ZodParsedType.nan) {
+            const ctx = this._getOrReturnCtx(input);
+            (0, parseUtil_1.addIssueToContext)(ctx, {
+                code: ZodError_1.ZodIssueCode.invalid_type,
+                expected: util_1.ZodParsedType.nan,
+                received: ctx.parsedType,
+            });
+            return parseUtil_1.INVALID;
+        }
+        return { status: "valid", value: input.data };
+    }
+}
+exports.ZodNaN = ZodNaN;
+ZodNaN.create = (params) => {
+    return new ZodNaN({
+        typeName: ZodFirstPartyTypeKind.ZodNaN,
+        ...processCreateParams(params),
+    });
+};
+exports.BRAND = Symbol("zod_brand");
+class ZodBranded extends ZodType {
+    _parse(input) {
+        const { ctx } = this._processInputParams(input);
+        const data = ctx.data;
+        return this._def.type._parse({
+            data,
+            path: ctx.path,
+            parent: ctx,
+        });
+    }
+    unwrap() {
+        return this._def.type;
+    }
+}
+exports.ZodBranded = ZodBranded;
+class ZodPipeline extends ZodType {
+    _parse(input) {
+        const { status, ctx } = this._processInputParams(input);
+        if (ctx.common.async) {
+            const handleAsync = async () => {
+                const inResult = await this._def.in._parseAsync({
+                    data: ctx.data,
+                    path: ctx.path,
+                    parent: ctx,
+                });
+                if (inResult.status === "aborted")
+                    return parseUtil_1.INVALID;
+                if (inResult.status === "dirty") {
+                    status.dirty();
+                    return (0, parseUtil_1.DIRTY)(inResult.value);
+                }
+                else {
+                    return this._def.out._parseAsync({
+                        data: inResult.value,
+                        path: ctx.path,
+                        parent: ctx,
+                    });
+                }
+            };
+            return handleAsync();
+        }
+        else {
+            const inResult = this._def.in._parseSync({
+                data: ctx.data,
+                path: ctx.path,
+                parent: ctx,
+            });
+            if (inResult.status === "aborted")
+                return parseUtil_1.INVALID;
+            if (inResult.status === "dirty") {
+                status.dirty();
+                return {
+                    status: "dirty",
+                    value: inResult.value,
+                };
+            }
+            else {
+                return this._def.out._parseSync({
+                    data: inResult.value,
+                    path: ctx.path,
+                    parent: ctx,
+                });
+            }
+        }
+    }
+    static create(a, b) {
+        return new ZodPipeline({
+            in: a,
+            out: b,
+            typeName: ZodFirstPartyTypeKind.ZodPipeline,
+        });
+    }
+}
+exports.ZodPipeline = ZodPipeline;
+class ZodReadonly extends ZodType {
+    _parse(input) {
+        const result = this._def.innerType._parse(input);
+        const freeze = (data) => {
+            if ((0, parseUtil_1.isValid)(data)) {
+                data.value = Object.freeze(data.value);
+            }
+            return data;
+        };
+        return (0, parseUtil_1.isAsync)(result)
+            ? result.then((data) => freeze(data))
+            : freeze(result);
+    }
+    unwrap() {
+        return this._def.innerType;
+    }
+}
+exports.ZodReadonly = ZodReadonly;
+ZodReadonly.create = (type, params) => {
+    return new ZodReadonly({
+        innerType: type,
+        typeName: ZodFirstPartyTypeKind.ZodReadonly,
+        ...processCreateParams(params),
+    });
+};
+function custom(check, params = {}, 
+/**
+ * @deprecated
+ *
+ * Pass `fatal` into the params object instead:
+ *
+ * ```ts
+ * z.string().custom((val) => val.length > 5, { fatal: false })
+ * ```
+ *
+ */
+fatal) {
+    if (check)
+        return ZodAny.create().superRefine((data, ctx) => {
+            var _a, _b;
+            if (!check(data)) {
+                const p = typeof params === "function"
+                    ? params(data)
+                    : typeof params === "string"
+                        ? { message: params }
+                        : params;
+                const _fatal = (_b = (_a = p.fatal) !== null && _a !== void 0 ? _a : fatal) !== null && _b !== void 0 ? _b : true;
+                const p2 = typeof p === "string" ? { message: p } : p;
+                ctx.addIssue({ code: "custom", ...p2, fatal: _fatal });
+            }
+        });
+    return ZodAny.create();
+}
+exports.custom = custom;
+exports.late = {
+    object: ZodObject.lazycreate,
+};
+var ZodFirstPartyTypeKind;
+(function (ZodFirstPartyTypeKind) {
+    ZodFirstPartyTypeKind["ZodString"] = "ZodString";
+    ZodFirstPartyTypeKind["ZodNumber"] = "ZodNumber";
+    ZodFirstPartyTypeKind["ZodNaN"] = "ZodNaN";
+    ZodFirstPartyTypeKind["ZodBigInt"] = "ZodBigInt";
+    ZodFirstPartyTypeKind["ZodBoolean"] = "ZodBoolean";
+    ZodFirstPartyTypeKind["ZodDate"] = "ZodDate";
+    ZodFirstPartyTypeKind["ZodSymbol"] = "ZodSymbol";
+    ZodFirstPartyTypeKind["ZodUndefined"] = "ZodUndefined";
+    ZodFirstPartyTypeKind["ZodNull"] = "ZodNull";
+    ZodFirstPartyTypeKind["ZodAny"] = "ZodAny";
+    ZodFirstPartyTypeKind["ZodUnknown"] = "ZodUnknown";
+    ZodFirstPartyTypeKind["ZodNever"] = "ZodNever";
+    ZodFirstPartyTypeKind["ZodVoid"] = "ZodVoid";
+    ZodFirstPartyTypeKind["ZodArray"] = "ZodArray";
+    ZodFirstPartyTypeKind["ZodObject"] = "ZodObject";
+    ZodFirstPartyTypeKind["ZodUnion"] = "ZodUnion";
+    ZodFirstPartyTypeKind["ZodDiscriminatedUnion"] = "ZodDiscriminatedUnion";
+    ZodFirstPartyTypeKind["ZodIntersection"] = "ZodIntersection";
+    ZodFirstPartyTypeKind["ZodTuple"] = "ZodTuple";
+    ZodFirstPartyTypeKind["ZodRecord"] = "ZodRecord";
+    ZodFirstPartyTypeKind["ZodMap"] = "ZodMap";
+    ZodFirstPartyTypeKind["ZodSet"] = "ZodSet";
+    ZodFirstPartyTypeKind["ZodFunction"] = "ZodFunction";
+    ZodFirstPartyTypeKind["ZodLazy"] = "ZodLazy";
+    ZodFirstPartyTypeKind["ZodLiteral"] = "ZodLiteral";
+    ZodFirstPartyTypeKind["ZodEnum"] = "ZodEnum";
+    ZodFirstPartyTypeKind["ZodEffects"] = "ZodEffects";
+    ZodFirstPartyTypeKind["ZodNativeEnum"] = "ZodNativeEnum";
+    ZodFirstPartyTypeKind["ZodOptional"] = "ZodOptional";
+    ZodFirstPartyTypeKind["ZodNullable"] = "ZodNullable";
+    ZodFirstPartyTypeKind["ZodDefault"] = "ZodDefault";
+    ZodFirstPartyTypeKind["ZodCatch"] = "ZodCatch";
+    ZodFirstPartyTypeKind["ZodPromise"] = "ZodPromise";
+    ZodFirstPartyTypeKind["ZodBranded"] = "ZodBranded";
+    ZodFirstPartyTypeKind["ZodPipeline"] = "ZodPipeline";
+    ZodFirstPartyTypeKind["ZodReadonly"] = "ZodReadonly";
+})(ZodFirstPartyTypeKind = exports.ZodFirstPartyTypeKind || (exports.ZodFirstPartyTypeKind = {}));
+// requires TS 4.4+
+class Class {
+    constructor(..._) { }
+}
+const instanceOfType = (
+// const instanceOfType = <T extends new (...args: any[]) => any>(
+cls, params = {
+    message: `Input not instance of ${cls.name}`,
+}) => custom((data) => data instanceof cls, params);
+exports["instanceof"] = instanceOfType;
+const stringType = ZodString.create;
+exports.string = stringType;
+const numberType = ZodNumber.create;
+exports.number = numberType;
+const nanType = ZodNaN.create;
+exports.nan = nanType;
+const bigIntType = ZodBigInt.create;
+exports.bigint = bigIntType;
+const booleanType = ZodBoolean.create;
+exports.boolean = booleanType;
+const dateType = ZodDate.create;
+exports.date = dateType;
+const symbolType = ZodSymbol.create;
+exports.symbol = symbolType;
+const undefinedType = ZodUndefined.create;
+exports.undefined = undefinedType;
+const nullType = ZodNull.create;
+exports["null"] = nullType;
+const anyType = ZodAny.create;
+exports.any = anyType;
+const unknownType = ZodUnknown.create;
+exports.unknown = unknownType;
+const neverType = ZodNever.create;
+exports.never = neverType;
+const voidType = ZodVoid.create;
+exports["void"] = voidType;
+const arrayType = ZodArray.create;
+exports.array = arrayType;
+const objectType = ZodObject.create;
+exports.object = objectType;
+const strictObjectType = ZodObject.strictCreate;
+exports.strictObject = strictObjectType;
+const unionType = ZodUnion.create;
+exports.union = unionType;
+const discriminatedUnionType = ZodDiscriminatedUnion.create;
+exports.discriminatedUnion = discriminatedUnionType;
+const intersectionType = ZodIntersection.create;
+exports.intersection = intersectionType;
+const tupleType = ZodTuple.create;
+exports.tuple = tupleType;
+const recordType = ZodRecord.create;
+exports.record = recordType;
+const mapType = ZodMap.create;
+exports.map = mapType;
+const setType = ZodSet.create;
+exports.set = setType;
+const functionType = ZodFunction.create;
+exports["function"] = functionType;
+const lazyType = ZodLazy.create;
+exports.lazy = lazyType;
+const literalType = ZodLiteral.create;
+exports.literal = literalType;
+const enumType = ZodEnum.create;
+exports["enum"] = enumType;
+const nativeEnumType = ZodNativeEnum.create;
+exports.nativeEnum = nativeEnumType;
+const promiseType = ZodPromise.create;
+exports.promise = promiseType;
+const effectsType = ZodEffects.create;
+exports.effect = effectsType;
+exports.transformer = effectsType;
+const optionalType = ZodOptional.create;
+exports.optional = optionalType;
+const nullableType = ZodNullable.create;
+exports.nullable = nullableType;
+const preprocessType = ZodEffects.createWithPreprocess;
+exports.preprocess = preprocessType;
+const pipelineType = ZodPipeline.create;
+exports.pipeline = pipelineType;
+const ostring = () => stringType().optional();
+exports.ostring = ostring;
+const onumber = () => numberType().optional();
+exports.onumber = onumber;
+const oboolean = () => booleanType().optional();
+exports.oboolean = oboolean;
+exports.coerce = {
+    string: ((arg) => ZodString.create({ ...arg, coerce: true })),
+    number: ((arg) => ZodNumber.create({ ...arg, coerce: true })),
+    boolean: ((arg) => ZodBoolean.create({
+        ...arg,
+        coerce: true,
+    })),
+    bigint: ((arg) => ZodBigInt.create({ ...arg, coerce: true })),
+    date: ((arg) => ZodDate.create({ ...arg, coerce: true })),
+};
+exports.NEVER = parseUtil_1.INVALID;
+
+
+/***/ }),
+
+/***/ 4752:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.findLambdas = void 0;
+const client_lambda_1 = __nccwpck_require__(6584);
 const client_resource_groups_tagging_api_1 = __nccwpck_require__(7465);
-async function findLambdas(tags) {
-    const lambdas = [];
+const zod_1 = __importDefault(__nccwpck_require__(301));
+const LambdaFunctionDTOSchema = zod_1.default.object({
+    Configuration: zod_1.default.object({
+        FunctionName: zod_1.default.string(),
+        Version: zod_1.default.string()
+    })
+});
+async function findLambdas({ tags, alias }) {
     const resourceGroupsTaggingAPI = new client_resource_groups_tagging_api_1.ResourceGroupsTaggingAPI();
     const resources = await resourceGroupsTaggingAPI.send(new client_resource_groups_tagging_api_1.GetResourcesCommand({
         ResourceTypeFilters: ['lambda'],
         TagFilters: Object.entries(tags).map(([Key, Value]) => ({
             Key,
-            Values: [Value]
+            Values: Value
         }))
     }));
-    console.info({ resources });
-    return [''];
+    const lambdaArns = resources.ResourceTagMappingList ?? [];
+    const promises = lambdaArns
+        .filter(isResourceArn)
+        .map(value => getLambdaFunction(`${value.ResourceARN}:${alias}`));
+    return Promise.all(promises);
 }
 exports.findLambdas = findLambdas;
+const getLambdaFunction = async (functionArn) => {
+    const client = new client_lambda_1.LambdaClient();
+    const data = await client.send(new client_lambda_1.GetFunctionCommand({ FunctionName: functionArn }));
+    const validated = LambdaFunctionDTOSchema.safeParse(data);
+    if (!validated.success) {
+        throw new Error('Failed to validate LambdaFunctionDTO');
+    }
+    const dto = validated.data;
+    const lambdaFunction = {
+        name: dto.Configuration.FunctionName,
+        aliasVersion: dto.Configuration.Version
+    };
+    return lambdaFunction;
+};
+const isResourceArn = (resource) => {
+    return typeof resource === 'object' && !!resource && 'ResourceARN' in resource;
+};
 
 
 /***/ }),
@@ -44141,10 +56409,15 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const findLambdas_1 = __nccwpck_require__(4752);
+const util_1 = __importDefault(__nccwpck_require__(3837));
+const LAMBDA_ALIAS = 'live';
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -44165,9 +56438,8 @@ async function run() {
         // const updateOutdatedInstancesOnly: boolean = core.getBooleanInput(
         //   'updateOutdatedInstancesOnly'
         // )
-        await (0, findLambdas_1.findLambdas)({
-            Application: 'Betting-Api'
-        });
+        deployApplication('Betting-Api');
+        deployApplication('Hub88-Api');
         // // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
         // // Print all inputs to the log
         // core.debug(`Inputs: ${JSON.stringify(core.getInput)}`)
@@ -44185,6 +56457,43 @@ async function run() {
     }
 }
 exports.run = run;
+const deployApplication = async (applicationName) => {
+    const lambdas = await (0, findLambdas_1.findLambdas)({
+        tags: { Application: ['Betting-Api', 'Hub88-Api'] },
+        alias: LAMBDA_ALIAS
+    });
+    const resources = lambdas.reduce((acc, lambda) => {
+        acc[lambda.name] = fromLambdaFunctionToResource(lambda);
+        return acc;
+    }, {});
+    const input = {
+        applicationName: `${applicationName} Deployment App`,
+        deploymentGroupName: 'Test',
+        deploymentConfigName: 'CodeDeployDefault.LambdaAllAtOnce',
+        revision: {
+            revisionType: 'AppSpecContent',
+            appSpecContent: {
+                content: JSON.stringify({
+                    version: '0.0.1',
+                    Resources: resources
+                })
+            }
+        }
+    };
+    console.info(util_1.default.inspect({ input }, { depth: null }));
+    // await deploy()
+};
+const fromLambdaFunctionToResource = (lambdaFunction) => {
+    return {
+        Type: 'AWS::Lambda::Function',
+        Properties: {
+            Name: lambdaFunction.name,
+            Alias: LAMBDA_ALIAS,
+            CurrentVersion: lambdaFunction.aliasVersion,
+            TargetVersion: '$LATEST'
+        }
+    };
+};
 // {
 //   "version": "0.0",
 //   "Resources":[{
@@ -46124,6 +58433,14 @@ function parseParams (str) {
 
 module.exports = parseParams
 
+
+/***/ }),
+
+/***/ 2805:
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"name":"@aws-sdk/client-lambda","description":"AWS SDK for JavaScript Lambda Client for Node.js, Browser and React Native","version":"3.590.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"node ../../scripts/compilation/inline client-lambda","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo lambda"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/client-sso-oidc":"3.590.0","@aws-sdk/client-sts":"3.590.0","@aws-sdk/core":"3.588.0","@aws-sdk/credential-provider-node":"3.590.0","@aws-sdk/middleware-host-header":"3.577.0","@aws-sdk/middleware-logger":"3.577.0","@aws-sdk/middleware-recursion-detection":"3.577.0","@aws-sdk/middleware-user-agent":"3.587.0","@aws-sdk/region-config-resolver":"3.587.0","@aws-sdk/types":"3.577.0","@aws-sdk/util-endpoints":"3.587.0","@aws-sdk/util-user-agent-browser":"3.577.0","@aws-sdk/util-user-agent-node":"3.587.0","@smithy/config-resolver":"^3.0.1","@smithy/core":"^2.1.1","@smithy/eventstream-serde-browser":"^3.0.0","@smithy/eventstream-serde-config-resolver":"^3.0.0","@smithy/eventstream-serde-node":"^3.0.0","@smithy/fetch-http-handler":"^3.0.1","@smithy/hash-node":"^3.0.0","@smithy/invalid-dependency":"^3.0.0","@smithy/middleware-content-length":"^3.0.0","@smithy/middleware-endpoint":"^3.0.1","@smithy/middleware-retry":"^3.0.3","@smithy/middleware-serde":"^3.0.0","@smithy/middleware-stack":"^3.0.0","@smithy/node-config-provider":"^3.1.0","@smithy/node-http-handler":"^3.0.0","@smithy/protocol-http":"^4.0.0","@smithy/smithy-client":"^3.1.1","@smithy/types":"^3.0.0","@smithy/url-parser":"^3.0.0","@smithy/util-base64":"^3.0.0","@smithy/util-body-length-browser":"^3.0.0","@smithy/util-body-length-node":"^3.0.0","@smithy/util-defaults-mode-browser":"^3.0.3","@smithy/util-defaults-mode-node":"^3.0.3","@smithy/util-endpoints":"^2.0.1","@smithy/util-middleware":"^3.0.0","@smithy/util-retry":"^3.0.0","@smithy/util-stream":"^3.0.1","@smithy/util-utf8":"^3.0.0","@smithy/util-waiter":"^3.0.0","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node16":"16.1.3","@types/node":"^16.18.96","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=16.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-lambda","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-lambda"}}');
 
 /***/ }),
 

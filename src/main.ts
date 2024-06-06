@@ -33,7 +33,12 @@
 //     default: true
 
 import * as core from '@actions/core'
-import { findLambdas } from './findLambdas'
+import { LambdaFunction, findLambdas } from './findLambdas'
+import util from 'util'
+import { CreateDeploymentCommandInput } from '@aws-sdk/client-codedeploy'
+import { DeployInput } from './types'
+
+const LAMBDA_ALIAS = 'live'
 
 /**
  * The main function for the action.
@@ -56,11 +61,8 @@ export async function run(): Promise<void> {
     //   'updateOutdatedInstancesOnly'
     // )
 
-    await findLambdas({
-      Application: ['Betting-Api', 'Hub88-Api']
-    })
-
-    // await deploy()
+    deployApplication('Betting-Api')
+    deployApplication('Hub88-Api')
 
     // // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
     // // Print all inputs to the log
@@ -76,6 +78,63 @@ export async function run(): Promise<void> {
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
+  }
+}
+
+const deployApplication = async (applicationName: string): Promise<void> => {
+  const lambdas = await findLambdas({
+    tags: { Application: ['Betting-Api', 'Hub88-Api'] },
+    alias: LAMBDA_ALIAS
+  })
+
+  const resources = lambdas.reduce(
+    (acc, lambda) => {
+      acc[lambda.name] = fromLambdaFunctionToResource(lambda)
+      return acc
+    },
+    {} as Record<string, Resource>
+  )
+
+  const input: DeployInput = {
+    applicationName: `${applicationName} Deployment App`,
+    deploymentGroupName: 'Test',
+    deploymentConfigName: 'CodeDeployDefault.LambdaAllAtOnce',
+    revision: {
+      revisionType: 'AppSpecContent',
+      appSpecContent: {
+        content: JSON.stringify({
+          version: '0.0.1',
+          Resources: resources
+        })
+      }
+    }
+  }
+
+  console.info(util.inspect({ input }, { depth: null }))
+  // await deploy()
+}
+
+type Resource = {
+  Type: 'AWS::Lambda::Function'
+  Properties: {
+    Name: string
+    Alias: string
+    CurrentVersion: string
+    TargetVersion: string
+  }
+}
+
+const fromLambdaFunctionToResource = (
+  lambdaFunction: LambdaFunction
+): Resource => {
+  return {
+    Type: 'AWS::Lambda::Function',
+    Properties: {
+      Name: lambdaFunction.name,
+      Alias: LAMBDA_ALIAS,
+      CurrentVersion: lambdaFunction.aliasVersion,
+      TargetVersion: '$LATEST'
+    }
   }
 }
 
