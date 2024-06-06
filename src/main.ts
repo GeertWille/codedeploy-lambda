@@ -45,13 +45,11 @@ const deployApplication = async (
     alias: LAMBDA_ALIAS
   })
 
-  const resources = lambdas.reduce(
-    (acc, lambda) => {
-      acc[lambda.name] = fromLambdaFunctionToResource(lambda)
-      return acc
-    },
-    {} as Record<string, Resource>
-  )
+  const resources = lambdas.map(lambda => {
+    return {
+      [lambda.name]: fromLambdaFunctionToResource(lambda)
+    }
+  })
 
   const input: DeployInput = {
     applicationName: data.applicationName,
