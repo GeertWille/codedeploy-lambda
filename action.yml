@@ -1,18 +1,46 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'codeploy-lambda'
+description: 'Deploy lambda function(s) using AWS CodeDeploy'
+author: 'Geert Wille'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'upload-cloud'
+  color: 'blue'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  applicationName:
+    description: 'The name of the CodeDeploy application'
     required: true
-    default: '1000'
+  deploymentGroupName:
+    description: 'The name of the CodeDeploy deployment group'
+    required: true
+  revisionType:
+    description: 'The revision type to deploy'
+    required: false
+    default: 'AppSpecContent'
+  deploymentConfigName:
+    description: 'The name of the CodeDeploy deployment config'
+    required: false
+    default: 'CodeDeployDefault.LambdaAllAtOnce'
+  description:
+    description: 'The description of the deployment'
+    required: false
+  ignoreApplicationStopFailures:
+    description:
+      'Whether to continue the deployment if the ApplicationStop lifecycle event
+      fails'
+    required: false
+    default: false
+  autoRollbackConfiguration:
+    description:
+      'The configuration for automatically rolling back the deployment'
+    required: false
+    default: '{"enabled": true, "events": ["DEPLOYMENT_FAILURE"]}'
+  updateOutdatedInstancesOnly:
+    description: 'Whether to only update instances that are outdated'
+    required: false
+    default: true
 
 # Define your outputs here.
 outputs:
