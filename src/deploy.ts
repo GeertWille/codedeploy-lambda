@@ -21,29 +21,3 @@ export async function deploy({
     })
   )
 }
-
-// {
-//   "version": "0.0",
-//   "Resources":[{
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   },
-//   {
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   }]
-// }

@@ -38,18 +38,26 @@ export async function run(): Promise<void> {
 const deployApplication = async (
   data: DeployApplicationInput
 ): Promise<void> => {
-  const lambdas = await findLambdas({
+  const allLambdas = await findLambdas({
     tags: {
       [data.tagKey]: data.tagValues
     },
     alias: LAMBDA_ALIAS
   })
 
+  const lambdas = allLambdas.filter(
+    lambda => lambda.latestVersion !== lambda.aliasVersion
+  )
   const resources = lambdas.map(lambda => {
     return {
       [lambda.name]: fromLambdaFunctionToResource(lambda)
     }
   })
+
+  if (resources.length === 0) {
+    core.notice('No lambdas to deploy')
+    return
+  }
 
   const input: DeployInput = {
     applicationName: data.applicationName,
@@ -67,8 +75,13 @@ const deployApplication = async (
     }
   }
 
-  // console.info(util.inspect({ input }, { depth: null }))
   await deploy(input)
+  core.info('Deployment triggered:')
+  lambdas.forEach(lambda => {
+    core.info(
+      `  - ${lambda.name}: ${lambda.aliasVersion} -> ${lambda.latestVersion}`
+    )
+  })
 }
 
 const fromLambdaFunctionToResource = (
@@ -80,7 +93,7 @@ const fromLambdaFunctionToResource = (
       Name: lambdaFunction.name,
       Alias: LAMBDA_ALIAS,
       CurrentVersion: lambdaFunction.aliasVersion,
-      TargetVersion: '$LATEST'
+      TargetVersion: lambdaFunction.latestVersion
     }
   }
 }

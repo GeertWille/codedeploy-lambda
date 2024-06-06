@@ -62524,31 +62524,6 @@ revision }) {
     }));
 }
 exports.deploy = deploy;
-// {
-//   "version": "0.0",
-//   "Resources":[{
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   },
-//   {
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   }]
-// }
 
 
 /***/ }),
@@ -62558,6 +62533,29 @@ exports.deploy = deploy;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -62565,12 +62563,62 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.findLambdas = void 0;
 const client_lambda_1 = __nccwpck_require__(6584);
 const client_resource_groups_tagging_api_1 = __nccwpck_require__(7465);
+const core = __importStar(__nccwpck_require__(2186));
 const zod_1 = __importDefault(__nccwpck_require__(3301));
 const LambdaFunctionDTOSchema = zod_1.default.object({
     Configuration: zod_1.default.object({
         FunctionName: zod_1.default.string(),
         Version: zod_1.default.string()
     })
+});
+const LambdaVersionsFunctionSchema = zod_1.default.object({
+    $metadata: zod_1.default.object({
+        httpStatusCode: zod_1.default.number(),
+        requestId: zod_1.default.string(),
+        extendedRequestId: zod_1.default.string().optional(),
+        cfId: zod_1.default.string().optional(),
+        attempts: zod_1.default.number(),
+        totalRetryDelay: zod_1.default.number()
+    }),
+    NextMarker: zod_1.default.string().optional(),
+    Versions: zod_1.default.array(zod_1.default.object({
+        Description: zod_1.default.string(),
+        TracingConfig: zod_1.default.object({
+            Mode: zod_1.default.string()
+        }),
+        SnapStart: zod_1.default.object({
+            OptimizationStatus: zod_1.default.string(),
+            ApplyOn: zod_1.default.string()
+        }),
+        RevisionId: zod_1.default.string(),
+        LastModified: zod_1.default.string(),
+        FunctionName: zod_1.default.string(),
+        Version: zod_1.default.string(),
+        PackageType: zod_1.default.string(),
+        FunctionArn: zod_1.default.string(),
+        MemorySize: zod_1.default.number(),
+        ImageConfigResponse: zod_1.default.object({
+            ImageConfig: zod_1.default.object({
+                WorkingDirectory: zod_1.default.string(),
+                Command: zod_1.default.array(zod_1.default.string())
+            })
+        }),
+        Timeout: zod_1.default.number(),
+        CodeSha256: zod_1.default.string(),
+        Role: zod_1.default.string(),
+        CodeSize: zod_1.default.number(),
+        LoggingConfig: zod_1.default.object({
+            LogFormat: zod_1.default.string(),
+            LogGroup: zod_1.default.string()
+        }),
+        Environment: zod_1.default.object({
+            Variables: zod_1.default.record(zod_1.default.string(), zod_1.default.string())
+        }),
+        EphemeralStorage: zod_1.default.object({
+            Size: zod_1.default.number()
+        }),
+        Architectures: zod_1.default.array(zod_1.default.string())
+    }))
 });
 async function findLambdas({ tags, alias }) {
     const resourceGroupsTaggingAPI = new client_resource_groups_tagging_api_1.ResourceGroupsTaggingAPI();
@@ -62582,22 +62630,50 @@ async function findLambdas({ tags, alias }) {
         }))
     }));
     const lambdaArns = resources.ResourceTagMappingList ?? [];
-    const promises = lambdaArns
-        .filter(isResourceArn)
-        .map(value => getLambdaFunction(`${value.ResourceARN}:${alias}`));
+    const promises = lambdaArns.filter(isResourceArn).map(value => getLambdaFunction({
+        arn: value.ResourceARN,
+        alias
+    }));
     return Promise.all(promises);
 }
 exports.findLambdas = findLambdas;
-const getLambdaFunction = async (functionArn) => {
+const getAllVersions = async (arn) => {
     const client = new client_lambda_1.LambdaClient();
-    const data = await client.send(new client_lambda_1.GetFunctionCommand({ FunctionName: functionArn }));
-    const validated = LambdaFunctionDTOSchema.safeParse(data);
+    let marker;
+    let allVersions = [];
+    do {
+        const response = await client.send(new client_lambda_1.ListVersionsByFunctionCommand({
+            FunctionName: `${arn}`,
+            Marker: marker
+        }));
+        const validated = LambdaVersionsFunctionSchema.safeParse(response);
+        if (!validated.success) {
+            core.setFailed(JSON.stringify(validated.error, null, 2));
+            throw new Error('Failed to validate LambdaVersionsFunction');
+        }
+        allVersions.push(...validated.data.Versions);
+        marker = validated.data.NextMarker;
+    } while (marker);
+    return allVersions;
+};
+const getLambdaFunction = async ({ arn, alias }) => {
+    const client = new client_lambda_1.LambdaClient();
+    const [aliasLambda, versionsResponse] = await Promise.all([
+        client.send(new client_lambda_1.GetFunctionCommand({ FunctionName: `${arn}:${alias}` })),
+        getAllVersions(arn)
+    ]);
+    const validated = LambdaFunctionDTOSchema.safeParse(aliasLambda);
     if (!validated.success) {
+        core.setFailed(JSON.stringify(validated.error, null, 2));
         throw new Error('Failed to validate LambdaFunctionDTO');
     }
     const dto = validated.data;
+    const latestVersion = versionsResponse
+        .filter(current => current.Version !== '$LATEST')
+        .sort((a, b) => parseInt(b.Version) - parseInt(a.Version))[0].Version;
     const lambdaFunction = {
         name: dto.Configuration.FunctionName,
+        latestVersion: latestVersion,
         aliasVersion: dto.Configuration.Version
     };
     return lambdaFunction;
@@ -62675,17 +62751,22 @@ async function run() {
 }
 exports.run = run;
 const deployApplication = async (data) => {
-    const lambdas = await (0, findLambdas_1.findLambdas)({
+    const allLambdas = await (0, findLambdas_1.findLambdas)({
         tags: {
             [data.tagKey]: data.tagValues
         },
         alias: LAMBDA_ALIAS
     });
+    const lambdas = allLambdas.filter(lambda => lambda.latestVersion !== lambda.aliasVersion);
     const resources = lambdas.map(lambda => {
         return {
             [lambda.name]: fromLambdaFunctionToResource(lambda)
         };
     });
+    if (resources.length === 0) {
+        core.notice('No lambdas to deploy');
+        return;
+    }
     const input = {
         applicationName: data.applicationName,
         deploymentGroupName: data.deploymentGroupName,
@@ -62701,8 +62782,11 @@ const deployApplication = async (data) => {
             }
         }
     };
-    // console.info(util.inspect({ input }, { depth: null }))
     await (0, deploy_1.deploy)(input);
+    core.info('Deployment triggered:');
+    lambdas.forEach(lambda => {
+        core.info(`  - ${lambda.name}: ${lambda.aliasVersion} -> ${lambda.latestVersion}`);
+    });
 };
 const fromLambdaFunctionToResource = (lambdaFunction) => {
     return {
@@ -62711,7 +62795,7 @@ const fromLambdaFunctionToResource = (lambdaFunction) => {
             Name: lambdaFunction.name,
             Alias: LAMBDA_ALIAS,
             CurrentVersion: lambdaFunction.aliasVersion,
-            TargetVersion: '$LATEST'
+            TargetVersion: lambdaFunction.latestVersion
         }
     };
 };
