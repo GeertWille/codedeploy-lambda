@@ -1,42 +1,7 @@
-// inputs:
-//   applicationName:
-//     description: 'The name of the CodeDeploy application'
-//     required: true
-//   deploymentGroupName:
-//     description: 'The name of the CodeDeploy deployment group'
-//     required: true
-//   revisionType:
-//     description: 'The revision type to deploy'
-//     required: false
-//     default: 'AppSpecContent'
-//   deploymentConfigName:
-//     description: 'The name of the CodeDeploy deployment config'
-//     required: false
-//     default: 'CodeDeployDefault.LambdaAllAtOnce'
-//   description:
-//     description: 'The description of the deployment'
-//     required: false
-//   ignoreApplicationStopFailures:
-//     description:
-//       'Whether to continue the deployment if the ApplicationStop lifecycle event
-//       fails'
-//     required: false
-//     default: false
-//   autoRollbackConfiguration:
-//     description:
-//       'The configuration for automatically rolling back the deployment'
-//     required: false
-//     default: '{"enabled": true, "events": ["DEPLOYMENT_FAILURE"]}'
-//   updateOutdatedInstancesOnly:
-//     description: 'Whether to only update instances that are outdated'
-//     required: false
-//     default: true
-
 import * as core from '@actions/core'
+import { deploy } from './deploy'
 import { LambdaFunction, findLambdas } from './findLambdas'
-import util from 'util'
-import { CreateDeploymentCommandInput } from '@aws-sdk/client-codedeploy'
-import { DeployInput } from './types'
+import { DeployApplicationInput, DeployInput, Resource } from './types'
 
 const LAMBDA_ALIAS = 'live'
 
@@ -46,44 +11,37 @@ const LAMBDA_ALIAS = 'live'
  */
 export async function run(): Promise<void> {
   try {
-    // const applicationName: string = core.getInput('applicationName')
-    // const deploymentGroupName: string = core.getInput('deploymentGroupName')
-    // const revisionType: string = core.getInput('revisionType')
-    // const deploymentConfigName: string = core.getInput('deploymentConfigName')
-    // const description: string = core.getInput('description')
-    // const ignoreApplicationStopFailures: boolean = core.getBooleanInput(
-    //   'ignoreApplicationStopFailures'
-    // )
-    // const autoRollbackConfiguration: string = core.getInput(
-    //   'autoRollbackConfiguration'
-    // )
-    // const updateOutdatedInstancesOnly: boolean = core.getBooleanInput(
-    //   'updateOutdatedInstancesOnly'
-    // )
+    const applicationName: string = core.getInput('applicationName')
+    const deploymentGroupName: string = core.getInput('deploymentGroupName')
+    const deploymentConfigName: string = core.getInput('deploymentConfigName')
+    const description: string = core.getInput('description')
+    const tagKey: string = core.getInput('tagKey')
+    const tagValues: string[] = core
+      .getInput('tagValues')
+      .split(',')
+      .map(value => value.trim())
 
-    deployApplication('Betting-Api')
-    deployApplication('Hub88-Api')
-
-    // // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-    // // Print all inputs to the log
-    // core.debug(`Inputs: ${JSON.stringify(core.getInput)}`)
-
-    // // Log the current timestamp, wait, then log the new timestamp
-    // core.debug(new Date().toTimeString())
-    // await wait(parseInt(ms, 10))
-    // core.debug(new Date().toTimeString())
-
-    // // Set outputs for other workflow steps to use
-    // core.setOutput('time', new Date().toTimeString())
+    await deployApplication({
+      applicationName,
+      deploymentGroupName,
+      deploymentConfigName,
+      description,
+      tagKey,
+      tagValues
+    })
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
 
-const deployApplication = async (applicationName: string): Promise<void> => {
+const deployApplication = async (
+  data: DeployApplicationInput
+): Promise<void> => {
   const lambdas = await findLambdas({
-    tags: { Application: ['Betting-Api', 'Hub88-Api'] },
+    tags: {
+      [data.tagKey]: data.tagValues
+    },
     alias: LAMBDA_ALIAS
   })
 
@@ -96,9 +54,10 @@ const deployApplication = async (applicationName: string): Promise<void> => {
   )
 
   const input: DeployInput = {
-    applicationName: `${applicationName} Deployment App`,
-    deploymentGroupName: 'Test',
-    deploymentConfigName: 'CodeDeployDefault.LambdaAllAtOnce',
+    applicationName: data.applicationName,
+    deploymentGroupName: data.deploymentGroupName,
+    deploymentConfigName: data.deploymentConfigName,
+    description: data.description,
     revision: {
       revisionType: 'AppSpecContent',
       appSpecContent: {
@@ -110,18 +69,8 @@ const deployApplication = async (applicationName: string): Promise<void> => {
     }
   }
 
-  console.info(util.inspect({ input }, { depth: null }))
-  // await deploy()
-}
-
-type Resource = {
-  Type: 'AWS::Lambda::Function'
-  Properties: {
-    Name: string
-    Alias: string
-    CurrentVersion: string
-    TargetVersion: string
-  }
+  // console.info(util.inspect({ input }, { depth: null }))
+  await deploy(input)
 }
 
 const fromLambdaFunctionToResource = (

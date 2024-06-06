@@ -1,4 +1,4 @@
-/******/ (() => { // webpackBootstrap
+require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 7351:
@@ -2396,6 +2396,6218 @@ function uint32ArrayFrom(a_lookUpTable) {
 }
 exports.uint32ArrayFrom = uint32ArrayFrom;
 //# sourceMappingURL=uint32ArrayFrom.js.map
+
+/***/ }),
+
+/***/ 9320:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.resolveHttpAuthSchemeConfig = exports.defaultCodeDeployHttpAuthSchemeProvider = exports.defaultCodeDeployHttpAuthSchemeParametersProvider = void 0;
+const core_1 = __nccwpck_require__(9963);
+const util_middleware_1 = __nccwpck_require__(2390);
+const defaultCodeDeployHttpAuthSchemeParametersProvider = async (config, context, input) => {
+    return {
+        operation: (0, util_middleware_1.getSmithyContext)(context).operation,
+        region: (await (0, util_middleware_1.normalizeProvider)(config.region)()) ||
+            (() => {
+                throw new Error("expected `region` to be configured for `aws.auth#sigv4`");
+            })(),
+    };
+};
+exports.defaultCodeDeployHttpAuthSchemeParametersProvider = defaultCodeDeployHttpAuthSchemeParametersProvider;
+function createAwsAuthSigv4HttpAuthOption(authParameters) {
+    return {
+        schemeId: "aws.auth#sigv4",
+        signingProperties: {
+            name: "codedeploy",
+            region: authParameters.region,
+        },
+        propertiesExtractor: (config, context) => ({
+            signingProperties: {
+                config,
+                context,
+            },
+        }),
+    };
+}
+const defaultCodeDeployHttpAuthSchemeProvider = (authParameters) => {
+    const options = [];
+    switch (authParameters.operation) {
+        default: {
+            options.push(createAwsAuthSigv4HttpAuthOption(authParameters));
+        }
+    }
+    return options;
+};
+exports.defaultCodeDeployHttpAuthSchemeProvider = defaultCodeDeployHttpAuthSchemeProvider;
+const resolveHttpAuthSchemeConfig = (config) => {
+    const config_0 = (0, core_1.resolveAwsSdkSigV4Config)(config);
+    return {
+        ...config_0,
+    };
+};
+exports.resolveHttpAuthSchemeConfig = resolveHttpAuthSchemeConfig;
+
+
+/***/ }),
+
+/***/ 5124:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.defaultEndpointResolver = void 0;
+const util_endpoints_1 = __nccwpck_require__(3350);
+const util_endpoints_2 = __nccwpck_require__(5473);
+const ruleset_1 = __nccwpck_require__(7596);
+const defaultEndpointResolver = (endpointParams, context = {}) => {
+    return (0, util_endpoints_2.resolveEndpoint)(ruleset_1.ruleSet, {
+        endpointParams: endpointParams,
+        logger: context.logger,
+    });
+};
+exports.defaultEndpointResolver = defaultEndpointResolver;
+util_endpoints_2.customEndpointFunctions.aws = util_endpoints_1.awsEndpointFunctions;
+
+
+/***/ }),
+
+/***/ 7596:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ruleSet = void 0;
+const s = "required", t = "fn", u = "argv", v = "ref";
+const a = true, b = "isSet", c = "booleanEquals", d = "error", e = "endpoint", f = "tree", g = "PartitionResult", h = { [s]: false, "type": "String" }, i = { [s]: true, "default": false, "type": "Boolean" }, j = { [v]: "Endpoint" }, k = { [t]: c, [u]: [{ [v]: "UseFIPS" }, true] }, l = { [t]: c, [u]: [{ [v]: "UseDualStack" }, true] }, m = {}, n = { [t]: "getAttr", [u]: [{ [v]: g }, "supportsFIPS"] }, o = { [t]: c, [u]: [true, { [t]: "getAttr", [u]: [{ [v]: g }, "supportsDualStack"] }] }, p = [k], q = [l], r = [{ [v]: "Region" }];
+const _data = { version: "1.0", parameters: { Region: h, UseDualStack: i, UseFIPS: i, Endpoint: h }, rules: [{ conditions: [{ [t]: b, [u]: [j] }], rules: [{ conditions: p, error: "Invalid Configuration: FIPS and custom endpoint are not supported", type: d }, { conditions: q, error: "Invalid Configuration: Dualstack and custom endpoint are not supported", type: d }, { endpoint: { url: j, properties: m, headers: m }, type: e }], type: f }, { conditions: [{ [t]: b, [u]: r }], rules: [{ conditions: [{ [t]: "aws.partition", [u]: r, assign: g }], rules: [{ conditions: [k, l], rules: [{ conditions: [{ [t]: c, [u]: [a, n] }, o], rules: [{ endpoint: { url: "https://codedeploy-fips.{Region}.{PartitionResult#dualStackDnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "FIPS and DualStack are enabled, but this partition does not support one or both", type: d }], type: f }, { conditions: p, rules: [{ conditions: [{ [t]: c, [u]: [n, a] }], rules: [{ endpoint: { url: "https://codedeploy-fips.{Region}.{PartitionResult#dnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "FIPS is enabled but this partition does not support FIPS", type: d }], type: f }, { conditions: q, rules: [{ conditions: [o], rules: [{ endpoint: { url: "https://codedeploy.{Region}.{PartitionResult#dualStackDnsSuffix}", properties: m, headers: m }, type: e }], type: f }, { error: "DualStack is enabled but this partition does not support DualStack", type: d }], type: f }, { endpoint: { url: "https://codedeploy.{Region}.{PartitionResult#dnsSuffix}", properties: m, headers: m }, type: e }], type: f }], type: f }, { error: "Invalid Configuration: Missing Region", type: d }] };
+exports.ruleSet = _data;
+
+
+/***/ }),
+
+/***/ 6692:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+"use strict";
+
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
+var __name = (target, value) => __defProp(target, "name", { value, configurable: true });
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+
+// src/index.ts
+var src_exports = {};
+__export(src_exports, {
+  AddTagsToOnPremisesInstancesCommand: () => AddTagsToOnPremisesInstancesCommand,
+  AlarmsLimitExceededException: () => AlarmsLimitExceededException,
+  ApplicationAlreadyExistsException: () => ApplicationAlreadyExistsException,
+  ApplicationDoesNotExistException: () => ApplicationDoesNotExistException,
+  ApplicationLimitExceededException: () => ApplicationLimitExceededException,
+  ApplicationNameRequiredException: () => ApplicationNameRequiredException,
+  ApplicationRevisionSortBy: () => ApplicationRevisionSortBy,
+  ArnNotSupportedException: () => ArnNotSupportedException,
+  AutoRollbackEvent: () => AutoRollbackEvent,
+  BatchGetApplicationRevisionsCommand: () => BatchGetApplicationRevisionsCommand,
+  BatchGetApplicationsCommand: () => BatchGetApplicationsCommand,
+  BatchGetDeploymentGroupsCommand: () => BatchGetDeploymentGroupsCommand,
+  BatchGetDeploymentInstancesCommand: () => BatchGetDeploymentInstancesCommand,
+  BatchGetDeploymentTargetsCommand: () => BatchGetDeploymentTargetsCommand,
+  BatchGetDeploymentsCommand: () => BatchGetDeploymentsCommand,
+  BatchGetOnPremisesInstancesCommand: () => BatchGetOnPremisesInstancesCommand,
+  BatchLimitExceededException: () => BatchLimitExceededException,
+  BucketNameFilterRequiredException: () => BucketNameFilterRequiredException,
+  BundleType: () => BundleType,
+  CodeDeploy: () => CodeDeploy,
+  CodeDeployClient: () => CodeDeployClient,
+  CodeDeployServiceException: () => CodeDeployServiceException,
+  ComputePlatform: () => ComputePlatform,
+  ContinueDeploymentCommand: () => ContinueDeploymentCommand,
+  CreateApplicationCommand: () => CreateApplicationCommand,
+  CreateDeploymentCommand: () => CreateDeploymentCommand,
+  CreateDeploymentConfigCommand: () => CreateDeploymentConfigCommand,
+  CreateDeploymentGroupCommand: () => CreateDeploymentGroupCommand,
+  DeleteApplicationCommand: () => DeleteApplicationCommand,
+  DeleteDeploymentConfigCommand: () => DeleteDeploymentConfigCommand,
+  DeleteDeploymentGroupCommand: () => DeleteDeploymentGroupCommand,
+  DeleteGitHubAccountTokenCommand: () => DeleteGitHubAccountTokenCommand,
+  DeleteResourcesByExternalIdCommand: () => DeleteResourcesByExternalIdCommand,
+  DeploymentAlreadyCompletedException: () => DeploymentAlreadyCompletedException,
+  DeploymentConfigAlreadyExistsException: () => DeploymentConfigAlreadyExistsException,
+  DeploymentConfigDoesNotExistException: () => DeploymentConfigDoesNotExistException,
+  DeploymentConfigInUseException: () => DeploymentConfigInUseException,
+  DeploymentConfigLimitExceededException: () => DeploymentConfigLimitExceededException,
+  DeploymentConfigNameRequiredException: () => DeploymentConfigNameRequiredException,
+  DeploymentCreator: () => DeploymentCreator,
+  DeploymentDoesNotExistException: () => DeploymentDoesNotExistException,
+  DeploymentGroupAlreadyExistsException: () => DeploymentGroupAlreadyExistsException,
+  DeploymentGroupDoesNotExistException: () => DeploymentGroupDoesNotExistException,
+  DeploymentGroupLimitExceededException: () => DeploymentGroupLimitExceededException,
+  DeploymentGroupNameRequiredException: () => DeploymentGroupNameRequiredException,
+  DeploymentIdRequiredException: () => DeploymentIdRequiredException,
+  DeploymentIsNotInReadyStateException: () => DeploymentIsNotInReadyStateException,
+  DeploymentLimitExceededException: () => DeploymentLimitExceededException,
+  DeploymentNotStartedException: () => DeploymentNotStartedException,
+  DeploymentOption: () => DeploymentOption,
+  DeploymentReadyAction: () => DeploymentReadyAction,
+  DeploymentStatus: () => DeploymentStatus,
+  DeploymentTargetDoesNotExistException: () => DeploymentTargetDoesNotExistException,
+  DeploymentTargetIdRequiredException: () => DeploymentTargetIdRequiredException,
+  DeploymentTargetListSizeExceededException: () => DeploymentTargetListSizeExceededException,
+  DeploymentTargetType: () => DeploymentTargetType,
+  DeploymentType: () => DeploymentType,
+  DeploymentWaitType: () => DeploymentWaitType,
+  DeregisterOnPremisesInstanceCommand: () => DeregisterOnPremisesInstanceCommand,
+  DescriptionTooLongException: () => DescriptionTooLongException,
+  EC2TagFilterType: () => EC2TagFilterType,
+  ECSServiceMappingLimitExceededException: () => ECSServiceMappingLimitExceededException,
+  ErrorCode: () => ErrorCode,
+  FileExistsBehavior: () => FileExistsBehavior,
+  GetApplicationCommand: () => GetApplicationCommand,
+  GetApplicationRevisionCommand: () => GetApplicationRevisionCommand,
+  GetDeploymentCommand: () => GetDeploymentCommand,
+  GetDeploymentConfigCommand: () => GetDeploymentConfigCommand,
+  GetDeploymentGroupCommand: () => GetDeploymentGroupCommand,
+  GetDeploymentInstanceCommand: () => GetDeploymentInstanceCommand,
+  GetDeploymentTargetCommand: () => GetDeploymentTargetCommand,
+  GetOnPremisesInstanceCommand: () => GetOnPremisesInstanceCommand,
+  GitHubAccountTokenDoesNotExistException: () => GitHubAccountTokenDoesNotExistException,
+  GitHubAccountTokenNameRequiredException: () => GitHubAccountTokenNameRequiredException,
+  GreenFleetProvisioningAction: () => GreenFleetProvisioningAction,
+  IamArnRequiredException: () => IamArnRequiredException,
+  IamSessionArnAlreadyRegisteredException: () => IamSessionArnAlreadyRegisteredException,
+  IamUserArnAlreadyRegisteredException: () => IamUserArnAlreadyRegisteredException,
+  IamUserArnRequiredException: () => IamUserArnRequiredException,
+  InstanceAction: () => InstanceAction,
+  InstanceDoesNotExistException: () => InstanceDoesNotExistException,
+  InstanceIdRequiredException: () => InstanceIdRequiredException,
+  InstanceLimitExceededException: () => InstanceLimitExceededException,
+  InstanceNameAlreadyRegisteredException: () => InstanceNameAlreadyRegisteredException,
+  InstanceNameRequiredException: () => InstanceNameRequiredException,
+  InstanceNotRegisteredException: () => InstanceNotRegisteredException,
+  InstanceStatus: () => InstanceStatus,
+  InvalidAlarmConfigException: () => InvalidAlarmConfigException,
+  InvalidApplicationNameException: () => InvalidApplicationNameException,
+  InvalidArnException: () => InvalidArnException,
+  InvalidAutoRollbackConfigException: () => InvalidAutoRollbackConfigException,
+  InvalidAutoScalingGroupException: () => InvalidAutoScalingGroupException,
+  InvalidBlueGreenDeploymentConfigurationException: () => InvalidBlueGreenDeploymentConfigurationException,
+  InvalidBucketNameFilterException: () => InvalidBucketNameFilterException,
+  InvalidComputePlatformException: () => InvalidComputePlatformException,
+  InvalidDeployedStateFilterException: () => InvalidDeployedStateFilterException,
+  InvalidDeploymentConfigNameException: () => InvalidDeploymentConfigNameException,
+  InvalidDeploymentGroupNameException: () => InvalidDeploymentGroupNameException,
+  InvalidDeploymentIdException: () => InvalidDeploymentIdException,
+  InvalidDeploymentInstanceTypeException: () => InvalidDeploymentInstanceTypeException,
+  InvalidDeploymentStatusException: () => InvalidDeploymentStatusException,
+  InvalidDeploymentStyleException: () => InvalidDeploymentStyleException,
+  InvalidDeploymentTargetIdException: () => InvalidDeploymentTargetIdException,
+  InvalidDeploymentWaitTypeException: () => InvalidDeploymentWaitTypeException,
+  InvalidEC2TagCombinationException: () => InvalidEC2TagCombinationException,
+  InvalidEC2TagException: () => InvalidEC2TagException,
+  InvalidECSServiceException: () => InvalidECSServiceException,
+  InvalidExternalIdException: () => InvalidExternalIdException,
+  InvalidFileExistsBehaviorException: () => InvalidFileExistsBehaviorException,
+  InvalidGitHubAccountTokenException: () => InvalidGitHubAccountTokenException,
+  InvalidGitHubAccountTokenNameException: () => InvalidGitHubAccountTokenNameException,
+  InvalidIamSessionArnException: () => InvalidIamSessionArnException,
+  InvalidIamUserArnException: () => InvalidIamUserArnException,
+  InvalidIgnoreApplicationStopFailuresValueException: () => InvalidIgnoreApplicationStopFailuresValueException,
+  InvalidInputException: () => InvalidInputException,
+  InvalidInstanceNameException: () => InvalidInstanceNameException,
+  InvalidInstanceStatusException: () => InvalidInstanceStatusException,
+  InvalidInstanceTypeException: () => InvalidInstanceTypeException,
+  InvalidKeyPrefixFilterException: () => InvalidKeyPrefixFilterException,
+  InvalidLifecycleEventHookExecutionIdException: () => InvalidLifecycleEventHookExecutionIdException,
+  InvalidLifecycleEventHookExecutionStatusException: () => InvalidLifecycleEventHookExecutionStatusException,
+  InvalidLoadBalancerInfoException: () => InvalidLoadBalancerInfoException,
+  InvalidMinimumHealthyHostValueException: () => InvalidMinimumHealthyHostValueException,
+  InvalidNextTokenException: () => InvalidNextTokenException,
+  InvalidOnPremisesTagCombinationException: () => InvalidOnPremisesTagCombinationException,
+  InvalidOperationException: () => InvalidOperationException,
+  InvalidRegistrationStatusException: () => InvalidRegistrationStatusException,
+  InvalidRevisionException: () => InvalidRevisionException,
+  InvalidRoleException: () => InvalidRoleException,
+  InvalidSortByException: () => InvalidSortByException,
+  InvalidSortOrderException: () => InvalidSortOrderException,
+  InvalidTagException: () => InvalidTagException,
+  InvalidTagFilterException: () => InvalidTagFilterException,
+  InvalidTagsToAddException: () => InvalidTagsToAddException,
+  InvalidTargetFilterNameException: () => InvalidTargetFilterNameException,
+  InvalidTargetGroupPairException: () => InvalidTargetGroupPairException,
+  InvalidTargetInstancesException: () => InvalidTargetInstancesException,
+  InvalidTimeRangeException: () => InvalidTimeRangeException,
+  InvalidTrafficRoutingConfigurationException: () => InvalidTrafficRoutingConfigurationException,
+  InvalidTriggerConfigException: () => InvalidTriggerConfigException,
+  InvalidUpdateOutdatedInstancesOnlyValueException: () => InvalidUpdateOutdatedInstancesOnlyValueException,
+  InvalidZonalDeploymentConfigurationException: () => InvalidZonalDeploymentConfigurationException,
+  LifecycleErrorCode: () => LifecycleErrorCode,
+  LifecycleEventAlreadyCompletedException: () => LifecycleEventAlreadyCompletedException,
+  LifecycleEventStatus: () => LifecycleEventStatus,
+  LifecycleHookLimitExceededException: () => LifecycleHookLimitExceededException,
+  ListApplicationRevisionsCommand: () => ListApplicationRevisionsCommand,
+  ListApplicationsCommand: () => ListApplicationsCommand,
+  ListDeploymentConfigsCommand: () => ListDeploymentConfigsCommand,
+  ListDeploymentGroupsCommand: () => ListDeploymentGroupsCommand,
+  ListDeploymentInstancesCommand: () => ListDeploymentInstancesCommand,
+  ListDeploymentTargetsCommand: () => ListDeploymentTargetsCommand,
+  ListDeploymentsCommand: () => ListDeploymentsCommand,
+  ListGitHubAccountTokenNamesCommand: () => ListGitHubAccountTokenNamesCommand,
+  ListOnPremisesInstancesCommand: () => ListOnPremisesInstancesCommand,
+  ListStateFilterAction: () => ListStateFilterAction,
+  ListTagsForResourceCommand: () => ListTagsForResourceCommand,
+  MinimumHealthyHostsPerZoneType: () => MinimumHealthyHostsPerZoneType,
+  MinimumHealthyHostsType: () => MinimumHealthyHostsType,
+  MultipleIamArnsProvidedException: () => MultipleIamArnsProvidedException,
+  OperationNotSupportedException: () => OperationNotSupportedException,
+  OutdatedInstancesStrategy: () => OutdatedInstancesStrategy,
+  PutLifecycleEventHookExecutionStatusCommand: () => PutLifecycleEventHookExecutionStatusCommand,
+  RegisterApplicationRevisionCommand: () => RegisterApplicationRevisionCommand,
+  RegisterOnPremisesInstanceCommand: () => RegisterOnPremisesInstanceCommand,
+  RegistrationStatus: () => RegistrationStatus,
+  RemoveTagsFromOnPremisesInstancesCommand: () => RemoveTagsFromOnPremisesInstancesCommand,
+  ResourceArnRequiredException: () => ResourceArnRequiredException,
+  ResourceValidationException: () => ResourceValidationException,
+  RevisionDoesNotExistException: () => RevisionDoesNotExistException,
+  RevisionLocationType: () => RevisionLocationType,
+  RevisionRequiredException: () => RevisionRequiredException,
+  RoleRequiredException: () => RoleRequiredException,
+  SkipWaitTimeForInstanceTerminationCommand: () => SkipWaitTimeForInstanceTerminationCommand,
+  SortOrder: () => SortOrder,
+  StopDeploymentCommand: () => StopDeploymentCommand,
+  StopStatus: () => StopStatus,
+  TagFilterType: () => TagFilterType,
+  TagLimitExceededException: () => TagLimitExceededException,
+  TagRequiredException: () => TagRequiredException,
+  TagResourceCommand: () => TagResourceCommand,
+  TagSetListLimitExceededException: () => TagSetListLimitExceededException,
+  TargetFilterName: () => TargetFilterName,
+  TargetLabel: () => TargetLabel,
+  TargetStatus: () => TargetStatus,
+  ThrottlingException: () => ThrottlingException,
+  TrafficRoutingType: () => TrafficRoutingType,
+  TriggerEventType: () => TriggerEventType,
+  TriggerTargetsLimitExceededException: () => TriggerTargetsLimitExceededException,
+  UnsupportedActionForDeploymentTypeException: () => UnsupportedActionForDeploymentTypeException,
+  UntagResourceCommand: () => UntagResourceCommand,
+  UpdateApplicationCommand: () => UpdateApplicationCommand,
+  UpdateDeploymentGroupCommand: () => UpdateDeploymentGroupCommand,
+  _InstanceType: () => _InstanceType,
+  __Client: () => import_smithy_client.Client,
+  paginateListApplicationRevisions: () => paginateListApplicationRevisions,
+  paginateListApplications: () => paginateListApplications,
+  paginateListDeploymentConfigs: () => paginateListDeploymentConfigs,
+  paginateListDeploymentGroups: () => paginateListDeploymentGroups,
+  paginateListDeploymentInstances: () => paginateListDeploymentInstances,
+  paginateListDeployments: () => paginateListDeployments,
+  waitForDeploymentSuccessful: () => waitForDeploymentSuccessful,
+  waitUntilDeploymentSuccessful: () => waitUntilDeploymentSuccessful
+});
+module.exports = __toCommonJS(src_exports);
+
+// src/CodeDeployClient.ts
+var import_middleware_host_header = __nccwpck_require__(2545);
+var import_middleware_logger = __nccwpck_require__(14);
+var import_middleware_recursion_detection = __nccwpck_require__(5525);
+var import_middleware_user_agent = __nccwpck_require__(4688);
+var import_config_resolver = __nccwpck_require__(3098);
+var import_core = __nccwpck_require__(5829);
+var import_middleware_content_length = __nccwpck_require__(2800);
+var import_middleware_endpoint = __nccwpck_require__(2918);
+var import_middleware_retry = __nccwpck_require__(6039);
+
+var import_httpAuthSchemeProvider = __nccwpck_require__(9320);
+
+// src/endpoint/EndpointParameters.ts
+var resolveClientEndpointParameters = /* @__PURE__ */ __name((options) => {
+  return {
+    ...options,
+    useDualstackEndpoint: options.useDualstackEndpoint ?? false,
+    useFipsEndpoint: options.useFipsEndpoint ?? false,
+    defaultSigningName: "codedeploy"
+  };
+}, "resolveClientEndpointParameters");
+var commonParams = {
+  UseFIPS: { type: "builtInParams", name: "useFipsEndpoint" },
+  Endpoint: { type: "builtInParams", name: "endpoint" },
+  Region: { type: "builtInParams", name: "region" },
+  UseDualStack: { type: "builtInParams", name: "useDualstackEndpoint" }
+};
+
+// src/CodeDeployClient.ts
+var import_runtimeConfig = __nccwpck_require__(3271);
+
+// src/runtimeExtensions.ts
+var import_region_config_resolver = __nccwpck_require__(8156);
+var import_protocol_http = __nccwpck_require__(4418);
+var import_smithy_client = __nccwpck_require__(3570);
+
+// src/auth/httpAuthExtensionConfiguration.ts
+var getHttpAuthExtensionConfiguration = /* @__PURE__ */ __name((runtimeConfig) => {
+  const _httpAuthSchemes = runtimeConfig.httpAuthSchemes;
+  let _httpAuthSchemeProvider = runtimeConfig.httpAuthSchemeProvider;
+  let _credentials = runtimeConfig.credentials;
+  return {
+    setHttpAuthScheme(httpAuthScheme) {
+      const index = _httpAuthSchemes.findIndex((scheme) => scheme.schemeId === httpAuthScheme.schemeId);
+      if (index === -1) {
+        _httpAuthSchemes.push(httpAuthScheme);
+      } else {
+        _httpAuthSchemes.splice(index, 1, httpAuthScheme);
+      }
+    },
+    httpAuthSchemes() {
+      return _httpAuthSchemes;
+    },
+    setHttpAuthSchemeProvider(httpAuthSchemeProvider) {
+      _httpAuthSchemeProvider = httpAuthSchemeProvider;
+    },
+    httpAuthSchemeProvider() {
+      return _httpAuthSchemeProvider;
+    },
+    setCredentials(credentials) {
+      _credentials = credentials;
+    },
+    credentials() {
+      return _credentials;
+    }
+  };
+}, "getHttpAuthExtensionConfiguration");
+var resolveHttpAuthRuntimeConfig = /* @__PURE__ */ __name((config) => {
+  return {
+    httpAuthSchemes: config.httpAuthSchemes(),
+    httpAuthSchemeProvider: config.httpAuthSchemeProvider(),
+    credentials: config.credentials()
+  };
+}, "resolveHttpAuthRuntimeConfig");
+
+// src/runtimeExtensions.ts
+var asPartial = /* @__PURE__ */ __name((t) => t, "asPartial");
+var resolveRuntimeExtensions = /* @__PURE__ */ __name((runtimeConfig, extensions) => {
+  const extensionConfiguration = {
+    ...asPartial((0, import_region_config_resolver.getAwsRegionExtensionConfiguration)(runtimeConfig)),
+    ...asPartial((0, import_smithy_client.getDefaultExtensionConfiguration)(runtimeConfig)),
+    ...asPartial((0, import_protocol_http.getHttpHandlerExtensionConfiguration)(runtimeConfig)),
+    ...asPartial(getHttpAuthExtensionConfiguration(runtimeConfig))
+  };
+  extensions.forEach((extension) => extension.configure(extensionConfiguration));
+  return {
+    ...runtimeConfig,
+    ...(0, import_region_config_resolver.resolveAwsRegionExtensionConfiguration)(extensionConfiguration),
+    ...(0, import_smithy_client.resolveDefaultRuntimeConfig)(extensionConfiguration),
+    ...(0, import_protocol_http.resolveHttpHandlerRuntimeConfig)(extensionConfiguration),
+    ...resolveHttpAuthRuntimeConfig(extensionConfiguration)
+  };
+}, "resolveRuntimeExtensions");
+
+// src/CodeDeployClient.ts
+var _CodeDeployClient = class _CodeDeployClient extends import_smithy_client.Client {
+  constructor(...[configuration]) {
+    const _config_0 = (0, import_runtimeConfig.getRuntimeConfig)(configuration || {});
+    const _config_1 = resolveClientEndpointParameters(_config_0);
+    const _config_2 = (0, import_config_resolver.resolveRegionConfig)(_config_1);
+    const _config_3 = (0, import_middleware_endpoint.resolveEndpointConfig)(_config_2);
+    const _config_4 = (0, import_middleware_retry.resolveRetryConfig)(_config_3);
+    const _config_5 = (0, import_middleware_host_header.resolveHostHeaderConfig)(_config_4);
+    const _config_6 = (0, import_middleware_user_agent.resolveUserAgentConfig)(_config_5);
+    const _config_7 = (0, import_httpAuthSchemeProvider.resolveHttpAuthSchemeConfig)(_config_6);
+    const _config_8 = resolveRuntimeExtensions(_config_7, (configuration == null ? void 0 : configuration.extensions) || []);
+    super(_config_8);
+    this.config = _config_8;
+    this.middlewareStack.use((0, import_middleware_retry.getRetryPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_content_length.getContentLengthPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_host_header.getHostHeaderPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_logger.getLoggerPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_recursion_detection.getRecursionDetectionPlugin)(this.config));
+    this.middlewareStack.use((0, import_middleware_user_agent.getUserAgentPlugin)(this.config));
+    this.middlewareStack.use(
+      (0, import_core.getHttpAuthSchemeEndpointRuleSetPlugin)(this.config, {
+        httpAuthSchemeParametersProvider: this.getDefaultHttpAuthSchemeParametersProvider(),
+        identityProviderConfigProvider: this.getIdentityProviderConfigProvider()
+      })
+    );
+    this.middlewareStack.use((0, import_core.getHttpSigningPlugin)(this.config));
+  }
+  /**
+   * Destroy underlying resources, like sockets. It's usually not necessary to do this.
+   * However in Node.js, it's best to explicitly shut down the client's agent when it is no longer needed.
+   * Otherwise, sockets might stay open for quite a long time before the server terminates them.
+   */
+  destroy() {
+    super.destroy();
+  }
+  getDefaultHttpAuthSchemeParametersProvider() {
+    return import_httpAuthSchemeProvider.defaultCodeDeployHttpAuthSchemeParametersProvider;
+  }
+  getIdentityProviderConfigProvider() {
+    return async (config) => new import_core.DefaultIdentityProviderConfig({
+      "aws.auth#sigv4": config.credentials
+    });
+  }
+};
+__name(_CodeDeployClient, "CodeDeployClient");
+var CodeDeployClient = _CodeDeployClient;
+
+// src/CodeDeploy.ts
+
+
+// src/commands/AddTagsToOnPremisesInstancesCommand.ts
+
+var import_middleware_serde = __nccwpck_require__(1238);
+
+var import_types = __nccwpck_require__(5756);
+
+// src/protocols/Aws_json1_1.ts
+var import_core2 = __nccwpck_require__(9963);
+
+
+
+// src/models/CodeDeployServiceException.ts
+
+var _CodeDeployServiceException = class _CodeDeployServiceException extends import_smithy_client.ServiceException {
+  /**
+   * @internal
+   */
+  constructor(options) {
+    super(options);
+    Object.setPrototypeOf(this, _CodeDeployServiceException.prototype);
+  }
+};
+__name(_CodeDeployServiceException, "CodeDeployServiceException");
+var CodeDeployServiceException = _CodeDeployServiceException;
+
+// src/models/models_0.ts
+var _InstanceLimitExceededException = class _InstanceLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InstanceLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InstanceLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InstanceLimitExceededException.prototype);
+  }
+};
+__name(_InstanceLimitExceededException, "InstanceLimitExceededException");
+var InstanceLimitExceededException = _InstanceLimitExceededException;
+var _InstanceNameRequiredException = class _InstanceNameRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InstanceNameRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InstanceNameRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InstanceNameRequiredException.prototype);
+  }
+};
+__name(_InstanceNameRequiredException, "InstanceNameRequiredException");
+var InstanceNameRequiredException = _InstanceNameRequiredException;
+var _InstanceNotRegisteredException = class _InstanceNotRegisteredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InstanceNotRegisteredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InstanceNotRegisteredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InstanceNotRegisteredException.prototype);
+  }
+};
+__name(_InstanceNotRegisteredException, "InstanceNotRegisteredException");
+var InstanceNotRegisteredException = _InstanceNotRegisteredException;
+var _InvalidInstanceNameException = class _InvalidInstanceNameException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidInstanceNameException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidInstanceNameException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidInstanceNameException.prototype);
+  }
+};
+__name(_InvalidInstanceNameException, "InvalidInstanceNameException");
+var InvalidInstanceNameException = _InvalidInstanceNameException;
+var _InvalidTagException = class _InvalidTagException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTagException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTagException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTagException.prototype);
+  }
+};
+__name(_InvalidTagException, "InvalidTagException");
+var InvalidTagException = _InvalidTagException;
+var _TagLimitExceededException = class _TagLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "TagLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "TagLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _TagLimitExceededException.prototype);
+  }
+};
+__name(_TagLimitExceededException, "TagLimitExceededException");
+var TagLimitExceededException = _TagLimitExceededException;
+var _TagRequiredException = class _TagRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "TagRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "TagRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _TagRequiredException.prototype);
+  }
+};
+__name(_TagRequiredException, "TagRequiredException");
+var TagRequiredException = _TagRequiredException;
+var _AlarmsLimitExceededException = class _AlarmsLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "AlarmsLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "AlarmsLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _AlarmsLimitExceededException.prototype);
+  }
+};
+__name(_AlarmsLimitExceededException, "AlarmsLimitExceededException");
+var AlarmsLimitExceededException = _AlarmsLimitExceededException;
+var _ApplicationAlreadyExistsException = class _ApplicationAlreadyExistsException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ApplicationAlreadyExistsException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ApplicationAlreadyExistsException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ApplicationAlreadyExistsException.prototype);
+  }
+};
+__name(_ApplicationAlreadyExistsException, "ApplicationAlreadyExistsException");
+var ApplicationAlreadyExistsException = _ApplicationAlreadyExistsException;
+var _ApplicationDoesNotExistException = class _ApplicationDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ApplicationDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ApplicationDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ApplicationDoesNotExistException.prototype);
+  }
+};
+__name(_ApplicationDoesNotExistException, "ApplicationDoesNotExistException");
+var ApplicationDoesNotExistException = _ApplicationDoesNotExistException;
+var ComputePlatform = {
+  ECS: "ECS",
+  LAMBDA: "Lambda",
+  SERVER: "Server"
+};
+var _ApplicationLimitExceededException = class _ApplicationLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ApplicationLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ApplicationLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ApplicationLimitExceededException.prototype);
+  }
+};
+__name(_ApplicationLimitExceededException, "ApplicationLimitExceededException");
+var ApplicationLimitExceededException = _ApplicationLimitExceededException;
+var _ApplicationNameRequiredException = class _ApplicationNameRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ApplicationNameRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ApplicationNameRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ApplicationNameRequiredException.prototype);
+  }
+};
+__name(_ApplicationNameRequiredException, "ApplicationNameRequiredException");
+var ApplicationNameRequiredException = _ApplicationNameRequiredException;
+var ApplicationRevisionSortBy = {
+  FirstUsedTime: "firstUsedTime",
+  LastUsedTime: "lastUsedTime",
+  RegisterTime: "registerTime"
+};
+var _ArnNotSupportedException = class _ArnNotSupportedException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ArnNotSupportedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ArnNotSupportedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ArnNotSupportedException.prototype);
+  }
+};
+__name(_ArnNotSupportedException, "ArnNotSupportedException");
+var ArnNotSupportedException = _ArnNotSupportedException;
+var AutoRollbackEvent = {
+  DEPLOYMENT_FAILURE: "DEPLOYMENT_FAILURE",
+  DEPLOYMENT_STOP_ON_ALARM: "DEPLOYMENT_STOP_ON_ALARM",
+  DEPLOYMENT_STOP_ON_REQUEST: "DEPLOYMENT_STOP_ON_REQUEST"
+};
+var RevisionLocationType = {
+  AppSpecContent: "AppSpecContent",
+  GitHub: "GitHub",
+  S3: "S3",
+  String: "String"
+};
+var BundleType = {
+  JSON: "JSON",
+  Tar: "tar",
+  TarGZip: "tgz",
+  YAML: "YAML",
+  Zip: "zip"
+};
+var _BatchLimitExceededException = class _BatchLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "BatchLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "BatchLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _BatchLimitExceededException.prototype);
+  }
+};
+__name(_BatchLimitExceededException, "BatchLimitExceededException");
+var BatchLimitExceededException = _BatchLimitExceededException;
+var _InvalidApplicationNameException = class _InvalidApplicationNameException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidApplicationNameException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidApplicationNameException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidApplicationNameException.prototype);
+  }
+};
+__name(_InvalidApplicationNameException, "InvalidApplicationNameException");
+var InvalidApplicationNameException = _InvalidApplicationNameException;
+var _InvalidRevisionException = class _InvalidRevisionException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidRevisionException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidRevisionException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidRevisionException.prototype);
+  }
+};
+__name(_InvalidRevisionException, "InvalidRevisionException");
+var InvalidRevisionException = _InvalidRevisionException;
+var _RevisionRequiredException = class _RevisionRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "RevisionRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "RevisionRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _RevisionRequiredException.prototype);
+  }
+};
+__name(_RevisionRequiredException, "RevisionRequiredException");
+var RevisionRequiredException = _RevisionRequiredException;
+var DeploymentReadyAction = {
+  CONTINUE_DEPLOYMENT: "CONTINUE_DEPLOYMENT",
+  STOP_DEPLOYMENT: "STOP_DEPLOYMENT"
+};
+var GreenFleetProvisioningAction = {
+  COPY_AUTO_SCALING_GROUP: "COPY_AUTO_SCALING_GROUP",
+  DISCOVER_EXISTING: "DISCOVER_EXISTING"
+};
+var InstanceAction = {
+  KEEP_ALIVE: "KEEP_ALIVE",
+  TERMINATE: "TERMINATE"
+};
+var DeploymentOption = {
+  WITHOUT_TRAFFIC_CONTROL: "WITHOUT_TRAFFIC_CONTROL",
+  WITH_TRAFFIC_CONTROL: "WITH_TRAFFIC_CONTROL"
+};
+var DeploymentType = {
+  BLUE_GREEN: "BLUE_GREEN",
+  IN_PLACE: "IN_PLACE"
+};
+var EC2TagFilterType = {
+  KEY_AND_VALUE: "KEY_AND_VALUE",
+  KEY_ONLY: "KEY_ONLY",
+  VALUE_ONLY: "VALUE_ONLY"
+};
+var DeploymentStatus = {
+  BAKING: "Baking",
+  CREATED: "Created",
+  FAILED: "Failed",
+  IN_PROGRESS: "InProgress",
+  QUEUED: "Queued",
+  READY: "Ready",
+  STOPPED: "Stopped",
+  SUCCEEDED: "Succeeded"
+};
+var TagFilterType = {
+  KEY_AND_VALUE: "KEY_AND_VALUE",
+  KEY_ONLY: "KEY_ONLY",
+  VALUE_ONLY: "VALUE_ONLY"
+};
+var OutdatedInstancesStrategy = {
+  Ignore: "IGNORE",
+  Update: "UPDATE"
+};
+var TriggerEventType = {
+  DEPLOYMENT_FAILURE: "DeploymentFailure",
+  DEPLOYMENT_READY: "DeploymentReady",
+  DEPLOYMENT_ROLLBACK: "DeploymentRollback",
+  DEPLOYMENT_START: "DeploymentStart",
+  DEPLOYMENT_STOP: "DeploymentStop",
+  DEPLOYMENT_SUCCESS: "DeploymentSuccess",
+  INSTANCE_FAILURE: "InstanceFailure",
+  INSTANCE_READY: "InstanceReady",
+  INSTANCE_START: "InstanceStart",
+  INSTANCE_SUCCESS: "InstanceSuccess"
+};
+var _DeploymentConfigDoesNotExistException = class _DeploymentConfigDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentConfigDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentConfigDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentConfigDoesNotExistException.prototype);
+  }
+};
+__name(_DeploymentConfigDoesNotExistException, "DeploymentConfigDoesNotExistException");
+var DeploymentConfigDoesNotExistException = _DeploymentConfigDoesNotExistException;
+var _DeploymentGroupNameRequiredException = class _DeploymentGroupNameRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentGroupNameRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentGroupNameRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentGroupNameRequiredException.prototype);
+  }
+};
+__name(_DeploymentGroupNameRequiredException, "DeploymentGroupNameRequiredException");
+var DeploymentGroupNameRequiredException = _DeploymentGroupNameRequiredException;
+var _InvalidDeploymentGroupNameException = class _InvalidDeploymentGroupNameException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentGroupNameException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentGroupNameException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentGroupNameException.prototype);
+  }
+};
+__name(_InvalidDeploymentGroupNameException, "InvalidDeploymentGroupNameException");
+var InvalidDeploymentGroupNameException = _InvalidDeploymentGroupNameException;
+var _InstanceType = {
+  BLUE: "Blue",
+  GREEN: "Green"
+};
+var LifecycleErrorCode = {
+  SCRIPT_FAILED: "ScriptFailed",
+  SCRIPT_MISSING: "ScriptMissing",
+  SCRIPT_NOT_EXECUTABLE: "ScriptNotExecutable",
+  SCRIPT_TIMED_OUT: "ScriptTimedOut",
+  SUCCESS: "Success",
+  UNKNOWN_ERROR: "UnknownError"
+};
+var LifecycleEventStatus = {
+  FAILED: "Failed",
+  IN_PROGRESS: "InProgress",
+  PENDING: "Pending",
+  SKIPPED: "Skipped",
+  SUCCEEDED: "Succeeded",
+  UNKNOWN: "Unknown"
+};
+var InstanceStatus = {
+  FAILED: "Failed",
+  IN_PROGRESS: "InProgress",
+  PENDING: "Pending",
+  READY: "Ready",
+  SKIPPED: "Skipped",
+  SUCCEEDED: "Succeeded",
+  UNKNOWN: "Unknown"
+};
+var _DeploymentDoesNotExistException = class _DeploymentDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentDoesNotExistException.prototype);
+  }
+};
+__name(_DeploymentDoesNotExistException, "DeploymentDoesNotExistException");
+var DeploymentDoesNotExistException = _DeploymentDoesNotExistException;
+var _DeploymentIdRequiredException = class _DeploymentIdRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentIdRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentIdRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentIdRequiredException.prototype);
+  }
+};
+__name(_DeploymentIdRequiredException, "DeploymentIdRequiredException");
+var DeploymentIdRequiredException = _DeploymentIdRequiredException;
+var _InstanceIdRequiredException = class _InstanceIdRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InstanceIdRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InstanceIdRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InstanceIdRequiredException.prototype);
+  }
+};
+__name(_InstanceIdRequiredException, "InstanceIdRequiredException");
+var InstanceIdRequiredException = _InstanceIdRequiredException;
+var _InvalidComputePlatformException = class _InvalidComputePlatformException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidComputePlatformException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidComputePlatformException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidComputePlatformException.prototype);
+  }
+};
+__name(_InvalidComputePlatformException, "InvalidComputePlatformException");
+var InvalidComputePlatformException = _InvalidComputePlatformException;
+var _InvalidDeploymentIdException = class _InvalidDeploymentIdException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentIdException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentIdException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentIdException.prototype);
+  }
+};
+__name(_InvalidDeploymentIdException, "InvalidDeploymentIdException");
+var InvalidDeploymentIdException = _InvalidDeploymentIdException;
+var DeploymentCreator = {
+  Autoscaling: "autoscaling",
+  AutoscalingTermination: "autoscalingTermination",
+  CloudFormation: "CloudFormation",
+  CloudFormationRollback: "CloudFormationRollback",
+  CodeDeploy: "CodeDeploy",
+  CodeDeployAutoUpdate: "CodeDeployAutoUpdate",
+  CodeDeployRollback: "codeDeployRollback",
+  User: "user"
+};
+var ErrorCode = {
+  AGENT_ISSUE: "AGENT_ISSUE",
+  ALARM_ACTIVE: "ALARM_ACTIVE",
+  APPLICATION_MISSING: "APPLICATION_MISSING",
+  AUTOSCALING_VALIDATION_ERROR: "AUTOSCALING_VALIDATION_ERROR",
+  AUTO_SCALING_CONFIGURATION: "AUTO_SCALING_CONFIGURATION",
+  AUTO_SCALING_IAM_ROLE_PERMISSIONS: "AUTO_SCALING_IAM_ROLE_PERMISSIONS",
+  CLOUDFORMATION_STACK_FAILURE: "CLOUDFORMATION_STACK_FAILURE",
+  CODEDEPLOY_RESOURCE_CANNOT_BE_FOUND: "CODEDEPLOY_RESOURCE_CANNOT_BE_FOUND",
+  CUSTOMER_APPLICATION_UNHEALTHY: "CUSTOMER_APPLICATION_UNHEALTHY",
+  DEPLOYMENT_GROUP_MISSING: "DEPLOYMENT_GROUP_MISSING",
+  ECS_UPDATE_ERROR: "ECS_UPDATE_ERROR",
+  ELASTIC_LOAD_BALANCING_INVALID: "ELASTIC_LOAD_BALANCING_INVALID",
+  ELB_INVALID_INSTANCE: "ELB_INVALID_INSTANCE",
+  HEALTH_CONSTRAINTS: "HEALTH_CONSTRAINTS",
+  HEALTH_CONSTRAINTS_INVALID: "HEALTH_CONSTRAINTS_INVALID",
+  HOOK_EXECUTION_FAILURE: "HOOK_EXECUTION_FAILURE",
+  IAM_ROLE_MISSING: "IAM_ROLE_MISSING",
+  IAM_ROLE_PERMISSIONS: "IAM_ROLE_PERMISSIONS",
+  INTERNAL_ERROR: "INTERNAL_ERROR",
+  INVALID_ECS_SERVICE: "INVALID_ECS_SERVICE",
+  INVALID_LAMBDA_CONFIGURATION: "INVALID_LAMBDA_CONFIGURATION",
+  INVALID_LAMBDA_FUNCTION: "INVALID_LAMBDA_FUNCTION",
+  INVALID_REVISION: "INVALID_REVISION",
+  MANUAL_STOP: "MANUAL_STOP",
+  MISSING_BLUE_GREEN_DEPLOYMENT_CONFIGURATION: "MISSING_BLUE_GREEN_DEPLOYMENT_CONFIGURATION",
+  MISSING_ELB_INFORMATION: "MISSING_ELB_INFORMATION",
+  MISSING_GITHUB_TOKEN: "MISSING_GITHUB_TOKEN",
+  NO_EC2_SUBSCRIPTION: "NO_EC2_SUBSCRIPTION",
+  NO_INSTANCES: "NO_INSTANCES",
+  OVER_MAX_INSTANCES: "OVER_MAX_INSTANCES",
+  RESOURCE_LIMIT_EXCEEDED: "RESOURCE_LIMIT_EXCEEDED",
+  REVISION_MISSING: "REVISION_MISSING",
+  THROTTLED: "THROTTLED",
+  TIMEOUT: "TIMEOUT"
+};
+var FileExistsBehavior = {
+  DISALLOW: "DISALLOW",
+  OVERWRITE: "OVERWRITE",
+  RETAIN: "RETAIN"
+};
+var TargetStatus = {
+  FAILED: "Failed",
+  IN_PROGRESS: "InProgress",
+  PENDING: "Pending",
+  READY: "Ready",
+  SKIPPED: "Skipped",
+  SUCCEEDED: "Succeeded",
+  UNKNOWN: "Unknown"
+};
+var DeploymentTargetType = {
+  CLOUDFORMATION_TARGET: "CloudFormationTarget",
+  ECS_TARGET: "ECSTarget",
+  INSTANCE_TARGET: "InstanceTarget",
+  LAMBDA_TARGET: "LambdaTarget"
+};
+var TargetLabel = {
+  BLUE: "Blue",
+  GREEN: "Green"
+};
+var _DeploymentNotStartedException = class _DeploymentNotStartedException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentNotStartedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentNotStartedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentNotStartedException.prototype);
+  }
+};
+__name(_DeploymentNotStartedException, "DeploymentNotStartedException");
+var DeploymentNotStartedException = _DeploymentNotStartedException;
+var _DeploymentTargetDoesNotExistException = class _DeploymentTargetDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentTargetDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentTargetDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentTargetDoesNotExistException.prototype);
+  }
+};
+__name(_DeploymentTargetDoesNotExistException, "DeploymentTargetDoesNotExistException");
+var DeploymentTargetDoesNotExistException = _DeploymentTargetDoesNotExistException;
+var _DeploymentTargetIdRequiredException = class _DeploymentTargetIdRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentTargetIdRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentTargetIdRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentTargetIdRequiredException.prototype);
+  }
+};
+__name(_DeploymentTargetIdRequiredException, "DeploymentTargetIdRequiredException");
+var DeploymentTargetIdRequiredException = _DeploymentTargetIdRequiredException;
+var _DeploymentTargetListSizeExceededException = class _DeploymentTargetListSizeExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentTargetListSizeExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentTargetListSizeExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentTargetListSizeExceededException.prototype);
+  }
+};
+__name(_DeploymentTargetListSizeExceededException, "DeploymentTargetListSizeExceededException");
+var DeploymentTargetListSizeExceededException = _DeploymentTargetListSizeExceededException;
+var _InstanceDoesNotExistException = class _InstanceDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InstanceDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InstanceDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InstanceDoesNotExistException.prototype);
+  }
+};
+__name(_InstanceDoesNotExistException, "InstanceDoesNotExistException");
+var InstanceDoesNotExistException = _InstanceDoesNotExistException;
+var _InvalidDeploymentTargetIdException = class _InvalidDeploymentTargetIdException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentTargetIdException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentTargetIdException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentTargetIdException.prototype);
+  }
+};
+__name(_InvalidDeploymentTargetIdException, "InvalidDeploymentTargetIdException");
+var InvalidDeploymentTargetIdException = _InvalidDeploymentTargetIdException;
+var _BucketNameFilterRequiredException = class _BucketNameFilterRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "BucketNameFilterRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "BucketNameFilterRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _BucketNameFilterRequiredException.prototype);
+  }
+};
+__name(_BucketNameFilterRequiredException, "BucketNameFilterRequiredException");
+var BucketNameFilterRequiredException = _BucketNameFilterRequiredException;
+var DeploymentWaitType = {
+  READY_WAIT: "READY_WAIT",
+  TERMINATION_WAIT: "TERMINATION_WAIT"
+};
+var _DeploymentAlreadyCompletedException = class _DeploymentAlreadyCompletedException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentAlreadyCompletedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentAlreadyCompletedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentAlreadyCompletedException.prototype);
+  }
+};
+__name(_DeploymentAlreadyCompletedException, "DeploymentAlreadyCompletedException");
+var DeploymentAlreadyCompletedException = _DeploymentAlreadyCompletedException;
+var _DeploymentIsNotInReadyStateException = class _DeploymentIsNotInReadyStateException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentIsNotInReadyStateException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentIsNotInReadyStateException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentIsNotInReadyStateException.prototype);
+  }
+};
+__name(_DeploymentIsNotInReadyStateException, "DeploymentIsNotInReadyStateException");
+var DeploymentIsNotInReadyStateException = _DeploymentIsNotInReadyStateException;
+var _InvalidDeploymentStatusException = class _InvalidDeploymentStatusException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentStatusException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentStatusException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentStatusException.prototype);
+  }
+};
+__name(_InvalidDeploymentStatusException, "InvalidDeploymentStatusException");
+var InvalidDeploymentStatusException = _InvalidDeploymentStatusException;
+var _InvalidDeploymentWaitTypeException = class _InvalidDeploymentWaitTypeException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentWaitTypeException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentWaitTypeException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentWaitTypeException.prototype);
+  }
+};
+__name(_InvalidDeploymentWaitTypeException, "InvalidDeploymentWaitTypeException");
+var InvalidDeploymentWaitTypeException = _InvalidDeploymentWaitTypeException;
+var _UnsupportedActionForDeploymentTypeException = class _UnsupportedActionForDeploymentTypeException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "UnsupportedActionForDeploymentTypeException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "UnsupportedActionForDeploymentTypeException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _UnsupportedActionForDeploymentTypeException.prototype);
+  }
+};
+__name(_UnsupportedActionForDeploymentTypeException, "UnsupportedActionForDeploymentTypeException");
+var UnsupportedActionForDeploymentTypeException = _UnsupportedActionForDeploymentTypeException;
+var _InvalidTagsToAddException = class _InvalidTagsToAddException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTagsToAddException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTagsToAddException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTagsToAddException.prototype);
+  }
+};
+__name(_InvalidTagsToAddException, "InvalidTagsToAddException");
+var InvalidTagsToAddException = _InvalidTagsToAddException;
+var _DeploymentGroupDoesNotExistException = class _DeploymentGroupDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentGroupDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentGroupDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentGroupDoesNotExistException.prototype);
+  }
+};
+__name(_DeploymentGroupDoesNotExistException, "DeploymentGroupDoesNotExistException");
+var DeploymentGroupDoesNotExistException = _DeploymentGroupDoesNotExistException;
+var _DeploymentLimitExceededException = class _DeploymentLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentLimitExceededException.prototype);
+  }
+};
+__name(_DeploymentLimitExceededException, "DeploymentLimitExceededException");
+var DeploymentLimitExceededException = _DeploymentLimitExceededException;
+var _DescriptionTooLongException = class _DescriptionTooLongException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DescriptionTooLongException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DescriptionTooLongException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DescriptionTooLongException.prototype);
+  }
+};
+__name(_DescriptionTooLongException, "DescriptionTooLongException");
+var DescriptionTooLongException = _DescriptionTooLongException;
+var _InvalidAlarmConfigException = class _InvalidAlarmConfigException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidAlarmConfigException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidAlarmConfigException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidAlarmConfigException.prototype);
+  }
+};
+__name(_InvalidAlarmConfigException, "InvalidAlarmConfigException");
+var InvalidAlarmConfigException = _InvalidAlarmConfigException;
+var _InvalidAutoRollbackConfigException = class _InvalidAutoRollbackConfigException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidAutoRollbackConfigException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidAutoRollbackConfigException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidAutoRollbackConfigException.prototype);
+  }
+};
+__name(_InvalidAutoRollbackConfigException, "InvalidAutoRollbackConfigException");
+var InvalidAutoRollbackConfigException = _InvalidAutoRollbackConfigException;
+var _InvalidAutoScalingGroupException = class _InvalidAutoScalingGroupException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidAutoScalingGroupException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidAutoScalingGroupException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidAutoScalingGroupException.prototype);
+  }
+};
+__name(_InvalidAutoScalingGroupException, "InvalidAutoScalingGroupException");
+var InvalidAutoScalingGroupException = _InvalidAutoScalingGroupException;
+var _InvalidDeploymentConfigNameException = class _InvalidDeploymentConfigNameException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentConfigNameException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentConfigNameException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentConfigNameException.prototype);
+  }
+};
+__name(_InvalidDeploymentConfigNameException, "InvalidDeploymentConfigNameException");
+var InvalidDeploymentConfigNameException = _InvalidDeploymentConfigNameException;
+var _InvalidFileExistsBehaviorException = class _InvalidFileExistsBehaviorException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidFileExistsBehaviorException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidFileExistsBehaviorException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidFileExistsBehaviorException.prototype);
+  }
+};
+__name(_InvalidFileExistsBehaviorException, "InvalidFileExistsBehaviorException");
+var InvalidFileExistsBehaviorException = _InvalidFileExistsBehaviorException;
+var _InvalidGitHubAccountTokenException = class _InvalidGitHubAccountTokenException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidGitHubAccountTokenException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidGitHubAccountTokenException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidGitHubAccountTokenException.prototype);
+  }
+};
+__name(_InvalidGitHubAccountTokenException, "InvalidGitHubAccountTokenException");
+var InvalidGitHubAccountTokenException = _InvalidGitHubAccountTokenException;
+var _InvalidIgnoreApplicationStopFailuresValueException = class _InvalidIgnoreApplicationStopFailuresValueException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidIgnoreApplicationStopFailuresValueException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidIgnoreApplicationStopFailuresValueException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidIgnoreApplicationStopFailuresValueException.prototype);
+  }
+};
+__name(_InvalidIgnoreApplicationStopFailuresValueException, "InvalidIgnoreApplicationStopFailuresValueException");
+var InvalidIgnoreApplicationStopFailuresValueException = _InvalidIgnoreApplicationStopFailuresValueException;
+var _InvalidLoadBalancerInfoException = class _InvalidLoadBalancerInfoException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidLoadBalancerInfoException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidLoadBalancerInfoException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidLoadBalancerInfoException.prototype);
+  }
+};
+__name(_InvalidLoadBalancerInfoException, "InvalidLoadBalancerInfoException");
+var InvalidLoadBalancerInfoException = _InvalidLoadBalancerInfoException;
+var _InvalidRoleException = class _InvalidRoleException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidRoleException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidRoleException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidRoleException.prototype);
+  }
+};
+__name(_InvalidRoleException, "InvalidRoleException");
+var InvalidRoleException = _InvalidRoleException;
+var _InvalidTargetInstancesException = class _InvalidTargetInstancesException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTargetInstancesException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTargetInstancesException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTargetInstancesException.prototype);
+  }
+};
+__name(_InvalidTargetInstancesException, "InvalidTargetInstancesException");
+var InvalidTargetInstancesException = _InvalidTargetInstancesException;
+var _InvalidTrafficRoutingConfigurationException = class _InvalidTrafficRoutingConfigurationException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTrafficRoutingConfigurationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTrafficRoutingConfigurationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTrafficRoutingConfigurationException.prototype);
+  }
+};
+__name(_InvalidTrafficRoutingConfigurationException, "InvalidTrafficRoutingConfigurationException");
+var InvalidTrafficRoutingConfigurationException = _InvalidTrafficRoutingConfigurationException;
+var _InvalidUpdateOutdatedInstancesOnlyValueException = class _InvalidUpdateOutdatedInstancesOnlyValueException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidUpdateOutdatedInstancesOnlyValueException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidUpdateOutdatedInstancesOnlyValueException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidUpdateOutdatedInstancesOnlyValueException.prototype);
+  }
+};
+__name(_InvalidUpdateOutdatedInstancesOnlyValueException, "InvalidUpdateOutdatedInstancesOnlyValueException");
+var InvalidUpdateOutdatedInstancesOnlyValueException = _InvalidUpdateOutdatedInstancesOnlyValueException;
+var _RevisionDoesNotExistException = class _RevisionDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "RevisionDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "RevisionDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _RevisionDoesNotExistException.prototype);
+  }
+};
+__name(_RevisionDoesNotExistException, "RevisionDoesNotExistException");
+var RevisionDoesNotExistException = _RevisionDoesNotExistException;
+var _ThrottlingException = class _ThrottlingException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ThrottlingException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ThrottlingException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ThrottlingException.prototype);
+  }
+};
+__name(_ThrottlingException, "ThrottlingException");
+var ThrottlingException = _ThrottlingException;
+var MinimumHealthyHostsType = {
+  FLEET_PERCENT: "FLEET_PERCENT",
+  HOST_COUNT: "HOST_COUNT"
+};
+var TrafficRoutingType = {
+  AllAtOnce: "AllAtOnce",
+  TimeBasedCanary: "TimeBasedCanary",
+  TimeBasedLinear: "TimeBasedLinear"
+};
+var MinimumHealthyHostsPerZoneType = {
+  FLEET_PERCENT: "FLEET_PERCENT",
+  HOST_COUNT: "HOST_COUNT"
+};
+var _DeploymentConfigAlreadyExistsException = class _DeploymentConfigAlreadyExistsException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentConfigAlreadyExistsException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentConfigAlreadyExistsException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentConfigAlreadyExistsException.prototype);
+  }
+};
+__name(_DeploymentConfigAlreadyExistsException, "DeploymentConfigAlreadyExistsException");
+var DeploymentConfigAlreadyExistsException = _DeploymentConfigAlreadyExistsException;
+var _DeploymentConfigLimitExceededException = class _DeploymentConfigLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentConfigLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentConfigLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentConfigLimitExceededException.prototype);
+  }
+};
+__name(_DeploymentConfigLimitExceededException, "DeploymentConfigLimitExceededException");
+var DeploymentConfigLimitExceededException = _DeploymentConfigLimitExceededException;
+var _DeploymentConfigNameRequiredException = class _DeploymentConfigNameRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentConfigNameRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentConfigNameRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentConfigNameRequiredException.prototype);
+  }
+};
+__name(_DeploymentConfigNameRequiredException, "DeploymentConfigNameRequiredException");
+var DeploymentConfigNameRequiredException = _DeploymentConfigNameRequiredException;
+var _InvalidMinimumHealthyHostValueException = class _InvalidMinimumHealthyHostValueException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidMinimumHealthyHostValueException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidMinimumHealthyHostValueException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidMinimumHealthyHostValueException.prototype);
+  }
+};
+__name(_InvalidMinimumHealthyHostValueException, "InvalidMinimumHealthyHostValueException");
+var InvalidMinimumHealthyHostValueException = _InvalidMinimumHealthyHostValueException;
+var _InvalidZonalDeploymentConfigurationException = class _InvalidZonalDeploymentConfigurationException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidZonalDeploymentConfigurationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidZonalDeploymentConfigurationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidZonalDeploymentConfigurationException.prototype);
+  }
+};
+__name(_InvalidZonalDeploymentConfigurationException, "InvalidZonalDeploymentConfigurationException");
+var InvalidZonalDeploymentConfigurationException = _InvalidZonalDeploymentConfigurationException;
+var _DeploymentGroupAlreadyExistsException = class _DeploymentGroupAlreadyExistsException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentGroupAlreadyExistsException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentGroupAlreadyExistsException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentGroupAlreadyExistsException.prototype);
+  }
+};
+__name(_DeploymentGroupAlreadyExistsException, "DeploymentGroupAlreadyExistsException");
+var DeploymentGroupAlreadyExistsException = _DeploymentGroupAlreadyExistsException;
+var _DeploymentGroupLimitExceededException = class _DeploymentGroupLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentGroupLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentGroupLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentGroupLimitExceededException.prototype);
+  }
+};
+__name(_DeploymentGroupLimitExceededException, "DeploymentGroupLimitExceededException");
+var DeploymentGroupLimitExceededException = _DeploymentGroupLimitExceededException;
+var _ECSServiceMappingLimitExceededException = class _ECSServiceMappingLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ECSServiceMappingLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ECSServiceMappingLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ECSServiceMappingLimitExceededException.prototype);
+  }
+};
+__name(_ECSServiceMappingLimitExceededException, "ECSServiceMappingLimitExceededException");
+var ECSServiceMappingLimitExceededException = _ECSServiceMappingLimitExceededException;
+var _InvalidBlueGreenDeploymentConfigurationException = class _InvalidBlueGreenDeploymentConfigurationException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidBlueGreenDeploymentConfigurationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidBlueGreenDeploymentConfigurationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidBlueGreenDeploymentConfigurationException.prototype);
+  }
+};
+__name(_InvalidBlueGreenDeploymentConfigurationException, "InvalidBlueGreenDeploymentConfigurationException");
+var InvalidBlueGreenDeploymentConfigurationException = _InvalidBlueGreenDeploymentConfigurationException;
+var _InvalidDeploymentStyleException = class _InvalidDeploymentStyleException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentStyleException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentStyleException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentStyleException.prototype);
+  }
+};
+__name(_InvalidDeploymentStyleException, "InvalidDeploymentStyleException");
+var InvalidDeploymentStyleException = _InvalidDeploymentStyleException;
+var _InvalidEC2TagCombinationException = class _InvalidEC2TagCombinationException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidEC2TagCombinationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidEC2TagCombinationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidEC2TagCombinationException.prototype);
+  }
+};
+__name(_InvalidEC2TagCombinationException, "InvalidEC2TagCombinationException");
+var InvalidEC2TagCombinationException = _InvalidEC2TagCombinationException;
+var _InvalidEC2TagException = class _InvalidEC2TagException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidEC2TagException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidEC2TagException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidEC2TagException.prototype);
+  }
+};
+__name(_InvalidEC2TagException, "InvalidEC2TagException");
+var InvalidEC2TagException = _InvalidEC2TagException;
+var _InvalidECSServiceException = class _InvalidECSServiceException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidECSServiceException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidECSServiceException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidECSServiceException.prototype);
+  }
+};
+__name(_InvalidECSServiceException, "InvalidECSServiceException");
+var InvalidECSServiceException = _InvalidECSServiceException;
+var _InvalidInputException = class _InvalidInputException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidInputException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidInputException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidInputException.prototype);
+  }
+};
+__name(_InvalidInputException, "InvalidInputException");
+var InvalidInputException = _InvalidInputException;
+var _InvalidOnPremisesTagCombinationException = class _InvalidOnPremisesTagCombinationException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidOnPremisesTagCombinationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidOnPremisesTagCombinationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidOnPremisesTagCombinationException.prototype);
+  }
+};
+__name(_InvalidOnPremisesTagCombinationException, "InvalidOnPremisesTagCombinationException");
+var InvalidOnPremisesTagCombinationException = _InvalidOnPremisesTagCombinationException;
+var _InvalidTargetGroupPairException = class _InvalidTargetGroupPairException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTargetGroupPairException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTargetGroupPairException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTargetGroupPairException.prototype);
+  }
+};
+__name(_InvalidTargetGroupPairException, "InvalidTargetGroupPairException");
+var InvalidTargetGroupPairException = _InvalidTargetGroupPairException;
+var _InvalidTriggerConfigException = class _InvalidTriggerConfigException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTriggerConfigException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTriggerConfigException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTriggerConfigException.prototype);
+  }
+};
+__name(_InvalidTriggerConfigException, "InvalidTriggerConfigException");
+var InvalidTriggerConfigException = _InvalidTriggerConfigException;
+var _LifecycleHookLimitExceededException = class _LifecycleHookLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "LifecycleHookLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "LifecycleHookLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _LifecycleHookLimitExceededException.prototype);
+  }
+};
+__name(_LifecycleHookLimitExceededException, "LifecycleHookLimitExceededException");
+var LifecycleHookLimitExceededException = _LifecycleHookLimitExceededException;
+var _RoleRequiredException = class _RoleRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "RoleRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "RoleRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _RoleRequiredException.prototype);
+  }
+};
+__name(_RoleRequiredException, "RoleRequiredException");
+var RoleRequiredException = _RoleRequiredException;
+var _TagSetListLimitExceededException = class _TagSetListLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "TagSetListLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "TagSetListLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _TagSetListLimitExceededException.prototype);
+  }
+};
+__name(_TagSetListLimitExceededException, "TagSetListLimitExceededException");
+var TagSetListLimitExceededException = _TagSetListLimitExceededException;
+var _TriggerTargetsLimitExceededException = class _TriggerTargetsLimitExceededException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "TriggerTargetsLimitExceededException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "TriggerTargetsLimitExceededException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _TriggerTargetsLimitExceededException.prototype);
+  }
+};
+__name(_TriggerTargetsLimitExceededException, "TriggerTargetsLimitExceededException");
+var TriggerTargetsLimitExceededException = _TriggerTargetsLimitExceededException;
+var _DeploymentConfigInUseException = class _DeploymentConfigInUseException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "DeploymentConfigInUseException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "DeploymentConfigInUseException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _DeploymentConfigInUseException.prototype);
+  }
+};
+__name(_DeploymentConfigInUseException, "DeploymentConfigInUseException");
+var DeploymentConfigInUseException = _DeploymentConfigInUseException;
+var _InvalidOperationException = class _InvalidOperationException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidOperationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidOperationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidOperationException.prototype);
+  }
+};
+__name(_InvalidOperationException, "InvalidOperationException");
+var InvalidOperationException = _InvalidOperationException;
+var _GitHubAccountTokenDoesNotExistException = class _GitHubAccountTokenDoesNotExistException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "GitHubAccountTokenDoesNotExistException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "GitHubAccountTokenDoesNotExistException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _GitHubAccountTokenDoesNotExistException.prototype);
+  }
+};
+__name(_GitHubAccountTokenDoesNotExistException, "GitHubAccountTokenDoesNotExistException");
+var GitHubAccountTokenDoesNotExistException = _GitHubAccountTokenDoesNotExistException;
+var _GitHubAccountTokenNameRequiredException = class _GitHubAccountTokenNameRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "GitHubAccountTokenNameRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "GitHubAccountTokenNameRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _GitHubAccountTokenNameRequiredException.prototype);
+  }
+};
+__name(_GitHubAccountTokenNameRequiredException, "GitHubAccountTokenNameRequiredException");
+var GitHubAccountTokenNameRequiredException = _GitHubAccountTokenNameRequiredException;
+var _InvalidGitHubAccountTokenNameException = class _InvalidGitHubAccountTokenNameException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidGitHubAccountTokenNameException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidGitHubAccountTokenNameException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidGitHubAccountTokenNameException.prototype);
+  }
+};
+__name(_InvalidGitHubAccountTokenNameException, "InvalidGitHubAccountTokenNameException");
+var InvalidGitHubAccountTokenNameException = _InvalidGitHubAccountTokenNameException;
+var _OperationNotSupportedException = class _OperationNotSupportedException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "OperationNotSupportedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "OperationNotSupportedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _OperationNotSupportedException.prototype);
+  }
+};
+__name(_OperationNotSupportedException, "OperationNotSupportedException");
+var OperationNotSupportedException = _OperationNotSupportedException;
+var _ResourceValidationException = class _ResourceValidationException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ResourceValidationException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ResourceValidationException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ResourceValidationException.prototype);
+  }
+};
+__name(_ResourceValidationException, "ResourceValidationException");
+var ResourceValidationException = _ResourceValidationException;
+var _InvalidBucketNameFilterException = class _InvalidBucketNameFilterException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidBucketNameFilterException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidBucketNameFilterException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidBucketNameFilterException.prototype);
+  }
+};
+__name(_InvalidBucketNameFilterException, "InvalidBucketNameFilterException");
+var InvalidBucketNameFilterException = _InvalidBucketNameFilterException;
+var _InvalidDeployedStateFilterException = class _InvalidDeployedStateFilterException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeployedStateFilterException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeployedStateFilterException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeployedStateFilterException.prototype);
+  }
+};
+__name(_InvalidDeployedStateFilterException, "InvalidDeployedStateFilterException");
+var InvalidDeployedStateFilterException = _InvalidDeployedStateFilterException;
+var _InvalidKeyPrefixFilterException = class _InvalidKeyPrefixFilterException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidKeyPrefixFilterException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidKeyPrefixFilterException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidKeyPrefixFilterException.prototype);
+  }
+};
+__name(_InvalidKeyPrefixFilterException, "InvalidKeyPrefixFilterException");
+var InvalidKeyPrefixFilterException = _InvalidKeyPrefixFilterException;
+var _InvalidNextTokenException = class _InvalidNextTokenException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidNextTokenException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidNextTokenException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidNextTokenException.prototype);
+  }
+};
+__name(_InvalidNextTokenException, "InvalidNextTokenException");
+var InvalidNextTokenException = _InvalidNextTokenException;
+var _InvalidSortByException = class _InvalidSortByException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidSortByException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidSortByException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidSortByException.prototype);
+  }
+};
+__name(_InvalidSortByException, "InvalidSortByException");
+var InvalidSortByException = _InvalidSortByException;
+var _InvalidSortOrderException = class _InvalidSortOrderException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidSortOrderException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidSortOrderException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidSortOrderException.prototype);
+  }
+};
+__name(_InvalidSortOrderException, "InvalidSortOrderException");
+var InvalidSortOrderException = _InvalidSortOrderException;
+var ListStateFilterAction = {
+  Exclude: "exclude",
+  Ignore: "ignore",
+  Include: "include"
+};
+var SortOrder = {
+  Ascending: "ascending",
+  Descending: "descending"
+};
+var _InvalidDeploymentInstanceTypeException = class _InvalidDeploymentInstanceTypeException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidDeploymentInstanceTypeException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidDeploymentInstanceTypeException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidDeploymentInstanceTypeException.prototype);
+  }
+};
+__name(_InvalidDeploymentInstanceTypeException, "InvalidDeploymentInstanceTypeException");
+var InvalidDeploymentInstanceTypeException = _InvalidDeploymentInstanceTypeException;
+var _InvalidInstanceStatusException = class _InvalidInstanceStatusException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidInstanceStatusException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidInstanceStatusException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidInstanceStatusException.prototype);
+  }
+};
+__name(_InvalidInstanceStatusException, "InvalidInstanceStatusException");
+var InvalidInstanceStatusException = _InvalidInstanceStatusException;
+var _InvalidInstanceTypeException = class _InvalidInstanceTypeException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidInstanceTypeException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidInstanceTypeException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidInstanceTypeException.prototype);
+  }
+};
+__name(_InvalidInstanceTypeException, "InvalidInstanceTypeException");
+var InvalidInstanceTypeException = _InvalidInstanceTypeException;
+var _InvalidTargetFilterNameException = class _InvalidTargetFilterNameException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTargetFilterNameException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTargetFilterNameException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTargetFilterNameException.prototype);
+  }
+};
+__name(_InvalidTargetFilterNameException, "InvalidTargetFilterNameException");
+var InvalidTargetFilterNameException = _InvalidTargetFilterNameException;
+var _InvalidExternalIdException = class _InvalidExternalIdException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidExternalIdException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidExternalIdException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidExternalIdException.prototype);
+  }
+};
+__name(_InvalidExternalIdException, "InvalidExternalIdException");
+var InvalidExternalIdException = _InvalidExternalIdException;
+var _InvalidTimeRangeException = class _InvalidTimeRangeException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTimeRangeException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTimeRangeException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTimeRangeException.prototype);
+  }
+};
+__name(_InvalidTimeRangeException, "InvalidTimeRangeException");
+var InvalidTimeRangeException = _InvalidTimeRangeException;
+var TargetFilterName = {
+  SERVER_INSTANCE_LABEL: "ServerInstanceLabel",
+  TARGET_STATUS: "TargetStatus"
+};
+var _InvalidRegistrationStatusException = class _InvalidRegistrationStatusException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidRegistrationStatusException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidRegistrationStatusException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidRegistrationStatusException.prototype);
+  }
+};
+__name(_InvalidRegistrationStatusException, "InvalidRegistrationStatusException");
+var InvalidRegistrationStatusException = _InvalidRegistrationStatusException;
+var _InvalidTagFilterException = class _InvalidTagFilterException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidTagFilterException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidTagFilterException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidTagFilterException.prototype);
+  }
+};
+__name(_InvalidTagFilterException, "InvalidTagFilterException");
+var InvalidTagFilterException = _InvalidTagFilterException;
+var RegistrationStatus = {
+  Deregistered: "Deregistered",
+  Registered: "Registered"
+};
+var _InvalidArnException = class _InvalidArnException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidArnException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidArnException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidArnException.prototype);
+  }
+};
+__name(_InvalidArnException, "InvalidArnException");
+var InvalidArnException = _InvalidArnException;
+var _ResourceArnRequiredException = class _ResourceArnRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "ResourceArnRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "ResourceArnRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _ResourceArnRequiredException.prototype);
+  }
+};
+__name(_ResourceArnRequiredException, "ResourceArnRequiredException");
+var ResourceArnRequiredException = _ResourceArnRequiredException;
+var _InvalidLifecycleEventHookExecutionIdException = class _InvalidLifecycleEventHookExecutionIdException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidLifecycleEventHookExecutionIdException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidLifecycleEventHookExecutionIdException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidLifecycleEventHookExecutionIdException.prototype);
+  }
+};
+__name(_InvalidLifecycleEventHookExecutionIdException, "InvalidLifecycleEventHookExecutionIdException");
+var InvalidLifecycleEventHookExecutionIdException = _InvalidLifecycleEventHookExecutionIdException;
+var _InvalidLifecycleEventHookExecutionStatusException = class _InvalidLifecycleEventHookExecutionStatusException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidLifecycleEventHookExecutionStatusException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidLifecycleEventHookExecutionStatusException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidLifecycleEventHookExecutionStatusException.prototype);
+  }
+};
+__name(_InvalidLifecycleEventHookExecutionStatusException, "InvalidLifecycleEventHookExecutionStatusException");
+var InvalidLifecycleEventHookExecutionStatusException = _InvalidLifecycleEventHookExecutionStatusException;
+var _LifecycleEventAlreadyCompletedException = class _LifecycleEventAlreadyCompletedException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "LifecycleEventAlreadyCompletedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "LifecycleEventAlreadyCompletedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _LifecycleEventAlreadyCompletedException.prototype);
+  }
+};
+__name(_LifecycleEventAlreadyCompletedException, "LifecycleEventAlreadyCompletedException");
+var LifecycleEventAlreadyCompletedException = _LifecycleEventAlreadyCompletedException;
+var _IamArnRequiredException = class _IamArnRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "IamArnRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "IamArnRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _IamArnRequiredException.prototype);
+  }
+};
+__name(_IamArnRequiredException, "IamArnRequiredException");
+var IamArnRequiredException = _IamArnRequiredException;
+var _IamSessionArnAlreadyRegisteredException = class _IamSessionArnAlreadyRegisteredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "IamSessionArnAlreadyRegisteredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "IamSessionArnAlreadyRegisteredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _IamSessionArnAlreadyRegisteredException.prototype);
+  }
+};
+__name(_IamSessionArnAlreadyRegisteredException, "IamSessionArnAlreadyRegisteredException");
+var IamSessionArnAlreadyRegisteredException = _IamSessionArnAlreadyRegisteredException;
+var _IamUserArnAlreadyRegisteredException = class _IamUserArnAlreadyRegisteredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "IamUserArnAlreadyRegisteredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "IamUserArnAlreadyRegisteredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _IamUserArnAlreadyRegisteredException.prototype);
+  }
+};
+__name(_IamUserArnAlreadyRegisteredException, "IamUserArnAlreadyRegisteredException");
+var IamUserArnAlreadyRegisteredException = _IamUserArnAlreadyRegisteredException;
+var _IamUserArnRequiredException = class _IamUserArnRequiredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "IamUserArnRequiredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "IamUserArnRequiredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _IamUserArnRequiredException.prototype);
+  }
+};
+__name(_IamUserArnRequiredException, "IamUserArnRequiredException");
+var IamUserArnRequiredException = _IamUserArnRequiredException;
+var _InstanceNameAlreadyRegisteredException = class _InstanceNameAlreadyRegisteredException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InstanceNameAlreadyRegisteredException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InstanceNameAlreadyRegisteredException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InstanceNameAlreadyRegisteredException.prototype);
+  }
+};
+__name(_InstanceNameAlreadyRegisteredException, "InstanceNameAlreadyRegisteredException");
+var InstanceNameAlreadyRegisteredException = _InstanceNameAlreadyRegisteredException;
+var _InvalidIamSessionArnException = class _InvalidIamSessionArnException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidIamSessionArnException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidIamSessionArnException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidIamSessionArnException.prototype);
+  }
+};
+__name(_InvalidIamSessionArnException, "InvalidIamSessionArnException");
+var InvalidIamSessionArnException = _InvalidIamSessionArnException;
+var _InvalidIamUserArnException = class _InvalidIamUserArnException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "InvalidIamUserArnException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "InvalidIamUserArnException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _InvalidIamUserArnException.prototype);
+  }
+};
+__name(_InvalidIamUserArnException, "InvalidIamUserArnException");
+var InvalidIamUserArnException = _InvalidIamUserArnException;
+var _MultipleIamArnsProvidedException = class _MultipleIamArnsProvidedException extends CodeDeployServiceException {
+  /**
+   * @internal
+   */
+  constructor(opts) {
+    super({
+      name: "MultipleIamArnsProvidedException",
+      $fault: "client",
+      ...opts
+    });
+    this.name = "MultipleIamArnsProvidedException";
+    this.$fault = "client";
+    Object.setPrototypeOf(this, _MultipleIamArnsProvidedException.prototype);
+  }
+};
+__name(_MultipleIamArnsProvidedException, "MultipleIamArnsProvidedException");
+var MultipleIamArnsProvidedException = _MultipleIamArnsProvidedException;
+var StopStatus = {
+  PENDING: "Pending",
+  SUCCEEDED: "Succeeded"
+};
+
+// src/protocols/Aws_json1_1.ts
+var se_AddTagsToOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("AddTagsToOnPremisesInstances");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_AddTagsToOnPremisesInstancesCommand");
+var se_BatchGetApplicationRevisionsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("BatchGetApplicationRevisions");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_BatchGetApplicationRevisionsCommand");
+var se_BatchGetApplicationsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("BatchGetApplications");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_BatchGetApplicationsCommand");
+var se_BatchGetDeploymentGroupsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("BatchGetDeploymentGroups");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_BatchGetDeploymentGroupsCommand");
+var se_BatchGetDeploymentInstancesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("BatchGetDeploymentInstances");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_BatchGetDeploymentInstancesCommand");
+var se_BatchGetDeploymentsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("BatchGetDeployments");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_BatchGetDeploymentsCommand");
+var se_BatchGetDeploymentTargetsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("BatchGetDeploymentTargets");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_BatchGetDeploymentTargetsCommand");
+var se_BatchGetOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("BatchGetOnPremisesInstances");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_BatchGetOnPremisesInstancesCommand");
+var se_ContinueDeploymentCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ContinueDeployment");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ContinueDeploymentCommand");
+var se_CreateApplicationCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("CreateApplication");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_CreateApplicationCommand");
+var se_CreateDeploymentCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("CreateDeployment");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_CreateDeploymentCommand");
+var se_CreateDeploymentConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("CreateDeploymentConfig");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_CreateDeploymentConfigCommand");
+var se_CreateDeploymentGroupCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("CreateDeploymentGroup");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_CreateDeploymentGroupCommand");
+var se_DeleteApplicationCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("DeleteApplication");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_DeleteApplicationCommand");
+var se_DeleteDeploymentConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("DeleteDeploymentConfig");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_DeleteDeploymentConfigCommand");
+var se_DeleteDeploymentGroupCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("DeleteDeploymentGroup");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_DeleteDeploymentGroupCommand");
+var se_DeleteGitHubAccountTokenCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("DeleteGitHubAccountToken");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_DeleteGitHubAccountTokenCommand");
+var se_DeleteResourcesByExternalIdCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("DeleteResourcesByExternalId");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_DeleteResourcesByExternalIdCommand");
+var se_DeregisterOnPremisesInstanceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("DeregisterOnPremisesInstance");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_DeregisterOnPremisesInstanceCommand");
+var se_GetApplicationCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetApplication");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetApplicationCommand");
+var se_GetApplicationRevisionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetApplicationRevision");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetApplicationRevisionCommand");
+var se_GetDeploymentCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetDeployment");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetDeploymentCommand");
+var se_GetDeploymentConfigCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetDeploymentConfig");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetDeploymentConfigCommand");
+var se_GetDeploymentGroupCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetDeploymentGroup");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetDeploymentGroupCommand");
+var se_GetDeploymentInstanceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetDeploymentInstance");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetDeploymentInstanceCommand");
+var se_GetDeploymentTargetCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetDeploymentTarget");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetDeploymentTargetCommand");
+var se_GetOnPremisesInstanceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("GetOnPremisesInstance");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_GetOnPremisesInstanceCommand");
+var se_ListApplicationRevisionsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListApplicationRevisions");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListApplicationRevisionsCommand");
+var se_ListApplicationsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListApplications");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListApplicationsCommand");
+var se_ListDeploymentConfigsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListDeploymentConfigs");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListDeploymentConfigsCommand");
+var se_ListDeploymentGroupsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListDeploymentGroups");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListDeploymentGroupsCommand");
+var se_ListDeploymentInstancesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListDeploymentInstances");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListDeploymentInstancesCommand");
+var se_ListDeploymentsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListDeployments");
+  let body;
+  body = JSON.stringify(se_ListDeploymentsInput(input, context));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListDeploymentsCommand");
+var se_ListDeploymentTargetsCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListDeploymentTargets");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListDeploymentTargetsCommand");
+var se_ListGitHubAccountTokenNamesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListGitHubAccountTokenNames");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListGitHubAccountTokenNamesCommand");
+var se_ListOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListOnPremisesInstances");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListOnPremisesInstancesCommand");
+var se_ListTagsForResourceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("ListTagsForResource");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_ListTagsForResourceCommand");
+var se_PutLifecycleEventHookExecutionStatusCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("PutLifecycleEventHookExecutionStatus");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_PutLifecycleEventHookExecutionStatusCommand");
+var se_RegisterApplicationRevisionCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("RegisterApplicationRevision");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_RegisterApplicationRevisionCommand");
+var se_RegisterOnPremisesInstanceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("RegisterOnPremisesInstance");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_RegisterOnPremisesInstanceCommand");
+var se_RemoveTagsFromOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("RemoveTagsFromOnPremisesInstances");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_RemoveTagsFromOnPremisesInstancesCommand");
+var se_SkipWaitTimeForInstanceTerminationCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("SkipWaitTimeForInstanceTermination");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_SkipWaitTimeForInstanceTerminationCommand");
+var se_StopDeploymentCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("StopDeployment");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_StopDeploymentCommand");
+var se_TagResourceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("TagResource");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_TagResourceCommand");
+var se_UntagResourceCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("UntagResource");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_UntagResourceCommand");
+var se_UpdateApplicationCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("UpdateApplication");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_UpdateApplicationCommand");
+var se_UpdateDeploymentGroupCommand = /* @__PURE__ */ __name(async (input, context) => {
+  const headers = sharedHeaders("UpdateDeploymentGroup");
+  let body;
+  body = JSON.stringify((0, import_smithy_client._json)(input));
+  return buildHttpRpcRequest(context, headers, "/", void 0, body);
+}, "se_UpdateDeploymentGroupCommand");
+var de_AddTagsToOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_AddTagsToOnPremisesInstancesCommand");
+var de_BatchGetApplicationRevisionsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_BatchGetApplicationRevisionsOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_BatchGetApplicationRevisionsCommand");
+var de_BatchGetApplicationsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_BatchGetApplicationsOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_BatchGetApplicationsCommand");
+var de_BatchGetDeploymentGroupsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_BatchGetDeploymentGroupsOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_BatchGetDeploymentGroupsCommand");
+var de_BatchGetDeploymentInstancesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_BatchGetDeploymentInstancesOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_BatchGetDeploymentInstancesCommand");
+var de_BatchGetDeploymentsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_BatchGetDeploymentsOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_BatchGetDeploymentsCommand");
+var de_BatchGetDeploymentTargetsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_BatchGetDeploymentTargetsOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_BatchGetDeploymentTargetsCommand");
+var de_BatchGetOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_BatchGetOnPremisesInstancesOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_BatchGetOnPremisesInstancesCommand");
+var de_ContinueDeploymentCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_ContinueDeploymentCommand");
+var de_CreateApplicationCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_CreateApplicationCommand");
+var de_CreateDeploymentCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_CreateDeploymentCommand");
+var de_CreateDeploymentConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_CreateDeploymentConfigCommand");
+var de_CreateDeploymentGroupCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_CreateDeploymentGroupCommand");
+var de_DeleteApplicationCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_DeleteApplicationCommand");
+var de_DeleteDeploymentConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_DeleteDeploymentConfigCommand");
+var de_DeleteDeploymentGroupCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_DeleteDeploymentGroupCommand");
+var de_DeleteGitHubAccountTokenCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_DeleteGitHubAccountTokenCommand");
+var de_DeleteResourcesByExternalIdCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_DeleteResourcesByExternalIdCommand");
+var de_DeregisterOnPremisesInstanceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_DeregisterOnPremisesInstanceCommand");
+var de_GetApplicationCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetApplicationOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetApplicationCommand");
+var de_GetApplicationRevisionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetApplicationRevisionOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetApplicationRevisionCommand");
+var de_GetDeploymentCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetDeploymentOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetDeploymentCommand");
+var de_GetDeploymentConfigCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetDeploymentConfigOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetDeploymentConfigCommand");
+var de_GetDeploymentGroupCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetDeploymentGroupOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetDeploymentGroupCommand");
+var de_GetDeploymentInstanceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetDeploymentInstanceOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetDeploymentInstanceCommand");
+var de_GetDeploymentTargetCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetDeploymentTargetOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetDeploymentTargetCommand");
+var de_GetOnPremisesInstanceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = de_GetOnPremisesInstanceOutput(data, context);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_GetOnPremisesInstanceCommand");
+var de_ListApplicationRevisionsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListApplicationRevisionsCommand");
+var de_ListApplicationsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListApplicationsCommand");
+var de_ListDeploymentConfigsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListDeploymentConfigsCommand");
+var de_ListDeploymentGroupsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListDeploymentGroupsCommand");
+var de_ListDeploymentInstancesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListDeploymentInstancesCommand");
+var de_ListDeploymentsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListDeploymentsCommand");
+var de_ListDeploymentTargetsCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListDeploymentTargetsCommand");
+var de_ListGitHubAccountTokenNamesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListGitHubAccountTokenNamesCommand");
+var de_ListOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListOnPremisesInstancesCommand");
+var de_ListTagsForResourceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_ListTagsForResourceCommand");
+var de_PutLifecycleEventHookExecutionStatusCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_PutLifecycleEventHookExecutionStatusCommand");
+var de_RegisterApplicationRevisionCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_RegisterApplicationRevisionCommand");
+var de_RegisterOnPremisesInstanceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_RegisterOnPremisesInstanceCommand");
+var de_RemoveTagsFromOnPremisesInstancesCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_RemoveTagsFromOnPremisesInstancesCommand");
+var de_SkipWaitTimeForInstanceTerminationCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_SkipWaitTimeForInstanceTerminationCommand");
+var de_StopDeploymentCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_StopDeploymentCommand");
+var de_TagResourceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_TagResourceCommand");
+var de_UntagResourceCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_UntagResourceCommand");
+var de_UpdateApplicationCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  await (0, import_smithy_client.collectBody)(output.body, context);
+  const response = {
+    $metadata: deserializeMetadata(output)
+  };
+  return response;
+}, "de_UpdateApplicationCommand");
+var de_UpdateDeploymentGroupCommand = /* @__PURE__ */ __name(async (output, context) => {
+  if (output.statusCode >= 300) {
+    return de_CommandError(output, context);
+  }
+  const data = await (0, import_core2.parseJsonBody)(output.body, context);
+  let contents = {};
+  contents = (0, import_smithy_client._json)(data);
+  const response = {
+    $metadata: deserializeMetadata(output),
+    ...contents
+  };
+  return response;
+}, "de_UpdateDeploymentGroupCommand");
+var de_CommandError = /* @__PURE__ */ __name(async (output, context) => {
+  const parsedOutput = {
+    ...output,
+    body: await (0, import_core2.parseJsonErrorBody)(output.body, context)
+  };
+  const errorCode = (0, import_core2.loadRestJsonErrorCode)(output, parsedOutput.body);
+  switch (errorCode) {
+    case "InstanceLimitExceededException":
+    case "com.amazonaws.codedeploy#InstanceLimitExceededException":
+      throw await de_InstanceLimitExceededExceptionRes(parsedOutput, context);
+    case "InstanceNameRequiredException":
+    case "com.amazonaws.codedeploy#InstanceNameRequiredException":
+      throw await de_InstanceNameRequiredExceptionRes(parsedOutput, context);
+    case "InstanceNotRegisteredException":
+    case "com.amazonaws.codedeploy#InstanceNotRegisteredException":
+      throw await de_InstanceNotRegisteredExceptionRes(parsedOutput, context);
+    case "InvalidInstanceNameException":
+    case "com.amazonaws.codedeploy#InvalidInstanceNameException":
+      throw await de_InvalidInstanceNameExceptionRes(parsedOutput, context);
+    case "InvalidTagException":
+    case "com.amazonaws.codedeploy#InvalidTagException":
+      throw await de_InvalidTagExceptionRes(parsedOutput, context);
+    case "TagLimitExceededException":
+    case "com.amazonaws.codedeploy#TagLimitExceededException":
+      throw await de_TagLimitExceededExceptionRes(parsedOutput, context);
+    case "TagRequiredException":
+    case "com.amazonaws.codedeploy#TagRequiredException":
+      throw await de_TagRequiredExceptionRes(parsedOutput, context);
+    case "ApplicationDoesNotExistException":
+    case "com.amazonaws.codedeploy#ApplicationDoesNotExistException":
+      throw await de_ApplicationDoesNotExistExceptionRes(parsedOutput, context);
+    case "ApplicationNameRequiredException":
+    case "com.amazonaws.codedeploy#ApplicationNameRequiredException":
+      throw await de_ApplicationNameRequiredExceptionRes(parsedOutput, context);
+    case "BatchLimitExceededException":
+    case "com.amazonaws.codedeploy#BatchLimitExceededException":
+      throw await de_BatchLimitExceededExceptionRes(parsedOutput, context);
+    case "InvalidApplicationNameException":
+    case "com.amazonaws.codedeploy#InvalidApplicationNameException":
+      throw await de_InvalidApplicationNameExceptionRes(parsedOutput, context);
+    case "InvalidRevisionException":
+    case "com.amazonaws.codedeploy#InvalidRevisionException":
+      throw await de_InvalidRevisionExceptionRes(parsedOutput, context);
+    case "RevisionRequiredException":
+    case "com.amazonaws.codedeploy#RevisionRequiredException":
+      throw await de_RevisionRequiredExceptionRes(parsedOutput, context);
+    case "DeploymentConfigDoesNotExistException":
+    case "com.amazonaws.codedeploy#DeploymentConfigDoesNotExistException":
+      throw await de_DeploymentConfigDoesNotExistExceptionRes(parsedOutput, context);
+    case "DeploymentGroupNameRequiredException":
+    case "com.amazonaws.codedeploy#DeploymentGroupNameRequiredException":
+      throw await de_DeploymentGroupNameRequiredExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentGroupNameException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentGroupNameException":
+      throw await de_InvalidDeploymentGroupNameExceptionRes(parsedOutput, context);
+    case "DeploymentDoesNotExistException":
+    case "com.amazonaws.codedeploy#DeploymentDoesNotExistException":
+      throw await de_DeploymentDoesNotExistExceptionRes(parsedOutput, context);
+    case "DeploymentIdRequiredException":
+    case "com.amazonaws.codedeploy#DeploymentIdRequiredException":
+      throw await de_DeploymentIdRequiredExceptionRes(parsedOutput, context);
+    case "InstanceIdRequiredException":
+    case "com.amazonaws.codedeploy#InstanceIdRequiredException":
+      throw await de_InstanceIdRequiredExceptionRes(parsedOutput, context);
+    case "InvalidComputePlatformException":
+    case "com.amazonaws.codedeploy#InvalidComputePlatformException":
+      throw await de_InvalidComputePlatformExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentIdException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentIdException":
+      throw await de_InvalidDeploymentIdExceptionRes(parsedOutput, context);
+    case "DeploymentNotStartedException":
+    case "com.amazonaws.codedeploy#DeploymentNotStartedException":
+      throw await de_DeploymentNotStartedExceptionRes(parsedOutput, context);
+    case "DeploymentTargetDoesNotExistException":
+    case "com.amazonaws.codedeploy#DeploymentTargetDoesNotExistException":
+      throw await de_DeploymentTargetDoesNotExistExceptionRes(parsedOutput, context);
+    case "DeploymentTargetIdRequiredException":
+    case "com.amazonaws.codedeploy#DeploymentTargetIdRequiredException":
+      throw await de_DeploymentTargetIdRequiredExceptionRes(parsedOutput, context);
+    case "DeploymentTargetListSizeExceededException":
+    case "com.amazonaws.codedeploy#DeploymentTargetListSizeExceededException":
+      throw await de_DeploymentTargetListSizeExceededExceptionRes(parsedOutput, context);
+    case "InstanceDoesNotExistException":
+    case "com.amazonaws.codedeploy#InstanceDoesNotExistException":
+      throw await de_InstanceDoesNotExistExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentTargetIdException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentTargetIdException":
+      throw await de_InvalidDeploymentTargetIdExceptionRes(parsedOutput, context);
+    case "DeploymentAlreadyCompletedException":
+    case "com.amazonaws.codedeploy#DeploymentAlreadyCompletedException":
+      throw await de_DeploymentAlreadyCompletedExceptionRes(parsedOutput, context);
+    case "DeploymentIsNotInReadyStateException":
+    case "com.amazonaws.codedeploy#DeploymentIsNotInReadyStateException":
+      throw await de_DeploymentIsNotInReadyStateExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentStatusException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentStatusException":
+      throw await de_InvalidDeploymentStatusExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentWaitTypeException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentWaitTypeException":
+      throw await de_InvalidDeploymentWaitTypeExceptionRes(parsedOutput, context);
+    case "UnsupportedActionForDeploymentTypeException":
+    case "com.amazonaws.codedeploy#UnsupportedActionForDeploymentTypeException":
+      throw await de_UnsupportedActionForDeploymentTypeExceptionRes(parsedOutput, context);
+    case "ApplicationAlreadyExistsException":
+    case "com.amazonaws.codedeploy#ApplicationAlreadyExistsException":
+      throw await de_ApplicationAlreadyExistsExceptionRes(parsedOutput, context);
+    case "ApplicationLimitExceededException":
+    case "com.amazonaws.codedeploy#ApplicationLimitExceededException":
+      throw await de_ApplicationLimitExceededExceptionRes(parsedOutput, context);
+    case "InvalidTagsToAddException":
+    case "com.amazonaws.codedeploy#InvalidTagsToAddException":
+      throw await de_InvalidTagsToAddExceptionRes(parsedOutput, context);
+    case "AlarmsLimitExceededException":
+    case "com.amazonaws.codedeploy#AlarmsLimitExceededException":
+      throw await de_AlarmsLimitExceededExceptionRes(parsedOutput, context);
+    case "DeploymentGroupDoesNotExistException":
+    case "com.amazonaws.codedeploy#DeploymentGroupDoesNotExistException":
+      throw await de_DeploymentGroupDoesNotExistExceptionRes(parsedOutput, context);
+    case "DeploymentLimitExceededException":
+    case "com.amazonaws.codedeploy#DeploymentLimitExceededException":
+      throw await de_DeploymentLimitExceededExceptionRes(parsedOutput, context);
+    case "DescriptionTooLongException":
+    case "com.amazonaws.codedeploy#DescriptionTooLongException":
+      throw await de_DescriptionTooLongExceptionRes(parsedOutput, context);
+    case "InvalidAlarmConfigException":
+    case "com.amazonaws.codedeploy#InvalidAlarmConfigException":
+      throw await de_InvalidAlarmConfigExceptionRes(parsedOutput, context);
+    case "InvalidAutoRollbackConfigException":
+    case "com.amazonaws.codedeploy#InvalidAutoRollbackConfigException":
+      throw await de_InvalidAutoRollbackConfigExceptionRes(parsedOutput, context);
+    case "InvalidAutoScalingGroupException":
+    case "com.amazonaws.codedeploy#InvalidAutoScalingGroupException":
+      throw await de_InvalidAutoScalingGroupExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentConfigNameException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentConfigNameException":
+      throw await de_InvalidDeploymentConfigNameExceptionRes(parsedOutput, context);
+    case "InvalidFileExistsBehaviorException":
+    case "com.amazonaws.codedeploy#InvalidFileExistsBehaviorException":
+      throw await de_InvalidFileExistsBehaviorExceptionRes(parsedOutput, context);
+    case "InvalidGitHubAccountTokenException":
+    case "com.amazonaws.codedeploy#InvalidGitHubAccountTokenException":
+      throw await de_InvalidGitHubAccountTokenExceptionRes(parsedOutput, context);
+    case "InvalidIgnoreApplicationStopFailuresValueException":
+    case "com.amazonaws.codedeploy#InvalidIgnoreApplicationStopFailuresValueException":
+      throw await de_InvalidIgnoreApplicationStopFailuresValueExceptionRes(parsedOutput, context);
+    case "InvalidLoadBalancerInfoException":
+    case "com.amazonaws.codedeploy#InvalidLoadBalancerInfoException":
+      throw await de_InvalidLoadBalancerInfoExceptionRes(parsedOutput, context);
+    case "InvalidRoleException":
+    case "com.amazonaws.codedeploy#InvalidRoleException":
+      throw await de_InvalidRoleExceptionRes(parsedOutput, context);
+    case "InvalidTargetInstancesException":
+    case "com.amazonaws.codedeploy#InvalidTargetInstancesException":
+      throw await de_InvalidTargetInstancesExceptionRes(parsedOutput, context);
+    case "InvalidTrafficRoutingConfigurationException":
+    case "com.amazonaws.codedeploy#InvalidTrafficRoutingConfigurationException":
+      throw await de_InvalidTrafficRoutingConfigurationExceptionRes(parsedOutput, context);
+    case "InvalidUpdateOutdatedInstancesOnlyValueException":
+    case "com.amazonaws.codedeploy#InvalidUpdateOutdatedInstancesOnlyValueException":
+      throw await de_InvalidUpdateOutdatedInstancesOnlyValueExceptionRes(parsedOutput, context);
+    case "RevisionDoesNotExistException":
+    case "com.amazonaws.codedeploy#RevisionDoesNotExistException":
+      throw await de_RevisionDoesNotExistExceptionRes(parsedOutput, context);
+    case "ThrottlingException":
+    case "com.amazonaws.codedeploy#ThrottlingException":
+      throw await de_ThrottlingExceptionRes(parsedOutput, context);
+    case "DeploymentConfigAlreadyExistsException":
+    case "com.amazonaws.codedeploy#DeploymentConfigAlreadyExistsException":
+      throw await de_DeploymentConfigAlreadyExistsExceptionRes(parsedOutput, context);
+    case "DeploymentConfigLimitExceededException":
+    case "com.amazonaws.codedeploy#DeploymentConfigLimitExceededException":
+      throw await de_DeploymentConfigLimitExceededExceptionRes(parsedOutput, context);
+    case "DeploymentConfigNameRequiredException":
+    case "com.amazonaws.codedeploy#DeploymentConfigNameRequiredException":
+      throw await de_DeploymentConfigNameRequiredExceptionRes(parsedOutput, context);
+    case "InvalidMinimumHealthyHostValueException":
+    case "com.amazonaws.codedeploy#InvalidMinimumHealthyHostValueException":
+      throw await de_InvalidMinimumHealthyHostValueExceptionRes(parsedOutput, context);
+    case "InvalidZonalDeploymentConfigurationException":
+    case "com.amazonaws.codedeploy#InvalidZonalDeploymentConfigurationException":
+      throw await de_InvalidZonalDeploymentConfigurationExceptionRes(parsedOutput, context);
+    case "DeploymentGroupAlreadyExistsException":
+    case "com.amazonaws.codedeploy#DeploymentGroupAlreadyExistsException":
+      throw await de_DeploymentGroupAlreadyExistsExceptionRes(parsedOutput, context);
+    case "DeploymentGroupLimitExceededException":
+    case "com.amazonaws.codedeploy#DeploymentGroupLimitExceededException":
+      throw await de_DeploymentGroupLimitExceededExceptionRes(parsedOutput, context);
+    case "ECSServiceMappingLimitExceededException":
+    case "com.amazonaws.codedeploy#ECSServiceMappingLimitExceededException":
+      throw await de_ECSServiceMappingLimitExceededExceptionRes(parsedOutput, context);
+    case "InvalidBlueGreenDeploymentConfigurationException":
+    case "com.amazonaws.codedeploy#InvalidBlueGreenDeploymentConfigurationException":
+      throw await de_InvalidBlueGreenDeploymentConfigurationExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentStyleException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentStyleException":
+      throw await de_InvalidDeploymentStyleExceptionRes(parsedOutput, context);
+    case "InvalidEC2TagCombinationException":
+    case "com.amazonaws.codedeploy#InvalidEC2TagCombinationException":
+      throw await de_InvalidEC2TagCombinationExceptionRes(parsedOutput, context);
+    case "InvalidEC2TagException":
+    case "com.amazonaws.codedeploy#InvalidEC2TagException":
+      throw await de_InvalidEC2TagExceptionRes(parsedOutput, context);
+    case "InvalidECSServiceException":
+    case "com.amazonaws.codedeploy#InvalidECSServiceException":
+      throw await de_InvalidECSServiceExceptionRes(parsedOutput, context);
+    case "InvalidInputException":
+    case "com.amazonaws.codedeploy#InvalidInputException":
+      throw await de_InvalidInputExceptionRes(parsedOutput, context);
+    case "InvalidOnPremisesTagCombinationException":
+    case "com.amazonaws.codedeploy#InvalidOnPremisesTagCombinationException":
+      throw await de_InvalidOnPremisesTagCombinationExceptionRes(parsedOutput, context);
+    case "InvalidTargetGroupPairException":
+    case "com.amazonaws.codedeploy#InvalidTargetGroupPairException":
+      throw await de_InvalidTargetGroupPairExceptionRes(parsedOutput, context);
+    case "InvalidTriggerConfigException":
+    case "com.amazonaws.codedeploy#InvalidTriggerConfigException":
+      throw await de_InvalidTriggerConfigExceptionRes(parsedOutput, context);
+    case "LifecycleHookLimitExceededException":
+    case "com.amazonaws.codedeploy#LifecycleHookLimitExceededException":
+      throw await de_LifecycleHookLimitExceededExceptionRes(parsedOutput, context);
+    case "RoleRequiredException":
+    case "com.amazonaws.codedeploy#RoleRequiredException":
+      throw await de_RoleRequiredExceptionRes(parsedOutput, context);
+    case "TagSetListLimitExceededException":
+    case "com.amazonaws.codedeploy#TagSetListLimitExceededException":
+      throw await de_TagSetListLimitExceededExceptionRes(parsedOutput, context);
+    case "TriggerTargetsLimitExceededException":
+    case "com.amazonaws.codedeploy#TriggerTargetsLimitExceededException":
+      throw await de_TriggerTargetsLimitExceededExceptionRes(parsedOutput, context);
+    case "DeploymentConfigInUseException":
+    case "com.amazonaws.codedeploy#DeploymentConfigInUseException":
+      throw await de_DeploymentConfigInUseExceptionRes(parsedOutput, context);
+    case "InvalidOperationException":
+    case "com.amazonaws.codedeploy#InvalidOperationException":
+      throw await de_InvalidOperationExceptionRes(parsedOutput, context);
+    case "GitHubAccountTokenDoesNotExistException":
+    case "com.amazonaws.codedeploy#GitHubAccountTokenDoesNotExistException":
+      throw await de_GitHubAccountTokenDoesNotExistExceptionRes(parsedOutput, context);
+    case "GitHubAccountTokenNameRequiredException":
+    case "com.amazonaws.codedeploy#GitHubAccountTokenNameRequiredException":
+      throw await de_GitHubAccountTokenNameRequiredExceptionRes(parsedOutput, context);
+    case "InvalidGitHubAccountTokenNameException":
+    case "com.amazonaws.codedeploy#InvalidGitHubAccountTokenNameException":
+      throw await de_InvalidGitHubAccountTokenNameExceptionRes(parsedOutput, context);
+    case "OperationNotSupportedException":
+    case "com.amazonaws.codedeploy#OperationNotSupportedException":
+      throw await de_OperationNotSupportedExceptionRes(parsedOutput, context);
+    case "ResourceValidationException":
+    case "com.amazonaws.codedeploy#ResourceValidationException":
+      throw await de_ResourceValidationExceptionRes(parsedOutput, context);
+    case "BucketNameFilterRequiredException":
+    case "com.amazonaws.codedeploy#BucketNameFilterRequiredException":
+      throw await de_BucketNameFilterRequiredExceptionRes(parsedOutput, context);
+    case "InvalidBucketNameFilterException":
+    case "com.amazonaws.codedeploy#InvalidBucketNameFilterException":
+      throw await de_InvalidBucketNameFilterExceptionRes(parsedOutput, context);
+    case "InvalidDeployedStateFilterException":
+    case "com.amazonaws.codedeploy#InvalidDeployedStateFilterException":
+      throw await de_InvalidDeployedStateFilterExceptionRes(parsedOutput, context);
+    case "InvalidKeyPrefixFilterException":
+    case "com.amazonaws.codedeploy#InvalidKeyPrefixFilterException":
+      throw await de_InvalidKeyPrefixFilterExceptionRes(parsedOutput, context);
+    case "InvalidNextTokenException":
+    case "com.amazonaws.codedeploy#InvalidNextTokenException":
+      throw await de_InvalidNextTokenExceptionRes(parsedOutput, context);
+    case "InvalidSortByException":
+    case "com.amazonaws.codedeploy#InvalidSortByException":
+      throw await de_InvalidSortByExceptionRes(parsedOutput, context);
+    case "InvalidSortOrderException":
+    case "com.amazonaws.codedeploy#InvalidSortOrderException":
+      throw await de_InvalidSortOrderExceptionRes(parsedOutput, context);
+    case "InvalidDeploymentInstanceTypeException":
+    case "com.amazonaws.codedeploy#InvalidDeploymentInstanceTypeException":
+      throw await de_InvalidDeploymentInstanceTypeExceptionRes(parsedOutput, context);
+    case "InvalidInstanceStatusException":
+    case "com.amazonaws.codedeploy#InvalidInstanceStatusException":
+      throw await de_InvalidInstanceStatusExceptionRes(parsedOutput, context);
+    case "InvalidInstanceTypeException":
+    case "com.amazonaws.codedeploy#InvalidInstanceTypeException":
+      throw await de_InvalidInstanceTypeExceptionRes(parsedOutput, context);
+    case "InvalidTargetFilterNameException":
+    case "com.amazonaws.codedeploy#InvalidTargetFilterNameException":
+      throw await de_InvalidTargetFilterNameExceptionRes(parsedOutput, context);
+    case "InvalidExternalIdException":
+    case "com.amazonaws.codedeploy#InvalidExternalIdException":
+      throw await de_InvalidExternalIdExceptionRes(parsedOutput, context);
+    case "InvalidTimeRangeException":
+    case "com.amazonaws.codedeploy#InvalidTimeRangeException":
+      throw await de_InvalidTimeRangeExceptionRes(parsedOutput, context);
+    case "InvalidRegistrationStatusException":
+    case "com.amazonaws.codedeploy#InvalidRegistrationStatusException":
+      throw await de_InvalidRegistrationStatusExceptionRes(parsedOutput, context);
+    case "InvalidTagFilterException":
+    case "com.amazonaws.codedeploy#InvalidTagFilterException":
+      throw await de_InvalidTagFilterExceptionRes(parsedOutput, context);
+    case "ArnNotSupportedException":
+    case "com.amazonaws.codedeploy#ArnNotSupportedException":
+      throw await de_ArnNotSupportedExceptionRes(parsedOutput, context);
+    case "InvalidArnException":
+    case "com.amazonaws.codedeploy#InvalidArnException":
+      throw await de_InvalidArnExceptionRes(parsedOutput, context);
+    case "ResourceArnRequiredException":
+    case "com.amazonaws.codedeploy#ResourceArnRequiredException":
+      throw await de_ResourceArnRequiredExceptionRes(parsedOutput, context);
+    case "InvalidLifecycleEventHookExecutionIdException":
+    case "com.amazonaws.codedeploy#InvalidLifecycleEventHookExecutionIdException":
+      throw await de_InvalidLifecycleEventHookExecutionIdExceptionRes(parsedOutput, context);
+    case "InvalidLifecycleEventHookExecutionStatusException":
+    case "com.amazonaws.codedeploy#InvalidLifecycleEventHookExecutionStatusException":
+      throw await de_InvalidLifecycleEventHookExecutionStatusExceptionRes(parsedOutput, context);
+    case "LifecycleEventAlreadyCompletedException":
+    case "com.amazonaws.codedeploy#LifecycleEventAlreadyCompletedException":
+      throw await de_LifecycleEventAlreadyCompletedExceptionRes(parsedOutput, context);
+    case "IamArnRequiredException":
+    case "com.amazonaws.codedeploy#IamArnRequiredException":
+      throw await de_IamArnRequiredExceptionRes(parsedOutput, context);
+    case "IamSessionArnAlreadyRegisteredException":
+    case "com.amazonaws.codedeploy#IamSessionArnAlreadyRegisteredException":
+      throw await de_IamSessionArnAlreadyRegisteredExceptionRes(parsedOutput, context);
+    case "IamUserArnAlreadyRegisteredException":
+    case "com.amazonaws.codedeploy#IamUserArnAlreadyRegisteredException":
+      throw await de_IamUserArnAlreadyRegisteredExceptionRes(parsedOutput, context);
+    case "IamUserArnRequiredException":
+    case "com.amazonaws.codedeploy#IamUserArnRequiredException":
+      throw await de_IamUserArnRequiredExceptionRes(parsedOutput, context);
+    case "InstanceNameAlreadyRegisteredException":
+    case "com.amazonaws.codedeploy#InstanceNameAlreadyRegisteredException":
+      throw await de_InstanceNameAlreadyRegisteredExceptionRes(parsedOutput, context);
+    case "InvalidIamSessionArnException":
+    case "com.amazonaws.codedeploy#InvalidIamSessionArnException":
+      throw await de_InvalidIamSessionArnExceptionRes(parsedOutput, context);
+    case "InvalidIamUserArnException":
+    case "com.amazonaws.codedeploy#InvalidIamUserArnException":
+      throw await de_InvalidIamUserArnExceptionRes(parsedOutput, context);
+    case "MultipleIamArnsProvidedException":
+    case "com.amazonaws.codedeploy#MultipleIamArnsProvidedException":
+      throw await de_MultipleIamArnsProvidedExceptionRes(parsedOutput, context);
+    default:
+      const parsedBody = parsedOutput.body;
+      return throwDefaultError({
+        output,
+        parsedBody,
+        errorCode
+      });
+  }
+}, "de_CommandError");
+var de_AlarmsLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new AlarmsLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_AlarmsLimitExceededExceptionRes");
+var de_ApplicationAlreadyExistsExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ApplicationAlreadyExistsException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ApplicationAlreadyExistsExceptionRes");
+var de_ApplicationDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ApplicationDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ApplicationDoesNotExistExceptionRes");
+var de_ApplicationLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ApplicationLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ApplicationLimitExceededExceptionRes");
+var de_ApplicationNameRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ApplicationNameRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ApplicationNameRequiredExceptionRes");
+var de_ArnNotSupportedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ArnNotSupportedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ArnNotSupportedExceptionRes");
+var de_BatchLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new BatchLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_BatchLimitExceededExceptionRes");
+var de_BucketNameFilterRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new BucketNameFilterRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_BucketNameFilterRequiredExceptionRes");
+var de_DeploymentAlreadyCompletedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentAlreadyCompletedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentAlreadyCompletedExceptionRes");
+var de_DeploymentConfigAlreadyExistsExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentConfigAlreadyExistsException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentConfigAlreadyExistsExceptionRes");
+var de_DeploymentConfigDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentConfigDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentConfigDoesNotExistExceptionRes");
+var de_DeploymentConfigInUseExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentConfigInUseException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentConfigInUseExceptionRes");
+var de_DeploymentConfigLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentConfigLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentConfigLimitExceededExceptionRes");
+var de_DeploymentConfigNameRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentConfigNameRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentConfigNameRequiredExceptionRes");
+var de_DeploymentDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentDoesNotExistExceptionRes");
+var de_DeploymentGroupAlreadyExistsExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentGroupAlreadyExistsException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentGroupAlreadyExistsExceptionRes");
+var de_DeploymentGroupDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentGroupDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentGroupDoesNotExistExceptionRes");
+var de_DeploymentGroupLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentGroupLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentGroupLimitExceededExceptionRes");
+var de_DeploymentGroupNameRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentGroupNameRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentGroupNameRequiredExceptionRes");
+var de_DeploymentIdRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentIdRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentIdRequiredExceptionRes");
+var de_DeploymentIsNotInReadyStateExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentIsNotInReadyStateException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentIsNotInReadyStateExceptionRes");
+var de_DeploymentLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentLimitExceededExceptionRes");
+var de_DeploymentNotStartedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentNotStartedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentNotStartedExceptionRes");
+var de_DeploymentTargetDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentTargetDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentTargetDoesNotExistExceptionRes");
+var de_DeploymentTargetIdRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentTargetIdRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentTargetIdRequiredExceptionRes");
+var de_DeploymentTargetListSizeExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DeploymentTargetListSizeExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DeploymentTargetListSizeExceededExceptionRes");
+var de_DescriptionTooLongExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new DescriptionTooLongException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_DescriptionTooLongExceptionRes");
+var de_ECSServiceMappingLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ECSServiceMappingLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ECSServiceMappingLimitExceededExceptionRes");
+var de_GitHubAccountTokenDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new GitHubAccountTokenDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_GitHubAccountTokenDoesNotExistExceptionRes");
+var de_GitHubAccountTokenNameRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new GitHubAccountTokenNameRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_GitHubAccountTokenNameRequiredExceptionRes");
+var de_IamArnRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new IamArnRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_IamArnRequiredExceptionRes");
+var de_IamSessionArnAlreadyRegisteredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new IamSessionArnAlreadyRegisteredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_IamSessionArnAlreadyRegisteredExceptionRes");
+var de_IamUserArnAlreadyRegisteredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new IamUserArnAlreadyRegisteredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_IamUserArnAlreadyRegisteredExceptionRes");
+var de_IamUserArnRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new IamUserArnRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_IamUserArnRequiredExceptionRes");
+var de_InstanceDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InstanceDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InstanceDoesNotExistExceptionRes");
+var de_InstanceIdRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InstanceIdRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InstanceIdRequiredExceptionRes");
+var de_InstanceLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InstanceLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InstanceLimitExceededExceptionRes");
+var de_InstanceNameAlreadyRegisteredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InstanceNameAlreadyRegisteredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InstanceNameAlreadyRegisteredExceptionRes");
+var de_InstanceNameRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InstanceNameRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InstanceNameRequiredExceptionRes");
+var de_InstanceNotRegisteredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InstanceNotRegisteredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InstanceNotRegisteredExceptionRes");
+var de_InvalidAlarmConfigExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidAlarmConfigException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidAlarmConfigExceptionRes");
+var de_InvalidApplicationNameExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidApplicationNameException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidApplicationNameExceptionRes");
+var de_InvalidArnExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidArnException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidArnExceptionRes");
+var de_InvalidAutoRollbackConfigExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidAutoRollbackConfigException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidAutoRollbackConfigExceptionRes");
+var de_InvalidAutoScalingGroupExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidAutoScalingGroupException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidAutoScalingGroupExceptionRes");
+var de_InvalidBlueGreenDeploymentConfigurationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidBlueGreenDeploymentConfigurationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidBlueGreenDeploymentConfigurationExceptionRes");
+var de_InvalidBucketNameFilterExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidBucketNameFilterException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidBucketNameFilterExceptionRes");
+var de_InvalidComputePlatformExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidComputePlatformException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidComputePlatformExceptionRes");
+var de_InvalidDeployedStateFilterExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeployedStateFilterException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeployedStateFilterExceptionRes");
+var de_InvalidDeploymentConfigNameExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentConfigNameException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentConfigNameExceptionRes");
+var de_InvalidDeploymentGroupNameExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentGroupNameException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentGroupNameExceptionRes");
+var de_InvalidDeploymentIdExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentIdException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentIdExceptionRes");
+var de_InvalidDeploymentInstanceTypeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentInstanceTypeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentInstanceTypeExceptionRes");
+var de_InvalidDeploymentStatusExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentStatusException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentStatusExceptionRes");
+var de_InvalidDeploymentStyleExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentStyleException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentStyleExceptionRes");
+var de_InvalidDeploymentTargetIdExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentTargetIdException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentTargetIdExceptionRes");
+var de_InvalidDeploymentWaitTypeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidDeploymentWaitTypeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidDeploymentWaitTypeExceptionRes");
+var de_InvalidEC2TagCombinationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidEC2TagCombinationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidEC2TagCombinationExceptionRes");
+var de_InvalidEC2TagExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidEC2TagException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidEC2TagExceptionRes");
+var de_InvalidECSServiceExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidECSServiceException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidECSServiceExceptionRes");
+var de_InvalidExternalIdExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidExternalIdException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidExternalIdExceptionRes");
+var de_InvalidFileExistsBehaviorExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidFileExistsBehaviorException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidFileExistsBehaviorExceptionRes");
+var de_InvalidGitHubAccountTokenExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidGitHubAccountTokenException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidGitHubAccountTokenExceptionRes");
+var de_InvalidGitHubAccountTokenNameExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidGitHubAccountTokenNameException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidGitHubAccountTokenNameExceptionRes");
+var de_InvalidIamSessionArnExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidIamSessionArnException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidIamSessionArnExceptionRes");
+var de_InvalidIamUserArnExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidIamUserArnException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidIamUserArnExceptionRes");
+var de_InvalidIgnoreApplicationStopFailuresValueExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidIgnoreApplicationStopFailuresValueException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidIgnoreApplicationStopFailuresValueExceptionRes");
+var de_InvalidInputExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidInputException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidInputExceptionRes");
+var de_InvalidInstanceNameExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidInstanceNameException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidInstanceNameExceptionRes");
+var de_InvalidInstanceStatusExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidInstanceStatusException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidInstanceStatusExceptionRes");
+var de_InvalidInstanceTypeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidInstanceTypeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidInstanceTypeExceptionRes");
+var de_InvalidKeyPrefixFilterExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidKeyPrefixFilterException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidKeyPrefixFilterExceptionRes");
+var de_InvalidLifecycleEventHookExecutionIdExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidLifecycleEventHookExecutionIdException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidLifecycleEventHookExecutionIdExceptionRes");
+var de_InvalidLifecycleEventHookExecutionStatusExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidLifecycleEventHookExecutionStatusException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidLifecycleEventHookExecutionStatusExceptionRes");
+var de_InvalidLoadBalancerInfoExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidLoadBalancerInfoException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidLoadBalancerInfoExceptionRes");
+var de_InvalidMinimumHealthyHostValueExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidMinimumHealthyHostValueException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidMinimumHealthyHostValueExceptionRes");
+var de_InvalidNextTokenExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidNextTokenException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidNextTokenExceptionRes");
+var de_InvalidOnPremisesTagCombinationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidOnPremisesTagCombinationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidOnPremisesTagCombinationExceptionRes");
+var de_InvalidOperationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidOperationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidOperationExceptionRes");
+var de_InvalidRegistrationStatusExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidRegistrationStatusException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidRegistrationStatusExceptionRes");
+var de_InvalidRevisionExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidRevisionException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidRevisionExceptionRes");
+var de_InvalidRoleExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidRoleException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidRoleExceptionRes");
+var de_InvalidSortByExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidSortByException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidSortByExceptionRes");
+var de_InvalidSortOrderExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidSortOrderException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidSortOrderExceptionRes");
+var de_InvalidTagExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTagException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTagExceptionRes");
+var de_InvalidTagFilterExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTagFilterException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTagFilterExceptionRes");
+var de_InvalidTagsToAddExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTagsToAddException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTagsToAddExceptionRes");
+var de_InvalidTargetFilterNameExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTargetFilterNameException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTargetFilterNameExceptionRes");
+var de_InvalidTargetGroupPairExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTargetGroupPairException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTargetGroupPairExceptionRes");
+var de_InvalidTargetInstancesExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTargetInstancesException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTargetInstancesExceptionRes");
+var de_InvalidTimeRangeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTimeRangeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTimeRangeExceptionRes");
+var de_InvalidTrafficRoutingConfigurationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTrafficRoutingConfigurationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTrafficRoutingConfigurationExceptionRes");
+var de_InvalidTriggerConfigExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidTriggerConfigException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidTriggerConfigExceptionRes");
+var de_InvalidUpdateOutdatedInstancesOnlyValueExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidUpdateOutdatedInstancesOnlyValueException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidUpdateOutdatedInstancesOnlyValueExceptionRes");
+var de_InvalidZonalDeploymentConfigurationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new InvalidZonalDeploymentConfigurationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_InvalidZonalDeploymentConfigurationExceptionRes");
+var de_LifecycleEventAlreadyCompletedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new LifecycleEventAlreadyCompletedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_LifecycleEventAlreadyCompletedExceptionRes");
+var de_LifecycleHookLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new LifecycleHookLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_LifecycleHookLimitExceededExceptionRes");
+var de_MultipleIamArnsProvidedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new MultipleIamArnsProvidedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_MultipleIamArnsProvidedExceptionRes");
+var de_OperationNotSupportedExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new OperationNotSupportedException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_OperationNotSupportedExceptionRes");
+var de_ResourceArnRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ResourceArnRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ResourceArnRequiredExceptionRes");
+var de_ResourceValidationExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ResourceValidationException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ResourceValidationExceptionRes");
+var de_RevisionDoesNotExistExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new RevisionDoesNotExistException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_RevisionDoesNotExistExceptionRes");
+var de_RevisionRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new RevisionRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_RevisionRequiredExceptionRes");
+var de_RoleRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new RoleRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_RoleRequiredExceptionRes");
+var de_TagLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new TagLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_TagLimitExceededExceptionRes");
+var de_TagRequiredExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new TagRequiredException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_TagRequiredExceptionRes");
+var de_TagSetListLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new TagSetListLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_TagSetListLimitExceededExceptionRes");
+var de_ThrottlingExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new ThrottlingException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_ThrottlingExceptionRes");
+var de_TriggerTargetsLimitExceededExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new TriggerTargetsLimitExceededException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_TriggerTargetsLimitExceededExceptionRes");
+var de_UnsupportedActionForDeploymentTypeExceptionRes = /* @__PURE__ */ __name(async (parsedOutput, context) => {
+  const body = parsedOutput.body;
+  const deserialized = (0, import_smithy_client._json)(body);
+  const exception = new UnsupportedActionForDeploymentTypeException({
+    $metadata: deserializeMetadata(parsedOutput),
+    ...deserialized
+  });
+  return (0, import_smithy_client.decorateServiceException)(exception, body);
+}, "de_UnsupportedActionForDeploymentTypeExceptionRes");
+var se_ListDeploymentsInput = /* @__PURE__ */ __name((input, context) => {
+  return (0, import_smithy_client.take)(input, {
+    applicationName: [],
+    createTimeRange: (_) => se_TimeRange(_, context),
+    deploymentGroupName: [],
+    externalId: [],
+    includeOnlyStatuses: import_smithy_client._json,
+    nextToken: []
+  });
+}, "se_ListDeploymentsInput");
+var se_TimeRange = /* @__PURE__ */ __name((input, context) => {
+  return (0, import_smithy_client.take)(input, {
+    end: (_) => _.getTime() / 1e3,
+    start: (_) => _.getTime() / 1e3
+  });
+}, "se_TimeRange");
+var de_ApplicationInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    applicationId: import_smithy_client.expectString,
+    applicationName: import_smithy_client.expectString,
+    computePlatform: import_smithy_client.expectString,
+    createTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    gitHubAccountName: import_smithy_client.expectString,
+    linkedToGitHub: import_smithy_client.expectBoolean
+  });
+}, "de_ApplicationInfo");
+var de_ApplicationsInfoList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_ApplicationInfo(entry, context);
+  });
+  return retVal;
+}, "de_ApplicationsInfoList");
+var de_BatchGetApplicationRevisionsOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    applicationName: import_smithy_client.expectString,
+    errorMessage: import_smithy_client.expectString,
+    revisions: (_) => de_RevisionInfoList(_, context)
+  });
+}, "de_BatchGetApplicationRevisionsOutput");
+var de_BatchGetApplicationsOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    applicationsInfo: (_) => de_ApplicationsInfoList(_, context)
+  });
+}, "de_BatchGetApplicationsOutput");
+var de_BatchGetDeploymentGroupsOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentGroupsInfo: (_) => de_DeploymentGroupInfoList(_, context),
+    errorMessage: import_smithy_client.expectString
+  });
+}, "de_BatchGetDeploymentGroupsOutput");
+var de_BatchGetDeploymentInstancesOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    errorMessage: import_smithy_client.expectString,
+    instancesSummary: (_) => de_InstanceSummaryList(_, context)
+  });
+}, "de_BatchGetDeploymentInstancesOutput");
+var de_BatchGetDeploymentsOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentsInfo: (_) => de_DeploymentsInfoList(_, context)
+  });
+}, "de_BatchGetDeploymentsOutput");
+var de_BatchGetDeploymentTargetsOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentTargets: (_) => de_DeploymentTargetList(_, context)
+  });
+}, "de_BatchGetDeploymentTargetsOutput");
+var de_BatchGetOnPremisesInstancesOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    instanceInfos: (_) => de_InstanceInfoList(_, context)
+  });
+}, "de_BatchGetOnPremisesInstancesOutput");
+var de_CloudFormationTarget = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentId: import_smithy_client.expectString,
+    lastUpdatedAt: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    lifecycleEvents: (_) => de_LifecycleEventList(_, context),
+    resourceType: import_smithy_client.expectString,
+    status: import_smithy_client.expectString,
+    targetId: import_smithy_client.expectString,
+    targetVersionWeight: import_smithy_client.limitedParseDouble
+  });
+}, "de_CloudFormationTarget");
+var de_DeploymentConfigInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    computePlatform: import_smithy_client.expectString,
+    createTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    deploymentConfigId: import_smithy_client.expectString,
+    deploymentConfigName: import_smithy_client.expectString,
+    minimumHealthyHosts: import_smithy_client._json,
+    trafficRoutingConfig: import_smithy_client._json,
+    zonalConfig: import_smithy_client._json
+  });
+}, "de_DeploymentConfigInfo");
+var de_DeploymentGroupInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    alarmConfiguration: import_smithy_client._json,
+    applicationName: import_smithy_client.expectString,
+    autoRollbackConfiguration: import_smithy_client._json,
+    autoScalingGroups: import_smithy_client._json,
+    blueGreenDeploymentConfiguration: import_smithy_client._json,
+    computePlatform: import_smithy_client.expectString,
+    deploymentConfigName: import_smithy_client.expectString,
+    deploymentGroupId: import_smithy_client.expectString,
+    deploymentGroupName: import_smithy_client.expectString,
+    deploymentStyle: import_smithy_client._json,
+    ec2TagFilters: import_smithy_client._json,
+    ec2TagSet: import_smithy_client._json,
+    ecsServices: import_smithy_client._json,
+    lastAttemptedDeployment: (_) => de_LastDeploymentInfo(_, context),
+    lastSuccessfulDeployment: (_) => de_LastDeploymentInfo(_, context),
+    loadBalancerInfo: import_smithy_client._json,
+    onPremisesInstanceTagFilters: import_smithy_client._json,
+    onPremisesTagSet: import_smithy_client._json,
+    outdatedInstancesStrategy: import_smithy_client.expectString,
+    serviceRoleArn: import_smithy_client.expectString,
+    targetRevision: import_smithy_client._json,
+    terminationHookEnabled: import_smithy_client.expectBoolean,
+    triggerConfigurations: import_smithy_client._json
+  });
+}, "de_DeploymentGroupInfo");
+var de_DeploymentGroupInfoList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_DeploymentGroupInfo(entry, context);
+  });
+  return retVal;
+}, "de_DeploymentGroupInfoList");
+var de_DeploymentInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    additionalDeploymentStatusInfo: import_smithy_client.expectString,
+    applicationName: import_smithy_client.expectString,
+    autoRollbackConfiguration: import_smithy_client._json,
+    blueGreenDeploymentConfiguration: import_smithy_client._json,
+    completeTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    computePlatform: import_smithy_client.expectString,
+    createTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    creator: import_smithy_client.expectString,
+    deploymentConfigName: import_smithy_client.expectString,
+    deploymentGroupName: import_smithy_client.expectString,
+    deploymentId: import_smithy_client.expectString,
+    deploymentOverview: import_smithy_client._json,
+    deploymentStatusMessages: import_smithy_client._json,
+    deploymentStyle: import_smithy_client._json,
+    description: import_smithy_client.expectString,
+    errorInformation: import_smithy_client._json,
+    externalId: import_smithy_client.expectString,
+    fileExistsBehavior: import_smithy_client.expectString,
+    ignoreApplicationStopFailures: import_smithy_client.expectBoolean,
+    instanceTerminationWaitTimeStarted: import_smithy_client.expectBoolean,
+    loadBalancerInfo: import_smithy_client._json,
+    overrideAlarmConfiguration: import_smithy_client._json,
+    previousRevision: import_smithy_client._json,
+    relatedDeployments: import_smithy_client._json,
+    revision: import_smithy_client._json,
+    rollbackInfo: import_smithy_client._json,
+    startTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    status: import_smithy_client.expectString,
+    targetInstances: import_smithy_client._json,
+    updateOutdatedInstancesOnly: import_smithy_client.expectBoolean
+  });
+}, "de_DeploymentInfo");
+var de_DeploymentsInfoList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_DeploymentInfo(entry, context);
+  });
+  return retVal;
+}, "de_DeploymentsInfoList");
+var de_DeploymentTarget = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    cloudFormationTarget: (_) => de_CloudFormationTarget(_, context),
+    deploymentTargetType: import_smithy_client.expectString,
+    ecsTarget: (_) => de_ECSTarget(_, context),
+    instanceTarget: (_) => de_InstanceTarget(_, context),
+    lambdaTarget: (_) => de_LambdaTarget(_, context)
+  });
+}, "de_DeploymentTarget");
+var de_DeploymentTargetList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_DeploymentTarget(entry, context);
+  });
+  return retVal;
+}, "de_DeploymentTargetList");
+var de_ECSTarget = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentId: import_smithy_client.expectString,
+    lastUpdatedAt: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    lifecycleEvents: (_) => de_LifecycleEventList(_, context),
+    status: import_smithy_client.expectString,
+    targetArn: import_smithy_client.expectString,
+    targetId: import_smithy_client.expectString,
+    taskSetsInfo: (_) => de_ECSTaskSetList(_, context)
+  });
+}, "de_ECSTarget");
+var de_ECSTaskSet = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    desiredCount: import_smithy_client.expectLong,
+    identifer: import_smithy_client.expectString,
+    pendingCount: import_smithy_client.expectLong,
+    runningCount: import_smithy_client.expectLong,
+    status: import_smithy_client.expectString,
+    targetGroup: import_smithy_client._json,
+    taskSetLabel: import_smithy_client.expectString,
+    trafficWeight: import_smithy_client.limitedParseDouble
+  });
+}, "de_ECSTaskSet");
+var de_ECSTaskSetList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_ECSTaskSet(entry, context);
+  });
+  return retVal;
+}, "de_ECSTaskSetList");
+var de_GenericRevisionInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentGroups: import_smithy_client._json,
+    description: import_smithy_client.expectString,
+    firstUsedTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    lastUsedTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    registerTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_)))
+  });
+}, "de_GenericRevisionInfo");
+var de_GetApplicationOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    application: (_) => de_ApplicationInfo(_, context)
+  });
+}, "de_GetApplicationOutput");
+var de_GetApplicationRevisionOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    applicationName: import_smithy_client.expectString,
+    revision: import_smithy_client._json,
+    revisionInfo: (_) => de_GenericRevisionInfo(_, context)
+  });
+}, "de_GetApplicationRevisionOutput");
+var de_GetDeploymentConfigOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentConfigInfo: (_) => de_DeploymentConfigInfo(_, context)
+  });
+}, "de_GetDeploymentConfigOutput");
+var de_GetDeploymentGroupOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentGroupInfo: (_) => de_DeploymentGroupInfo(_, context)
+  });
+}, "de_GetDeploymentGroupOutput");
+var de_GetDeploymentInstanceOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    instanceSummary: (_) => de_InstanceSummary(_, context)
+  });
+}, "de_GetDeploymentInstanceOutput");
+var de_GetDeploymentOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentInfo: (_) => de_DeploymentInfo(_, context)
+  });
+}, "de_GetDeploymentOutput");
+var de_GetDeploymentTargetOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentTarget: (_) => de_DeploymentTarget(_, context)
+  });
+}, "de_GetDeploymentTargetOutput");
+var de_GetOnPremisesInstanceOutput = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    instanceInfo: (_) => de_InstanceInfo(_, context)
+  });
+}, "de_GetOnPremisesInstanceOutput");
+var de_InstanceInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deregisterTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    iamSessionArn: import_smithy_client.expectString,
+    iamUserArn: import_smithy_client.expectString,
+    instanceArn: import_smithy_client.expectString,
+    instanceName: import_smithy_client.expectString,
+    registerTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    tags: import_smithy_client._json
+  });
+}, "de_InstanceInfo");
+var de_InstanceInfoList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_InstanceInfo(entry, context);
+  });
+  return retVal;
+}, "de_InstanceInfoList");
+var de_InstanceSummary = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentId: import_smithy_client.expectString,
+    instanceId: import_smithy_client.expectString,
+    instanceType: import_smithy_client.expectString,
+    lastUpdatedAt: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    lifecycleEvents: (_) => de_LifecycleEventList(_, context),
+    status: import_smithy_client.expectString
+  });
+}, "de_InstanceSummary");
+var de_InstanceSummaryList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_InstanceSummary(entry, context);
+  });
+  return retVal;
+}, "de_InstanceSummaryList");
+var de_InstanceTarget = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentId: import_smithy_client.expectString,
+    instanceLabel: import_smithy_client.expectString,
+    lastUpdatedAt: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    lifecycleEvents: (_) => de_LifecycleEventList(_, context),
+    status: import_smithy_client.expectString,
+    targetArn: import_smithy_client.expectString,
+    targetId: import_smithy_client.expectString
+  });
+}, "de_InstanceTarget");
+var de_LambdaFunctionInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    currentVersion: import_smithy_client.expectString,
+    functionAlias: import_smithy_client.expectString,
+    functionName: import_smithy_client.expectString,
+    targetVersion: import_smithy_client.expectString,
+    targetVersionWeight: import_smithy_client.limitedParseDouble
+  });
+}, "de_LambdaFunctionInfo");
+var de_LambdaTarget = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    deploymentId: import_smithy_client.expectString,
+    lambdaFunctionInfo: (_) => de_LambdaFunctionInfo(_, context),
+    lastUpdatedAt: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    lifecycleEvents: (_) => de_LifecycleEventList(_, context),
+    status: import_smithy_client.expectString,
+    targetArn: import_smithy_client.expectString,
+    targetId: import_smithy_client.expectString
+  });
+}, "de_LambdaTarget");
+var de_LastDeploymentInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    createTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    deploymentId: import_smithy_client.expectString,
+    endTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    status: import_smithy_client.expectString
+  });
+}, "de_LastDeploymentInfo");
+var de_LifecycleEvent = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    diagnostics: import_smithy_client._json,
+    endTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    lifecycleEventName: import_smithy_client.expectString,
+    startTime: (_) => (0, import_smithy_client.expectNonNull)((0, import_smithy_client.parseEpochTimestamp)((0, import_smithy_client.expectNumber)(_))),
+    status: import_smithy_client.expectString
+  });
+}, "de_LifecycleEvent");
+var de_LifecycleEventList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_LifecycleEvent(entry, context);
+  });
+  return retVal;
+}, "de_LifecycleEventList");
+var de_RevisionInfo = /* @__PURE__ */ __name((output, context) => {
+  return (0, import_smithy_client.take)(output, {
+    genericRevisionInfo: (_) => de_GenericRevisionInfo(_, context),
+    revisionLocation: import_smithy_client._json
+  });
+}, "de_RevisionInfo");
+var de_RevisionInfoList = /* @__PURE__ */ __name((output, context) => {
+  const retVal = (output || []).filter((e) => e != null).map((entry) => {
+    return de_RevisionInfo(entry, context);
+  });
+  return retVal;
+}, "de_RevisionInfoList");
+var deserializeMetadata = /* @__PURE__ */ __name((output) => ({
+  httpStatusCode: output.statusCode,
+  requestId: output.headers["x-amzn-requestid"] ?? output.headers["x-amzn-request-id"] ?? output.headers["x-amz-request-id"],
+  extendedRequestId: output.headers["x-amz-id-2"],
+  cfId: output.headers["x-amz-cf-id"]
+}), "deserializeMetadata");
+var throwDefaultError = (0, import_smithy_client.withBaseException)(CodeDeployServiceException);
+var buildHttpRpcRequest = /* @__PURE__ */ __name(async (context, headers, path, resolvedHostname, body) => {
+  const { hostname, protocol = "https", port, path: basePath } = await context.endpoint();
+  const contents = {
+    protocol,
+    hostname,
+    port,
+    method: "POST",
+    path: basePath.endsWith("/") ? basePath.slice(0, -1) + path : basePath + path,
+    headers
+  };
+  if (resolvedHostname !== void 0) {
+    contents.hostname = resolvedHostname;
+  }
+  if (body !== void 0) {
+    contents.body = body;
+  }
+  return new import_protocol_http.HttpRequest(contents);
+}, "buildHttpRpcRequest");
+function sharedHeaders(operation) {
+  return {
+    "content-type": "application/x-amz-json-1.1",
+    "x-amz-target": `CodeDeploy_20141006.${operation}`
+  };
+}
+__name(sharedHeaders, "sharedHeaders");
+
+// src/commands/AddTagsToOnPremisesInstancesCommand.ts
+var _AddTagsToOnPremisesInstancesCommand = class _AddTagsToOnPremisesInstancesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "AddTagsToOnPremisesInstances", {}).n("CodeDeployClient", "AddTagsToOnPremisesInstancesCommand").f(void 0, void 0).ser(se_AddTagsToOnPremisesInstancesCommand).de(de_AddTagsToOnPremisesInstancesCommand).build() {
+};
+__name(_AddTagsToOnPremisesInstancesCommand, "AddTagsToOnPremisesInstancesCommand");
+var AddTagsToOnPremisesInstancesCommand = _AddTagsToOnPremisesInstancesCommand;
+
+// src/commands/BatchGetApplicationRevisionsCommand.ts
+
+
+
+
+var _BatchGetApplicationRevisionsCommand = class _BatchGetApplicationRevisionsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "BatchGetApplicationRevisions", {}).n("CodeDeployClient", "BatchGetApplicationRevisionsCommand").f(void 0, void 0).ser(se_BatchGetApplicationRevisionsCommand).de(de_BatchGetApplicationRevisionsCommand).build() {
+};
+__name(_BatchGetApplicationRevisionsCommand, "BatchGetApplicationRevisionsCommand");
+var BatchGetApplicationRevisionsCommand = _BatchGetApplicationRevisionsCommand;
+
+// src/commands/BatchGetApplicationsCommand.ts
+
+
+
+
+var _BatchGetApplicationsCommand = class _BatchGetApplicationsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "BatchGetApplications", {}).n("CodeDeployClient", "BatchGetApplicationsCommand").f(void 0, void 0).ser(se_BatchGetApplicationsCommand).de(de_BatchGetApplicationsCommand).build() {
+};
+__name(_BatchGetApplicationsCommand, "BatchGetApplicationsCommand");
+var BatchGetApplicationsCommand = _BatchGetApplicationsCommand;
+
+// src/commands/BatchGetDeploymentGroupsCommand.ts
+
+
+
+
+var _BatchGetDeploymentGroupsCommand = class _BatchGetDeploymentGroupsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "BatchGetDeploymentGroups", {}).n("CodeDeployClient", "BatchGetDeploymentGroupsCommand").f(void 0, void 0).ser(se_BatchGetDeploymentGroupsCommand).de(de_BatchGetDeploymentGroupsCommand).build() {
+};
+__name(_BatchGetDeploymentGroupsCommand, "BatchGetDeploymentGroupsCommand");
+var BatchGetDeploymentGroupsCommand = _BatchGetDeploymentGroupsCommand;
+
+// src/commands/BatchGetDeploymentInstancesCommand.ts
+
+
+
+
+var _BatchGetDeploymentInstancesCommand = class _BatchGetDeploymentInstancesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "BatchGetDeploymentInstances", {}).n("CodeDeployClient", "BatchGetDeploymentInstancesCommand").f(void 0, void 0).ser(se_BatchGetDeploymentInstancesCommand).de(de_BatchGetDeploymentInstancesCommand).build() {
+};
+__name(_BatchGetDeploymentInstancesCommand, "BatchGetDeploymentInstancesCommand");
+var BatchGetDeploymentInstancesCommand = _BatchGetDeploymentInstancesCommand;
+
+// src/commands/BatchGetDeploymentsCommand.ts
+
+
+
+
+var _BatchGetDeploymentsCommand = class _BatchGetDeploymentsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "BatchGetDeployments", {}).n("CodeDeployClient", "BatchGetDeploymentsCommand").f(void 0, void 0).ser(se_BatchGetDeploymentsCommand).de(de_BatchGetDeploymentsCommand).build() {
+};
+__name(_BatchGetDeploymentsCommand, "BatchGetDeploymentsCommand");
+var BatchGetDeploymentsCommand = _BatchGetDeploymentsCommand;
+
+// src/commands/BatchGetDeploymentTargetsCommand.ts
+
+
+
+
+var _BatchGetDeploymentTargetsCommand = class _BatchGetDeploymentTargetsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "BatchGetDeploymentTargets", {}).n("CodeDeployClient", "BatchGetDeploymentTargetsCommand").f(void 0, void 0).ser(se_BatchGetDeploymentTargetsCommand).de(de_BatchGetDeploymentTargetsCommand).build() {
+};
+__name(_BatchGetDeploymentTargetsCommand, "BatchGetDeploymentTargetsCommand");
+var BatchGetDeploymentTargetsCommand = _BatchGetDeploymentTargetsCommand;
+
+// src/commands/BatchGetOnPremisesInstancesCommand.ts
+
+
+
+
+var _BatchGetOnPremisesInstancesCommand = class _BatchGetOnPremisesInstancesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "BatchGetOnPremisesInstances", {}).n("CodeDeployClient", "BatchGetOnPremisesInstancesCommand").f(void 0, void 0).ser(se_BatchGetOnPremisesInstancesCommand).de(de_BatchGetOnPremisesInstancesCommand).build() {
+};
+__name(_BatchGetOnPremisesInstancesCommand, "BatchGetOnPremisesInstancesCommand");
+var BatchGetOnPremisesInstancesCommand = _BatchGetOnPremisesInstancesCommand;
+
+// src/commands/ContinueDeploymentCommand.ts
+
+
+
+
+var _ContinueDeploymentCommand = class _ContinueDeploymentCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ContinueDeployment", {}).n("CodeDeployClient", "ContinueDeploymentCommand").f(void 0, void 0).ser(se_ContinueDeploymentCommand).de(de_ContinueDeploymentCommand).build() {
+};
+__name(_ContinueDeploymentCommand, "ContinueDeploymentCommand");
+var ContinueDeploymentCommand = _ContinueDeploymentCommand;
+
+// src/commands/CreateApplicationCommand.ts
+
+
+
+
+var _CreateApplicationCommand = class _CreateApplicationCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "CreateApplication", {}).n("CodeDeployClient", "CreateApplicationCommand").f(void 0, void 0).ser(se_CreateApplicationCommand).de(de_CreateApplicationCommand).build() {
+};
+__name(_CreateApplicationCommand, "CreateApplicationCommand");
+var CreateApplicationCommand = _CreateApplicationCommand;
+
+// src/commands/CreateDeploymentCommand.ts
+
+
+
+
+var _CreateDeploymentCommand = class _CreateDeploymentCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "CreateDeployment", {}).n("CodeDeployClient", "CreateDeploymentCommand").f(void 0, void 0).ser(se_CreateDeploymentCommand).de(de_CreateDeploymentCommand).build() {
+};
+__name(_CreateDeploymentCommand, "CreateDeploymentCommand");
+var CreateDeploymentCommand = _CreateDeploymentCommand;
+
+// src/commands/CreateDeploymentConfigCommand.ts
+
+
+
+
+var _CreateDeploymentConfigCommand = class _CreateDeploymentConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "CreateDeploymentConfig", {}).n("CodeDeployClient", "CreateDeploymentConfigCommand").f(void 0, void 0).ser(se_CreateDeploymentConfigCommand).de(de_CreateDeploymentConfigCommand).build() {
+};
+__name(_CreateDeploymentConfigCommand, "CreateDeploymentConfigCommand");
+var CreateDeploymentConfigCommand = _CreateDeploymentConfigCommand;
+
+// src/commands/CreateDeploymentGroupCommand.ts
+
+
+
+
+var _CreateDeploymentGroupCommand = class _CreateDeploymentGroupCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "CreateDeploymentGroup", {}).n("CodeDeployClient", "CreateDeploymentGroupCommand").f(void 0, void 0).ser(se_CreateDeploymentGroupCommand).de(de_CreateDeploymentGroupCommand).build() {
+};
+__name(_CreateDeploymentGroupCommand, "CreateDeploymentGroupCommand");
+var CreateDeploymentGroupCommand = _CreateDeploymentGroupCommand;
+
+// src/commands/DeleteApplicationCommand.ts
+
+
+
+
+var _DeleteApplicationCommand = class _DeleteApplicationCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "DeleteApplication", {}).n("CodeDeployClient", "DeleteApplicationCommand").f(void 0, void 0).ser(se_DeleteApplicationCommand).de(de_DeleteApplicationCommand).build() {
+};
+__name(_DeleteApplicationCommand, "DeleteApplicationCommand");
+var DeleteApplicationCommand = _DeleteApplicationCommand;
+
+// src/commands/DeleteDeploymentConfigCommand.ts
+
+
+
+
+var _DeleteDeploymentConfigCommand = class _DeleteDeploymentConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "DeleteDeploymentConfig", {}).n("CodeDeployClient", "DeleteDeploymentConfigCommand").f(void 0, void 0).ser(se_DeleteDeploymentConfigCommand).de(de_DeleteDeploymentConfigCommand).build() {
+};
+__name(_DeleteDeploymentConfigCommand, "DeleteDeploymentConfigCommand");
+var DeleteDeploymentConfigCommand = _DeleteDeploymentConfigCommand;
+
+// src/commands/DeleteDeploymentGroupCommand.ts
+
+
+
+
+var _DeleteDeploymentGroupCommand = class _DeleteDeploymentGroupCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "DeleteDeploymentGroup", {}).n("CodeDeployClient", "DeleteDeploymentGroupCommand").f(void 0, void 0).ser(se_DeleteDeploymentGroupCommand).de(de_DeleteDeploymentGroupCommand).build() {
+};
+__name(_DeleteDeploymentGroupCommand, "DeleteDeploymentGroupCommand");
+var DeleteDeploymentGroupCommand = _DeleteDeploymentGroupCommand;
+
+// src/commands/DeleteGitHubAccountTokenCommand.ts
+
+
+
+
+var _DeleteGitHubAccountTokenCommand = class _DeleteGitHubAccountTokenCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "DeleteGitHubAccountToken", {}).n("CodeDeployClient", "DeleteGitHubAccountTokenCommand").f(void 0, void 0).ser(se_DeleteGitHubAccountTokenCommand).de(de_DeleteGitHubAccountTokenCommand).build() {
+};
+__name(_DeleteGitHubAccountTokenCommand, "DeleteGitHubAccountTokenCommand");
+var DeleteGitHubAccountTokenCommand = _DeleteGitHubAccountTokenCommand;
+
+// src/commands/DeleteResourcesByExternalIdCommand.ts
+
+
+
+
+var _DeleteResourcesByExternalIdCommand = class _DeleteResourcesByExternalIdCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "DeleteResourcesByExternalId", {}).n("CodeDeployClient", "DeleteResourcesByExternalIdCommand").f(void 0, void 0).ser(se_DeleteResourcesByExternalIdCommand).de(de_DeleteResourcesByExternalIdCommand).build() {
+};
+__name(_DeleteResourcesByExternalIdCommand, "DeleteResourcesByExternalIdCommand");
+var DeleteResourcesByExternalIdCommand = _DeleteResourcesByExternalIdCommand;
+
+// src/commands/DeregisterOnPremisesInstanceCommand.ts
+
+
+
+
+var _DeregisterOnPremisesInstanceCommand = class _DeregisterOnPremisesInstanceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "DeregisterOnPremisesInstance", {}).n("CodeDeployClient", "DeregisterOnPremisesInstanceCommand").f(void 0, void 0).ser(se_DeregisterOnPremisesInstanceCommand).de(de_DeregisterOnPremisesInstanceCommand).build() {
+};
+__name(_DeregisterOnPremisesInstanceCommand, "DeregisterOnPremisesInstanceCommand");
+var DeregisterOnPremisesInstanceCommand = _DeregisterOnPremisesInstanceCommand;
+
+// src/commands/GetApplicationCommand.ts
+
+
+
+
+var _GetApplicationCommand = class _GetApplicationCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetApplication", {}).n("CodeDeployClient", "GetApplicationCommand").f(void 0, void 0).ser(se_GetApplicationCommand).de(de_GetApplicationCommand).build() {
+};
+__name(_GetApplicationCommand, "GetApplicationCommand");
+var GetApplicationCommand = _GetApplicationCommand;
+
+// src/commands/GetApplicationRevisionCommand.ts
+
+
+
+
+var _GetApplicationRevisionCommand = class _GetApplicationRevisionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetApplicationRevision", {}).n("CodeDeployClient", "GetApplicationRevisionCommand").f(void 0, void 0).ser(se_GetApplicationRevisionCommand).de(de_GetApplicationRevisionCommand).build() {
+};
+__name(_GetApplicationRevisionCommand, "GetApplicationRevisionCommand");
+var GetApplicationRevisionCommand = _GetApplicationRevisionCommand;
+
+// src/commands/GetDeploymentCommand.ts
+
+
+
+
+var _GetDeploymentCommand = class _GetDeploymentCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetDeployment", {}).n("CodeDeployClient", "GetDeploymentCommand").f(void 0, void 0).ser(se_GetDeploymentCommand).de(de_GetDeploymentCommand).build() {
+};
+__name(_GetDeploymentCommand, "GetDeploymentCommand");
+var GetDeploymentCommand = _GetDeploymentCommand;
+
+// src/commands/GetDeploymentConfigCommand.ts
+
+
+
+
+var _GetDeploymentConfigCommand = class _GetDeploymentConfigCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetDeploymentConfig", {}).n("CodeDeployClient", "GetDeploymentConfigCommand").f(void 0, void 0).ser(se_GetDeploymentConfigCommand).de(de_GetDeploymentConfigCommand).build() {
+};
+__name(_GetDeploymentConfigCommand, "GetDeploymentConfigCommand");
+var GetDeploymentConfigCommand = _GetDeploymentConfigCommand;
+
+// src/commands/GetDeploymentGroupCommand.ts
+
+
+
+
+var _GetDeploymentGroupCommand = class _GetDeploymentGroupCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetDeploymentGroup", {}).n("CodeDeployClient", "GetDeploymentGroupCommand").f(void 0, void 0).ser(se_GetDeploymentGroupCommand).de(de_GetDeploymentGroupCommand).build() {
+};
+__name(_GetDeploymentGroupCommand, "GetDeploymentGroupCommand");
+var GetDeploymentGroupCommand = _GetDeploymentGroupCommand;
+
+// src/commands/GetDeploymentInstanceCommand.ts
+
+
+
+
+var _GetDeploymentInstanceCommand = class _GetDeploymentInstanceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetDeploymentInstance", {}).n("CodeDeployClient", "GetDeploymentInstanceCommand").f(void 0, void 0).ser(se_GetDeploymentInstanceCommand).de(de_GetDeploymentInstanceCommand).build() {
+};
+__name(_GetDeploymentInstanceCommand, "GetDeploymentInstanceCommand");
+var GetDeploymentInstanceCommand = _GetDeploymentInstanceCommand;
+
+// src/commands/GetDeploymentTargetCommand.ts
+
+
+
+
+var _GetDeploymentTargetCommand = class _GetDeploymentTargetCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetDeploymentTarget", {}).n("CodeDeployClient", "GetDeploymentTargetCommand").f(void 0, void 0).ser(se_GetDeploymentTargetCommand).de(de_GetDeploymentTargetCommand).build() {
+};
+__name(_GetDeploymentTargetCommand, "GetDeploymentTargetCommand");
+var GetDeploymentTargetCommand = _GetDeploymentTargetCommand;
+
+// src/commands/GetOnPremisesInstanceCommand.ts
+
+
+
+
+var _GetOnPremisesInstanceCommand = class _GetOnPremisesInstanceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "GetOnPremisesInstance", {}).n("CodeDeployClient", "GetOnPremisesInstanceCommand").f(void 0, void 0).ser(se_GetOnPremisesInstanceCommand).de(de_GetOnPremisesInstanceCommand).build() {
+};
+__name(_GetOnPremisesInstanceCommand, "GetOnPremisesInstanceCommand");
+var GetOnPremisesInstanceCommand = _GetOnPremisesInstanceCommand;
+
+// src/commands/ListApplicationRevisionsCommand.ts
+
+
+
+
+var _ListApplicationRevisionsCommand = class _ListApplicationRevisionsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListApplicationRevisions", {}).n("CodeDeployClient", "ListApplicationRevisionsCommand").f(void 0, void 0).ser(se_ListApplicationRevisionsCommand).de(de_ListApplicationRevisionsCommand).build() {
+};
+__name(_ListApplicationRevisionsCommand, "ListApplicationRevisionsCommand");
+var ListApplicationRevisionsCommand = _ListApplicationRevisionsCommand;
+
+// src/commands/ListApplicationsCommand.ts
+
+
+
+
+var _ListApplicationsCommand = class _ListApplicationsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListApplications", {}).n("CodeDeployClient", "ListApplicationsCommand").f(void 0, void 0).ser(se_ListApplicationsCommand).de(de_ListApplicationsCommand).build() {
+};
+__name(_ListApplicationsCommand, "ListApplicationsCommand");
+var ListApplicationsCommand = _ListApplicationsCommand;
+
+// src/commands/ListDeploymentConfigsCommand.ts
+
+
+
+
+var _ListDeploymentConfigsCommand = class _ListDeploymentConfigsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListDeploymentConfigs", {}).n("CodeDeployClient", "ListDeploymentConfigsCommand").f(void 0, void 0).ser(se_ListDeploymentConfigsCommand).de(de_ListDeploymentConfigsCommand).build() {
+};
+__name(_ListDeploymentConfigsCommand, "ListDeploymentConfigsCommand");
+var ListDeploymentConfigsCommand = _ListDeploymentConfigsCommand;
+
+// src/commands/ListDeploymentGroupsCommand.ts
+
+
+
+
+var _ListDeploymentGroupsCommand = class _ListDeploymentGroupsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListDeploymentGroups", {}).n("CodeDeployClient", "ListDeploymentGroupsCommand").f(void 0, void 0).ser(se_ListDeploymentGroupsCommand).de(de_ListDeploymentGroupsCommand).build() {
+};
+__name(_ListDeploymentGroupsCommand, "ListDeploymentGroupsCommand");
+var ListDeploymentGroupsCommand = _ListDeploymentGroupsCommand;
+
+// src/commands/ListDeploymentInstancesCommand.ts
+
+
+
+
+var _ListDeploymentInstancesCommand = class _ListDeploymentInstancesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListDeploymentInstances", {}).n("CodeDeployClient", "ListDeploymentInstancesCommand").f(void 0, void 0).ser(se_ListDeploymentInstancesCommand).de(de_ListDeploymentInstancesCommand).build() {
+};
+__name(_ListDeploymentInstancesCommand, "ListDeploymentInstancesCommand");
+var ListDeploymentInstancesCommand = _ListDeploymentInstancesCommand;
+
+// src/commands/ListDeploymentsCommand.ts
+
+
+
+
+var _ListDeploymentsCommand = class _ListDeploymentsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListDeployments", {}).n("CodeDeployClient", "ListDeploymentsCommand").f(void 0, void 0).ser(se_ListDeploymentsCommand).de(de_ListDeploymentsCommand).build() {
+};
+__name(_ListDeploymentsCommand, "ListDeploymentsCommand");
+var ListDeploymentsCommand = _ListDeploymentsCommand;
+
+// src/commands/ListDeploymentTargetsCommand.ts
+
+
+
+
+var _ListDeploymentTargetsCommand = class _ListDeploymentTargetsCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListDeploymentTargets", {}).n("CodeDeployClient", "ListDeploymentTargetsCommand").f(void 0, void 0).ser(se_ListDeploymentTargetsCommand).de(de_ListDeploymentTargetsCommand).build() {
+};
+__name(_ListDeploymentTargetsCommand, "ListDeploymentTargetsCommand");
+var ListDeploymentTargetsCommand = _ListDeploymentTargetsCommand;
+
+// src/commands/ListGitHubAccountTokenNamesCommand.ts
+
+
+
+
+var _ListGitHubAccountTokenNamesCommand = class _ListGitHubAccountTokenNamesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListGitHubAccountTokenNames", {}).n("CodeDeployClient", "ListGitHubAccountTokenNamesCommand").f(void 0, void 0).ser(se_ListGitHubAccountTokenNamesCommand).de(de_ListGitHubAccountTokenNamesCommand).build() {
+};
+__name(_ListGitHubAccountTokenNamesCommand, "ListGitHubAccountTokenNamesCommand");
+var ListGitHubAccountTokenNamesCommand = _ListGitHubAccountTokenNamesCommand;
+
+// src/commands/ListOnPremisesInstancesCommand.ts
+
+
+
+
+var _ListOnPremisesInstancesCommand = class _ListOnPremisesInstancesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListOnPremisesInstances", {}).n("CodeDeployClient", "ListOnPremisesInstancesCommand").f(void 0, void 0).ser(se_ListOnPremisesInstancesCommand).de(de_ListOnPremisesInstancesCommand).build() {
+};
+__name(_ListOnPremisesInstancesCommand, "ListOnPremisesInstancesCommand");
+var ListOnPremisesInstancesCommand = _ListOnPremisesInstancesCommand;
+
+// src/commands/ListTagsForResourceCommand.ts
+
+
+
+
+var _ListTagsForResourceCommand = class _ListTagsForResourceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "ListTagsForResource", {}).n("CodeDeployClient", "ListTagsForResourceCommand").f(void 0, void 0).ser(se_ListTagsForResourceCommand).de(de_ListTagsForResourceCommand).build() {
+};
+__name(_ListTagsForResourceCommand, "ListTagsForResourceCommand");
+var ListTagsForResourceCommand = _ListTagsForResourceCommand;
+
+// src/commands/PutLifecycleEventHookExecutionStatusCommand.ts
+
+
+
+
+var _PutLifecycleEventHookExecutionStatusCommand = class _PutLifecycleEventHookExecutionStatusCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "PutLifecycleEventHookExecutionStatus", {}).n("CodeDeployClient", "PutLifecycleEventHookExecutionStatusCommand").f(void 0, void 0).ser(se_PutLifecycleEventHookExecutionStatusCommand).de(de_PutLifecycleEventHookExecutionStatusCommand).build() {
+};
+__name(_PutLifecycleEventHookExecutionStatusCommand, "PutLifecycleEventHookExecutionStatusCommand");
+var PutLifecycleEventHookExecutionStatusCommand = _PutLifecycleEventHookExecutionStatusCommand;
+
+// src/commands/RegisterApplicationRevisionCommand.ts
+
+
+
+
+var _RegisterApplicationRevisionCommand = class _RegisterApplicationRevisionCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "RegisterApplicationRevision", {}).n("CodeDeployClient", "RegisterApplicationRevisionCommand").f(void 0, void 0).ser(se_RegisterApplicationRevisionCommand).de(de_RegisterApplicationRevisionCommand).build() {
+};
+__name(_RegisterApplicationRevisionCommand, "RegisterApplicationRevisionCommand");
+var RegisterApplicationRevisionCommand = _RegisterApplicationRevisionCommand;
+
+// src/commands/RegisterOnPremisesInstanceCommand.ts
+
+
+
+
+var _RegisterOnPremisesInstanceCommand = class _RegisterOnPremisesInstanceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "RegisterOnPremisesInstance", {}).n("CodeDeployClient", "RegisterOnPremisesInstanceCommand").f(void 0, void 0).ser(se_RegisterOnPremisesInstanceCommand).de(de_RegisterOnPremisesInstanceCommand).build() {
+};
+__name(_RegisterOnPremisesInstanceCommand, "RegisterOnPremisesInstanceCommand");
+var RegisterOnPremisesInstanceCommand = _RegisterOnPremisesInstanceCommand;
+
+// src/commands/RemoveTagsFromOnPremisesInstancesCommand.ts
+
+
+
+
+var _RemoveTagsFromOnPremisesInstancesCommand = class _RemoveTagsFromOnPremisesInstancesCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "RemoveTagsFromOnPremisesInstances", {}).n("CodeDeployClient", "RemoveTagsFromOnPremisesInstancesCommand").f(void 0, void 0).ser(se_RemoveTagsFromOnPremisesInstancesCommand).de(de_RemoveTagsFromOnPremisesInstancesCommand).build() {
+};
+__name(_RemoveTagsFromOnPremisesInstancesCommand, "RemoveTagsFromOnPremisesInstancesCommand");
+var RemoveTagsFromOnPremisesInstancesCommand = _RemoveTagsFromOnPremisesInstancesCommand;
+
+// src/commands/SkipWaitTimeForInstanceTerminationCommand.ts
+
+
+
+
+var _SkipWaitTimeForInstanceTerminationCommand = class _SkipWaitTimeForInstanceTerminationCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "SkipWaitTimeForInstanceTermination", {}).n("CodeDeployClient", "SkipWaitTimeForInstanceTerminationCommand").f(void 0, void 0).ser(se_SkipWaitTimeForInstanceTerminationCommand).de(de_SkipWaitTimeForInstanceTerminationCommand).build() {
+};
+__name(_SkipWaitTimeForInstanceTerminationCommand, "SkipWaitTimeForInstanceTerminationCommand");
+var SkipWaitTimeForInstanceTerminationCommand = _SkipWaitTimeForInstanceTerminationCommand;
+
+// src/commands/StopDeploymentCommand.ts
+
+
+
+
+var _StopDeploymentCommand = class _StopDeploymentCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "StopDeployment", {}).n("CodeDeployClient", "StopDeploymentCommand").f(void 0, void 0).ser(se_StopDeploymentCommand).de(de_StopDeploymentCommand).build() {
+};
+__name(_StopDeploymentCommand, "StopDeploymentCommand");
+var StopDeploymentCommand = _StopDeploymentCommand;
+
+// src/commands/TagResourceCommand.ts
+
+
+
+
+var _TagResourceCommand = class _TagResourceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "TagResource", {}).n("CodeDeployClient", "TagResourceCommand").f(void 0, void 0).ser(se_TagResourceCommand).de(de_TagResourceCommand).build() {
+};
+__name(_TagResourceCommand, "TagResourceCommand");
+var TagResourceCommand = _TagResourceCommand;
+
+// src/commands/UntagResourceCommand.ts
+
+
+
+
+var _UntagResourceCommand = class _UntagResourceCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "UntagResource", {}).n("CodeDeployClient", "UntagResourceCommand").f(void 0, void 0).ser(se_UntagResourceCommand).de(de_UntagResourceCommand).build() {
+};
+__name(_UntagResourceCommand, "UntagResourceCommand");
+var UntagResourceCommand = _UntagResourceCommand;
+
+// src/commands/UpdateApplicationCommand.ts
+
+
+
+
+var _UpdateApplicationCommand = class _UpdateApplicationCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "UpdateApplication", {}).n("CodeDeployClient", "UpdateApplicationCommand").f(void 0, void 0).ser(se_UpdateApplicationCommand).de(de_UpdateApplicationCommand).build() {
+};
+__name(_UpdateApplicationCommand, "UpdateApplicationCommand");
+var UpdateApplicationCommand = _UpdateApplicationCommand;
+
+// src/commands/UpdateDeploymentGroupCommand.ts
+
+
+
+
+var _UpdateDeploymentGroupCommand = class _UpdateDeploymentGroupCommand extends import_smithy_client.Command.classBuilder().ep({
+  ...commonParams
+}).m(function(Command, cs, config, o) {
+  return [
+    (0, import_middleware_serde.getSerdePlugin)(config, this.serialize, this.deserialize),
+    (0, import_middleware_endpoint.getEndpointPlugin)(config, Command.getEndpointParameterInstructions())
+  ];
+}).s("CodeDeploy_20141006", "UpdateDeploymentGroup", {}).n("CodeDeployClient", "UpdateDeploymentGroupCommand").f(void 0, void 0).ser(se_UpdateDeploymentGroupCommand).de(de_UpdateDeploymentGroupCommand).build() {
+};
+__name(_UpdateDeploymentGroupCommand, "UpdateDeploymentGroupCommand");
+var UpdateDeploymentGroupCommand = _UpdateDeploymentGroupCommand;
+
+// src/CodeDeploy.ts
+var commands = {
+  AddTagsToOnPremisesInstancesCommand,
+  BatchGetApplicationRevisionsCommand,
+  BatchGetApplicationsCommand,
+  BatchGetDeploymentGroupsCommand,
+  BatchGetDeploymentInstancesCommand,
+  BatchGetDeploymentsCommand,
+  BatchGetDeploymentTargetsCommand,
+  BatchGetOnPremisesInstancesCommand,
+  ContinueDeploymentCommand,
+  CreateApplicationCommand,
+  CreateDeploymentCommand,
+  CreateDeploymentConfigCommand,
+  CreateDeploymentGroupCommand,
+  DeleteApplicationCommand,
+  DeleteDeploymentConfigCommand,
+  DeleteDeploymentGroupCommand,
+  DeleteGitHubAccountTokenCommand,
+  DeleteResourcesByExternalIdCommand,
+  DeregisterOnPremisesInstanceCommand,
+  GetApplicationCommand,
+  GetApplicationRevisionCommand,
+  GetDeploymentCommand,
+  GetDeploymentConfigCommand,
+  GetDeploymentGroupCommand,
+  GetDeploymentInstanceCommand,
+  GetDeploymentTargetCommand,
+  GetOnPremisesInstanceCommand,
+  ListApplicationRevisionsCommand,
+  ListApplicationsCommand,
+  ListDeploymentConfigsCommand,
+  ListDeploymentGroupsCommand,
+  ListDeploymentInstancesCommand,
+  ListDeploymentsCommand,
+  ListDeploymentTargetsCommand,
+  ListGitHubAccountTokenNamesCommand,
+  ListOnPremisesInstancesCommand,
+  ListTagsForResourceCommand,
+  PutLifecycleEventHookExecutionStatusCommand,
+  RegisterApplicationRevisionCommand,
+  RegisterOnPremisesInstanceCommand,
+  RemoveTagsFromOnPremisesInstancesCommand,
+  SkipWaitTimeForInstanceTerminationCommand,
+  StopDeploymentCommand,
+  TagResourceCommand,
+  UntagResourceCommand,
+  UpdateApplicationCommand,
+  UpdateDeploymentGroupCommand
+};
+var _CodeDeploy = class _CodeDeploy extends CodeDeployClient {
+};
+__name(_CodeDeploy, "CodeDeploy");
+var CodeDeploy = _CodeDeploy;
+(0, import_smithy_client.createAggregatedClient)(commands, CodeDeploy);
+
+// src/pagination/ListApplicationRevisionsPaginator.ts
+
+var paginateListApplicationRevisions = (0, import_core.createPaginator)(CodeDeployClient, ListApplicationRevisionsCommand, "nextToken", "nextToken", "");
+
+// src/pagination/ListApplicationsPaginator.ts
+
+var paginateListApplications = (0, import_core.createPaginator)(CodeDeployClient, ListApplicationsCommand, "nextToken", "nextToken", "");
+
+// src/pagination/ListDeploymentConfigsPaginator.ts
+
+var paginateListDeploymentConfigs = (0, import_core.createPaginator)(CodeDeployClient, ListDeploymentConfigsCommand, "nextToken", "nextToken", "");
+
+// src/pagination/ListDeploymentGroupsPaginator.ts
+
+var paginateListDeploymentGroups = (0, import_core.createPaginator)(CodeDeployClient, ListDeploymentGroupsCommand, "nextToken", "nextToken", "");
+
+// src/pagination/ListDeploymentInstancesPaginator.ts
+
+var paginateListDeploymentInstances = (0, import_core.createPaginator)(CodeDeployClient, ListDeploymentInstancesCommand, "nextToken", "nextToken", "");
+
+// src/pagination/ListDeploymentsPaginator.ts
+
+var paginateListDeployments = (0, import_core.createPaginator)(CodeDeployClient, ListDeploymentsCommand, "nextToken", "nextToken", "");
+
+// src/waiters/waitForDeploymentSuccessful.ts
+var import_util_waiter = __nccwpck_require__(8011);
+var checkState = /* @__PURE__ */ __name(async (client, input) => {
+  let reason;
+  try {
+    const result = await client.send(new GetDeploymentCommand(input));
+    reason = result;
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.deploymentInfo.status;
+      }, "returnComparator");
+      if (returnComparator() === "Succeeded") {
+        return { state: import_util_waiter.WaiterState.SUCCESS, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.deploymentInfo.status;
+      }, "returnComparator");
+      if (returnComparator() === "Failed") {
+        return { state: import_util_waiter.WaiterState.FAILURE, reason };
+      }
+    } catch (e) {
+    }
+    try {
+      const returnComparator = /* @__PURE__ */ __name(() => {
+        return result.deploymentInfo.status;
+      }, "returnComparator");
+      if (returnComparator() === "Stopped") {
+        return { state: import_util_waiter.WaiterState.FAILURE, reason };
+      }
+    } catch (e) {
+    }
+  } catch (exception) {
+    reason = exception;
+  }
+  return { state: import_util_waiter.WaiterState.RETRY, reason };
+}, "checkState");
+var waitForDeploymentSuccessful = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+  return (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState);
+}, "waitForDeploymentSuccessful");
+var waitUntilDeploymentSuccessful = /* @__PURE__ */ __name(async (params, input) => {
+  const serviceDefaults = { minDelay: 15, maxDelay: 120 };
+  const result = await (0, import_util_waiter.createWaiter)({ ...serviceDefaults, ...params }, input, checkState);
+  return (0, import_util_waiter.checkExceptions)(result);
+}, "waitUntilDeploymentSuccessful");
+// Annotate the CommonJS export names for ESM import in node:
+
+0 && (0);
+
+
+
+/***/ }),
+
+/***/ 3271:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRuntimeConfig = void 0;
+const tslib_1 = __nccwpck_require__(4351);
+const package_json_1 = tslib_1.__importDefault(__nccwpck_require__(7035));
+const core_1 = __nccwpck_require__(9963);
+const credential_provider_node_1 = __nccwpck_require__(5531);
+const util_user_agent_node_1 = __nccwpck_require__(8095);
+const config_resolver_1 = __nccwpck_require__(3098);
+const hash_node_1 = __nccwpck_require__(3081);
+const middleware_retry_1 = __nccwpck_require__(6039);
+const node_config_provider_1 = __nccwpck_require__(3461);
+const node_http_handler_1 = __nccwpck_require__(258);
+const util_body_length_node_1 = __nccwpck_require__(8075);
+const util_retry_1 = __nccwpck_require__(4902);
+const runtimeConfig_shared_1 = __nccwpck_require__(9336);
+const smithy_client_1 = __nccwpck_require__(3570);
+const util_defaults_mode_node_1 = __nccwpck_require__(2429);
+const smithy_client_2 = __nccwpck_require__(3570);
+const getRuntimeConfig = (config) => {
+    (0, smithy_client_2.emitWarningIfUnsupportedVersion)(process.version);
+    const defaultsMode = (0, util_defaults_mode_node_1.resolveDefaultsModeConfig)(config);
+    const defaultConfigProvider = () => defaultsMode().then(smithy_client_1.loadConfigsForDefaultMode);
+    const clientSharedValues = (0, runtimeConfig_shared_1.getRuntimeConfig)(config);
+    (0, core_1.emitWarningIfUnsupportedVersion)(process.version);
+    return {
+        ...clientSharedValues,
+        ...config,
+        runtime: "node",
+        defaultsMode,
+        bodyLengthChecker: config?.bodyLengthChecker ?? util_body_length_node_1.calculateBodyLength,
+        credentialDefaultProvider: config?.credentialDefaultProvider ?? credential_provider_node_1.defaultProvider,
+        defaultUserAgentProvider: config?.defaultUserAgentProvider ??
+            (0, util_user_agent_node_1.defaultUserAgent)({ serviceId: clientSharedValues.serviceId, clientVersion: package_json_1.default.version }),
+        maxAttempts: config?.maxAttempts ?? (0, node_config_provider_1.loadConfig)(middleware_retry_1.NODE_MAX_ATTEMPT_CONFIG_OPTIONS),
+        region: config?.region ?? (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_REGION_CONFIG_OPTIONS, config_resolver_1.NODE_REGION_CONFIG_FILE_OPTIONS),
+        requestHandler: node_http_handler_1.NodeHttpHandler.create(config?.requestHandler ?? defaultConfigProvider),
+        retryMode: config?.retryMode ??
+            (0, node_config_provider_1.loadConfig)({
+                ...middleware_retry_1.NODE_RETRY_MODE_CONFIG_OPTIONS,
+                default: async () => (await defaultConfigProvider()).retryMode || util_retry_1.DEFAULT_RETRY_MODE,
+            }),
+        sha256: config?.sha256 ?? hash_node_1.Hash.bind(null, "sha256"),
+        streamCollector: config?.streamCollector ?? node_http_handler_1.streamCollector,
+        useDualstackEndpoint: config?.useDualstackEndpoint ?? (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_USE_DUALSTACK_ENDPOINT_CONFIG_OPTIONS),
+        useFipsEndpoint: config?.useFipsEndpoint ?? (0, node_config_provider_1.loadConfig)(config_resolver_1.NODE_USE_FIPS_ENDPOINT_CONFIG_OPTIONS),
+    };
+};
+exports.getRuntimeConfig = getRuntimeConfig;
+
+
+/***/ }),
+
+/***/ 9336:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getRuntimeConfig = void 0;
+const core_1 = __nccwpck_require__(9963);
+const smithy_client_1 = __nccwpck_require__(3570);
+const url_parser_1 = __nccwpck_require__(4681);
+const util_base64_1 = __nccwpck_require__(5600);
+const util_utf8_1 = __nccwpck_require__(1895);
+const httpAuthSchemeProvider_1 = __nccwpck_require__(9320);
+const endpointResolver_1 = __nccwpck_require__(5124);
+const getRuntimeConfig = (config) => {
+    return {
+        apiVersion: "2014-10-06",
+        base64Decoder: config?.base64Decoder ?? util_base64_1.fromBase64,
+        base64Encoder: config?.base64Encoder ?? util_base64_1.toBase64,
+        disableHostPrefix: config?.disableHostPrefix ?? false,
+        endpointProvider: config?.endpointProvider ?? endpointResolver_1.defaultEndpointResolver,
+        extensions: config?.extensions ?? [],
+        httpAuthSchemeProvider: config?.httpAuthSchemeProvider ?? httpAuthSchemeProvider_1.defaultCodeDeployHttpAuthSchemeProvider,
+        httpAuthSchemes: config?.httpAuthSchemes ?? [
+            {
+                schemeId: "aws.auth#sigv4",
+                identityProvider: (ipc) => ipc.getIdentityProvider("aws.auth#sigv4"),
+                signer: new core_1.AwsSdkSigV4Signer(),
+            },
+        ],
+        logger: config?.logger ?? new smithy_client_1.NoOpLogger(),
+        serviceId: config?.serviceId ?? "CodeDeploy",
+        urlParser: config?.urlParser ?? url_parser_1.parseUrl,
+        utf8Decoder: config?.utf8Decoder ?? util_utf8_1.fromUtf8,
+        utf8Encoder: config?.utf8Encoder ?? util_utf8_1.toUtf8,
+    };
+};
+exports.getRuntimeConfig = getRuntimeConfig;
+
 
 /***/ }),
 
@@ -51928,14 +58140,14 @@ exports["default"] = _default;
 
 /***/ }),
 
-/***/ 892:
+/***/ 9892:
 /***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ZodError = exports.quotelessJson = exports.ZodIssueCode = void 0;
-const util_1 = __nccwpck_require__(985);
+const util_1 = __nccwpck_require__(3985);
 exports.ZodIssueCode = util_1.util.arrayToEnum([
     "invalid_type",
     "invalid_literal",
@@ -52073,7 +58285,7 @@ ZodError.create = (issues) => {
 
 /***/ }),
 
-/***/ 566:
+/***/ 9566:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -52098,7 +58310,7 @@ exports.getErrorMap = getErrorMap;
 
 /***/ }),
 
-/***/ 906:
+/***/ 9906:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -52114,17 +58326,17 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__exportStar(__nccwpck_require__(566), exports);
-__exportStar(__nccwpck_require__(88), exports);
-__exportStar(__nccwpck_require__(449), exports);
-__exportStar(__nccwpck_require__(985), exports);
-__exportStar(__nccwpck_require__(335), exports);
-__exportStar(__nccwpck_require__(892), exports);
+__exportStar(__nccwpck_require__(9566), exports);
+__exportStar(__nccwpck_require__(8088), exports);
+__exportStar(__nccwpck_require__(9449), exports);
+__exportStar(__nccwpck_require__(3985), exports);
+__exportStar(__nccwpck_require__(9335), exports);
+__exportStar(__nccwpck_require__(9892), exports);
 
 
 /***/ }),
 
-/***/ 513:
+/***/ 2513:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -52140,7 +58352,7 @@ var errorUtil;
 
 /***/ }),
 
-/***/ 88:
+/***/ 8088:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -52150,7 +58362,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.isAsync = exports.isValid = exports.isDirty = exports.isAborted = exports.OK = exports.DIRTY = exports.INVALID = exports.ParseStatus = exports.addIssueToContext = exports.EMPTY_PATH = exports.makeIssue = void 0;
-const errors_1 = __nccwpck_require__(566);
+const errors_1 = __nccwpck_require__(9566);
 const en_1 = __importDefault(__nccwpck_require__(468));
 const makeIssue = (params) => {
     const { data, path, errorMaps, issueData } = params;
@@ -52273,7 +58485,7 @@ exports.isAsync = isAsync;
 
 /***/ }),
 
-/***/ 449:
+/***/ 9449:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -52283,7 +58495,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 
 /***/ }),
 
-/***/ 985:
+/***/ 3985:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
@@ -52433,7 +58645,7 @@ exports.getParsedType = getParsedType;
 
 /***/ }),
 
-/***/ 301:
+/***/ 3301:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -52462,9 +58674,9 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.z = void 0;
-const z = __importStar(__nccwpck_require__(906));
+const z = __importStar(__nccwpck_require__(9906));
 exports.z = z;
-__exportStar(__nccwpck_require__(906), exports);
+__exportStar(__nccwpck_require__(9906), exports);
 exports["default"] = z;
 
 
@@ -52476,8 +58688,8 @@ exports["default"] = z;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const util_1 = __nccwpck_require__(985);
-const ZodError_1 = __nccwpck_require__(892);
+const util_1 = __nccwpck_require__(3985);
+const ZodError_1 = __nccwpck_require__(9892);
 const errorMap = (issue, _ctx) => {
     let message;
     switch (issue.code) {
@@ -52607,7 +58819,7 @@ exports["default"] = errorMap;
 
 /***/ }),
 
-/***/ 335:
+/***/ 9335:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -52627,11 +58839,11 @@ var _ZodEnum_cache, _ZodNativeEnum_cache;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.boolean = exports.bigint = exports.array = exports.any = exports.coerce = exports.ZodFirstPartyTypeKind = exports.late = exports.ZodSchema = exports.Schema = exports.custom = exports.ZodReadonly = exports.ZodPipeline = exports.ZodBranded = exports.BRAND = exports.ZodNaN = exports.ZodCatch = exports.ZodDefault = exports.ZodNullable = exports.ZodOptional = exports.ZodTransformer = exports.ZodEffects = exports.ZodPromise = exports.ZodNativeEnum = exports.ZodEnum = exports.ZodLiteral = exports.ZodLazy = exports.ZodFunction = exports.ZodSet = exports.ZodMap = exports.ZodRecord = exports.ZodTuple = exports.ZodIntersection = exports.ZodDiscriminatedUnion = exports.ZodUnion = exports.ZodObject = exports.ZodArray = exports.ZodVoid = exports.ZodNever = exports.ZodUnknown = exports.ZodAny = exports.ZodNull = exports.ZodUndefined = exports.ZodSymbol = exports.ZodDate = exports.ZodBoolean = exports.ZodBigInt = exports.ZodNumber = exports.ZodString = exports.datetimeRegex = exports.ZodType = void 0;
 exports.NEVER = exports["void"] = exports.unknown = exports.union = exports.undefined = exports.tuple = exports.transformer = exports.symbol = exports.string = exports.strictObject = exports.set = exports.record = exports.promise = exports.preprocess = exports.pipeline = exports.ostring = exports.optional = exports.onumber = exports.oboolean = exports.object = exports.number = exports.nullable = exports["null"] = exports.never = exports.nativeEnum = exports.nan = exports.map = exports.literal = exports.lazy = exports.intersection = exports["instanceof"] = exports["function"] = exports["enum"] = exports.effect = exports.discriminatedUnion = exports.date = void 0;
-const errors_1 = __nccwpck_require__(566);
-const errorUtil_1 = __nccwpck_require__(513);
-const parseUtil_1 = __nccwpck_require__(88);
-const util_1 = __nccwpck_require__(985);
-const ZodError_1 = __nccwpck_require__(892);
+const errors_1 = __nccwpck_require__(9566);
+const errorUtil_1 = __nccwpck_require__(2513);
+const parseUtil_1 = __nccwpck_require__(8088);
+const util_1 = __nccwpck_require__(3985);
+const ZodError_1 = __nccwpck_require__(9892);
 class ParseInputLazyPath {
     constructor(parent, value, path, key) {
         this._cachedPath = [];
@@ -56292,6 +62504,55 @@ exports.NEVER = parseUtil_1.INVALID;
 
 /***/ }),
 
+/***/ 5930:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.deploy = void 0;
+const client_codedeploy_1 = __nccwpck_require__(6692);
+async function deploy({ applicationName, deploymentGroupName, deploymentConfigName = 'CodeDeployDefault.LambdaAllAtOnce', 
+// autoRollbackConfiguration,
+revision }) {
+    const codeDeployClient = new client_codedeploy_1.CodeDeployClient({});
+    codeDeployClient.send(new client_codedeploy_1.CreateDeploymentCommand({
+        applicationName,
+        deploymentGroupName,
+        deploymentConfigName,
+        revision
+    }));
+}
+exports.deploy = deploy;
+// {
+//   "version": "0.0",
+//   "Resources":[{
+//     "blue":{
+//       "Type": "AWS::Lambda::Function",
+//       "Properties":{
+//         "Name":"blue",
+//         "Alias":"Blue",
+//         "CurrentVersion":2,
+//         "TargetVersion": 1
+//       }
+//     }
+//   },
+//   {
+//     "blue":{
+//       "Type": "AWS::Lambda::Function",
+//       "Properties":{
+//         "Name":"blue",
+//         "Alias":"Blue",
+//         "CurrentVersion":2,
+//         "TargetVersion": 1
+//       }
+//     }
+//   }]
+// }
+
+
+/***/ }),
+
 /***/ 4752:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -56304,7 +62565,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.findLambdas = void 0;
 const client_lambda_1 = __nccwpck_require__(6584);
 const client_resource_groups_tagging_api_1 = __nccwpck_require__(7465);
-const zod_1 = __importDefault(__nccwpck_require__(301));
+const zod_1 = __importDefault(__nccwpck_require__(3301));
 const LambdaFunctionDTOSchema = zod_1.default.object({
     Configuration: zod_1.default.object({
         FunctionName: zod_1.default.string(),
@@ -56353,39 +62614,6 @@ const isResourceArn = (resource) => {
 
 "use strict";
 
-// inputs:
-//   applicationName:
-//     description: 'The name of the CodeDeploy application'
-//     required: true
-//   deploymentGroupName:
-//     description: 'The name of the CodeDeploy deployment group'
-//     required: true
-//   revisionType:
-//     description: 'The revision type to deploy'
-//     required: false
-//     default: 'AppSpecContent'
-//   deploymentConfigName:
-//     description: 'The name of the CodeDeploy deployment config'
-//     required: false
-//     default: 'CodeDeployDefault.LambdaAllAtOnce'
-//   description:
-//     description: 'The description of the deployment'
-//     required: false
-//   ignoreApplicationStopFailures:
-//     description:
-//       'Whether to continue the deployment if the ApplicationStop lifecycle event
-//       fails'
-//     required: false
-//     default: false
-//   autoRollbackConfiguration:
-//     description:
-//       'The configuration for automatically rolling back the deployment'
-//     required: false
-//     default: '{"enabled": true, "events": ["DEPLOYMENT_FAILURE"]}'
-//   updateOutdatedInstancesOnly:
-//     description: 'Whether to only update instances that are outdated'
-//     required: false
-//     default: true
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -56409,14 +62637,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(2186));
+const deploy_1 = __nccwpck_require__(5930);
 const findLambdas_1 = __nccwpck_require__(4752);
-const util_1 = __importDefault(__nccwpck_require__(3837));
 const LAMBDA_ALIAS = 'live';
 /**
  * The main function for the action.
@@ -56424,31 +62649,23 @@ const LAMBDA_ALIAS = 'live';
  */
 async function run() {
     try {
-        // const applicationName: string = core.getInput('applicationName')
-        // const deploymentGroupName: string = core.getInput('deploymentGroupName')
-        // const revisionType: string = core.getInput('revisionType')
-        // const deploymentConfigName: string = core.getInput('deploymentConfigName')
-        // const description: string = core.getInput('description')
-        // const ignoreApplicationStopFailures: boolean = core.getBooleanInput(
-        //   'ignoreApplicationStopFailures'
-        // )
-        // const autoRollbackConfiguration: string = core.getInput(
-        //   'autoRollbackConfiguration'
-        // )
-        // const updateOutdatedInstancesOnly: boolean = core.getBooleanInput(
-        //   'updateOutdatedInstancesOnly'
-        // )
-        deployApplication('Betting-Api');
-        deployApplication('Hub88-Api');
-        // // Debug logs are only output if the `ACTIONS_STEP_DEBUG` secret is true
-        // // Print all inputs to the log
-        // core.debug(`Inputs: ${JSON.stringify(core.getInput)}`)
-        // // Log the current timestamp, wait, then log the new timestamp
-        // core.debug(new Date().toTimeString())
-        // await wait(parseInt(ms, 10))
-        // core.debug(new Date().toTimeString())
-        // // Set outputs for other workflow steps to use
-        // core.setOutput('time', new Date().toTimeString())
+        const applicationName = core.getInput('applicationName');
+        const deploymentGroupName = core.getInput('deploymentGroupName');
+        const deploymentConfigName = core.getInput('deploymentConfigName');
+        const description = core.getInput('description');
+        const tagKey = core.getInput('tagKey');
+        const tagValues = core
+            .getInput('tagValues')
+            .split(',')
+            .map(value => value.trim());
+        await deployApplication({
+            applicationName,
+            deploymentGroupName,
+            deploymentConfigName,
+            description,
+            tagKey,
+            tagValues
+        });
     }
     catch (error) {
         // Fail the workflow run if an error occurs
@@ -56457,9 +62674,11 @@ async function run() {
     }
 }
 exports.run = run;
-const deployApplication = async (applicationName) => {
+const deployApplication = async (data) => {
     const lambdas = await (0, findLambdas_1.findLambdas)({
-        tags: { Application: ['Betting-Api', 'Hub88-Api'] },
+        tags: {
+            [data.tagKey]: data.tagValues
+        },
         alias: LAMBDA_ALIAS
     });
     const resources = lambdas.reduce((acc, lambda) => {
@@ -56467,9 +62686,10 @@ const deployApplication = async (applicationName) => {
         return acc;
     }, {});
     const input = {
-        applicationName: `${applicationName} Deployment App`,
-        deploymentGroupName: 'Test',
-        deploymentConfigName: 'CodeDeployDefault.LambdaAllAtOnce',
+        applicationName: data.applicationName,
+        deploymentGroupName: data.deploymentGroupName,
+        deploymentConfigName: data.deploymentConfigName,
+        description: data.description,
         revision: {
             revisionType: 'AppSpecContent',
             appSpecContent: {
@@ -56480,8 +62700,8 @@ const deployApplication = async (applicationName) => {
             }
         }
     };
-    console.info(util_1.default.inspect({ input }, { depth: null }));
-    // await deploy()
+    // console.info(util.inspect({ input }, { depth: null }))
+    await (0, deploy_1.deploy)(input);
 };
 const fromLambdaFunctionToResource = (lambdaFunction) => {
     return {
@@ -58436,6 +64656,14 @@ module.exports = parseParams
 
 /***/ }),
 
+/***/ 7035:
+/***/ ((module) => {
+
+"use strict";
+module.exports = JSON.parse('{"name":"@aws-sdk/client-codedeploy","description":"AWS SDK for JavaScript Codedeploy Client for Node.js, Browser and React Native","version":"3.590.0","scripts":{"build":"concurrently \'yarn:build:cjs\' \'yarn:build:es\' \'yarn:build:types\'","build:cjs":"node ../../scripts/compilation/inline client-codedeploy","build:es":"tsc -p tsconfig.es.json","build:include:deps":"lerna run --scope $npm_package_name --include-dependencies build","build:types":"tsc -p tsconfig.types.json","build:types:downlevel":"downlevel-dts dist-types dist-types/ts3.4","clean":"rimraf ./dist-* && rimraf *.tsbuildinfo","extract:docs":"api-extractor run --local","generate:client":"node ../../scripts/generate-clients/single-service --solo codedeploy"},"main":"./dist-cjs/index.js","types":"./dist-types/index.d.ts","module":"./dist-es/index.js","sideEffects":false,"dependencies":{"@aws-crypto/sha256-browser":"3.0.0","@aws-crypto/sha256-js":"3.0.0","@aws-sdk/client-sso-oidc":"3.590.0","@aws-sdk/client-sts":"3.590.0","@aws-sdk/core":"3.588.0","@aws-sdk/credential-provider-node":"3.590.0","@aws-sdk/middleware-host-header":"3.577.0","@aws-sdk/middleware-logger":"3.577.0","@aws-sdk/middleware-recursion-detection":"3.577.0","@aws-sdk/middleware-user-agent":"3.587.0","@aws-sdk/region-config-resolver":"3.587.0","@aws-sdk/types":"3.577.0","@aws-sdk/util-endpoints":"3.587.0","@aws-sdk/util-user-agent-browser":"3.577.0","@aws-sdk/util-user-agent-node":"3.587.0","@smithy/config-resolver":"^3.0.1","@smithy/core":"^2.1.1","@smithy/fetch-http-handler":"^3.0.1","@smithy/hash-node":"^3.0.0","@smithy/invalid-dependency":"^3.0.0","@smithy/middleware-content-length":"^3.0.0","@smithy/middleware-endpoint":"^3.0.1","@smithy/middleware-retry":"^3.0.3","@smithy/middleware-serde":"^3.0.0","@smithy/middleware-stack":"^3.0.0","@smithy/node-config-provider":"^3.1.0","@smithy/node-http-handler":"^3.0.0","@smithy/protocol-http":"^4.0.0","@smithy/smithy-client":"^3.1.1","@smithy/types":"^3.0.0","@smithy/url-parser":"^3.0.0","@smithy/util-base64":"^3.0.0","@smithy/util-body-length-browser":"^3.0.0","@smithy/util-body-length-node":"^3.0.0","@smithy/util-defaults-mode-browser":"^3.0.3","@smithy/util-defaults-mode-node":"^3.0.3","@smithy/util-endpoints":"^2.0.1","@smithy/util-middleware":"^3.0.0","@smithy/util-retry":"^3.0.0","@smithy/util-utf8":"^3.0.0","@smithy/util-waiter":"^3.0.0","tslib":"^2.6.2"},"devDependencies":{"@tsconfig/node16":"16.1.3","@types/node":"^16.18.96","concurrently":"7.0.0","downlevel-dts":"0.10.1","rimraf":"3.0.2","typescript":"~4.9.5"},"engines":{"node":">=16.0.0"},"typesVersions":{"<4.0":{"dist-types/*":["dist-types/ts3.4/*"]}},"files":["dist-*/**"],"author":{"name":"AWS SDK for JavaScript Team","url":"https://aws.amazon.com/javascript/"},"license":"Apache-2.0","browser":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.browser"},"react-native":{"./dist-es/runtimeConfig":"./dist-es/runtimeConfig.native"},"homepage":"https://github.com/aws/aws-sdk-js-v3/tree/main/clients/client-codedeploy","repository":{"type":"git","url":"https://github.com/aws/aws-sdk-js-v3.git","directory":"clients/client-codedeploy"}}');
+
+/***/ }),
+
 /***/ 2805:
 /***/ ((module) => {
 
@@ -58533,3 +64761,4 @@ const main_1 = __nccwpck_require__(399);
 module.exports = __webpack_exports__;
 /******/ })()
 ;
+//# sourceMappingURL=index.js.map
