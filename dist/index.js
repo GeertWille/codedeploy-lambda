@@ -62681,10 +62681,11 @@ const deployApplication = async (data) => {
         },
         alias: LAMBDA_ALIAS
     });
-    const resources = lambdas.reduce((acc, lambda) => {
-        acc[lambda.name] = fromLambdaFunctionToResource(lambda);
-        return acc;
-    }, {});
+    const resources = lambdas.map(lambda => {
+        return {
+            [lambda.name]: fromLambdaFunctionToResource(lambda)
+        };
+    });
     const input = {
         applicationName: data.applicationName,
         deploymentGroupName: data.deploymentGroupName,
