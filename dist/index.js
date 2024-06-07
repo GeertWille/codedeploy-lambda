@@ -62726,7 +62726,9 @@ const LAMBDA_ALIAS = 'live';
 async function run() {
     try {
         const applicationName = core.getInput('applicationName');
-        const deploymentGroupName = core.getInput('deploymentGroupName');
+        const deploymentGroupName = core.getInput('deploymentGroupName', {
+            required: false
+        });
         const deploymentConfigName = core.getInput('deploymentConfigName');
         const description = core.getInput('description');
         const tagKey = core.getInput('tagKey');

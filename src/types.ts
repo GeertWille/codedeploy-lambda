@@ -11,7 +11,7 @@ export type DeployApplicationInput = {
 }
 export type DeployInput = {
   applicationName: string
-  deploymentGroupName: string
+  deploymentGroupName?: string
   deploymentConfigName?: string
   autoRollbackConfiguration?: string
   revision: RevisionLocation

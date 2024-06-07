@@ -12,7 +12,9 @@ const LAMBDA_ALIAS = 'live'
 export async function run(): Promise<void> {
   try {
     const applicationName: string = core.getInput('applicationName')
-    const deploymentGroupName: string = core.getInput('deploymentGroupName')
+    const deploymentGroupName: string = core.getInput('deploymentGroupName', {
+      required: false
+    })
     const deploymentConfigName: string = core.getInput('deploymentConfigName')
     const description: string = core.getInput('description')
     const tagKey: string = core.getInput('tagKey')
