@@ -14,7 +14,7 @@ inputs:
     required: true
   deploymentGroupName:
     description: 'The name of the CodeDeploy deployment group'
-    required: true
+    required: false
   deploymentConfigName:
     description: 'The name of the CodeDeploy deployment config'
     required: false

@@ -62,7 +62,7 @@ const deployApplication = async (
   for (const resource of resources) {
     const input: DeployInput = {
       applicationName: data.applicationName,
-      deploymentGroupName: data.deploymentGroupName,
+      deploymentGroupName: data.deploymentGroupName ?? Object.keys(resource)[0],
       deploymentConfigName: data.deploymentConfigName,
       description: data.description,
       revision: {

@@ -62770,7 +62770,7 @@ const deployApplication = async (data) => {
     for (const resource of resources) {
         const input = {
             applicationName: data.applicationName,
-            deploymentGroupName: data.deploymentGroupName,
+            deploymentGroupName: data.deploymentGroupName ?? Object.keys(resource)[0],
             deploymentConfigName: data.deploymentConfigName,
             description: data.description,
             revision: {
