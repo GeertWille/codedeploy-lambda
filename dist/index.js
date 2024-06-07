@@ -62726,9 +62726,6 @@ const LAMBDA_ALIAS = 'live';
 async function run() {
     try {
         const applicationName = core.getInput('applicationName');
-        const deploymentGroupName = core.getInput('deploymentGroupName', {
-            required: false
-        });
         const deploymentConfigName = core.getInput('deploymentConfigName');
         const description = core.getInput('description');
         const tagKey = core.getInput('tagKey');
@@ -62738,7 +62735,6 @@ async function run() {
             .map(value => value.trim());
         await deployApplication({
             applicationName,
-            deploymentGroupName,
             deploymentConfigName,
             description,
             tagKey,
@@ -62772,7 +62768,7 @@ const deployApplication = async (data) => {
     for (const resource of resources) {
         const input = {
             applicationName: data.applicationName,
-            deploymentGroupName: data.deploymentGroupName ?? Object.keys(resource)[0],
+            deploymentGroupName: Object.keys(resource)[0],
             deploymentConfigName: data.deploymentConfigName,
             description: data.description,
             revision: {

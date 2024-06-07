@@ -12,9 +12,6 @@ const LAMBDA_ALIAS = 'live'
 export async function run(): Promise<void> {
   try {
     const applicationName: string = core.getInput('applicationName')
-    const deploymentGroupName: string = core.getInput('deploymentGroupName', {
-      required: false
-    })
     const deploymentConfigName: string = core.getInput('deploymentConfigName')
     const description: string = core.getInput('description')
     const tagKey: string = core.getInput('tagKey')
@@ -25,7 +22,6 @@ export async function run(): Promise<void> {
 
     await deployApplication({
       applicationName,
-      deploymentGroupName,
       deploymentConfigName,
       description,
       tagKey,
@@ -64,7 +60,7 @@ const deployApplication = async (
   for (const resource of resources) {
     const input: DeployInput = {
       applicationName: data.applicationName,
-      deploymentGroupName: data.deploymentGroupName ?? Object.keys(resource)[0],
+      deploymentGroupName: Object.keys(resource)[0],
       deploymentConfigName: data.deploymentConfigName,
       description: data.description,
       revision: {

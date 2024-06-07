@@ -2,7 +2,6 @@ import { RevisionLocation } from '@aws-sdk/client-codedeploy'
 
 export type DeployApplicationInput = {
   applicationName: string
-  deploymentGroupName?: string
   deploymentConfigName?: string
   autoRollbackConfiguration?: string
   description?: string
