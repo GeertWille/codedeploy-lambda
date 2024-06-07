@@ -62561,9 +62561,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.findLambdas = void 0;
+const core = __importStar(__nccwpck_require__(2186));
 const client_lambda_1 = __nccwpck_require__(6584);
 const client_resource_groups_tagging_api_1 = __nccwpck_require__(7465);
-const core = __importStar(__nccwpck_require__(2186));
 const zod_1 = __importDefault(__nccwpck_require__(3301));
 const LambdaFunctionDTOSchema = zod_1.default.object({
     Configuration: zod_1.default.object({
@@ -62767,23 +62767,25 @@ const deployApplication = async (data) => {
         core.notice('No lambdas to deploy');
         return;
     }
-    const input = {
-        applicationName: data.applicationName,
-        deploymentGroupName: data.deploymentGroupName,
-        deploymentConfigName: data.deploymentConfigName,
-        description: data.description,
-        revision: {
-            revisionType: 'AppSpecContent',
-            appSpecContent: {
-                content: JSON.stringify({
-                    version: '0.0.1',
-                    Resources: resources
-                })
+    for (const resource of resources) {
+        const input = {
+            applicationName: data.applicationName,
+            deploymentGroupName: data.deploymentGroupName,
+            deploymentConfigName: data.deploymentConfigName,
+            description: data.description,
+            revision: {
+                revisionType: 'AppSpecContent',
+                appSpecContent: {
+                    content: JSON.stringify({
+                        version: '0.0.1',
+                        Resources: [resource]
+                    })
+                }
             }
-        }
-    };
-    await (0, deploy_1.deploy)(input);
-    core.info('Deployment triggered:');
+        };
+        await (0, deploy_1.deploy)(input);
+    }
+    core.info('Deployments triggered:');
     lambdas.forEach(lambda => {
         core.info(`  - ${lambda.name}: ${lambda.aliasVersion} -> ${lambda.latestVersion}`);
     });
@@ -62799,71 +62801,6 @@ const fromLambdaFunctionToResource = (lambdaFunction) => {
         }
     };
 };
-// {
-//   "version": "0.0",
-//   "Resources":[{
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   },
-//   {
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   }]
-// }
-// {
-//     "applicationName": "Test",
-//     "deploymentGroupName": "Test",
-//     "revision": {
-//         "revisionType": "AppSpecContent",
-//         "appSpecContent": {
-//             "content": "{\"version\":\"0.0\",\"Resources\":[{\"blue\":{\"Type\":\"AWS::Lambda::Function\",\"Properties\":{\"Name\":\"blue\",\"Alias\":\"Blue\",\"CurrentVersion\":2,\"TargetVersion\":1}}}]}"
-//         }
-//     },
-//     "deploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce"
-// }
-// # {
-// #     "applicationName": "",
-// #     "deploymentGroupName": "",
-// #     "revision": {
-// #         "revisionType": "AppSpecContent",
-// #         "appSpecContent": {
-// #             "content": ""
-// #         }
-// #     },
-// #     "deploymentConfigName": "",
-// #     "description": "",
-// #     "ignoreApplicationStopFailures": true,
-// #     "autoRollbackConfiguration": {
-// #         "enabled": true,
-// #         "events": [
-// #             "DEPLOYMENT_FAILURE"
-// #         ]
-// #     },
-// #     "updateOutdatedInstancesOnly": true,
-// #     "overrideAlarmConfiguration": {
-// #         "enabled": true,
-// #         "ignorePollAlarmFailure": true,
-// #         "alarms": [
-// #             {
-// #                 "name": ""
-// #             }
-// #         ]
-// #     }
-// # }
 
 
 /***/ }),

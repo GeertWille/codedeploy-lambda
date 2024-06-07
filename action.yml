@@ -31,8 +31,10 @@ inputs:
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  deploymentId:
+    description: 'The ID of the deployment'
+  status:
+    description: 'The status of the deployment'
 
 runs:
   using: node20

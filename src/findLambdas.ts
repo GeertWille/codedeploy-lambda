@@ -1,3 +1,4 @@
+import * as core from '@actions/core'
 import {
   GetFunctionCommand,
   LambdaClient,
@@ -7,9 +8,7 @@ import {
   GetResourcesCommand,
   ResourceGroupsTaggingAPI
 } from '@aws-sdk/client-resource-groups-tagging-api'
-import * as core from '@actions/core'
 import z from 'zod'
-import util from 'util'
 
 const LambdaFunctionDTOSchema = z.object({
   Configuration: z.object({

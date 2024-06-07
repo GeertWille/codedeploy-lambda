@@ -59,24 +59,27 @@ const deployApplication = async (
     return
   }
 
-  const input: DeployInput = {
-    applicationName: data.applicationName,
-    deploymentGroupName: data.deploymentGroupName,
-    deploymentConfigName: data.deploymentConfigName,
-    description: data.description,
-    revision: {
-      revisionType: 'AppSpecContent',
-      appSpecContent: {
-        content: JSON.stringify({
-          version: '0.0.1',
-          Resources: resources
-        })
+  for (const resource of resources) {
+    const input: DeployInput = {
+      applicationName: data.applicationName,
+      deploymentGroupName: data.deploymentGroupName,
+      deploymentConfigName: data.deploymentConfigName,
+      description: data.description,
+      revision: {
+        revisionType: 'AppSpecContent',
+        appSpecContent: {
+          content: JSON.stringify({
+            version: '0.0.1',
+            Resources: [resource]
+          })
+        }
       }
     }
+
+    await deploy(input)
   }
 
-  await deploy(input)
-  core.info('Deployment triggered:')
+  core.info('Deployments triggered:')
   lambdas.forEach(lambda => {
     core.info(
       `  - ${lambda.name}: ${lambda.aliasVersion} -> ${lambda.latestVersion}`
@@ -97,71 +100,3 @@ const fromLambdaFunctionToResource = (
     }
   }
 }
-
-// {
-//   "version": "0.0",
-//   "Resources":[{
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   },
-//   {
-//     "blue":{
-//       "Type": "AWS::Lambda::Function",
-//       "Properties":{
-//         "Name":"blue",
-//         "Alias":"Blue",
-//         "CurrentVersion":2,
-//         "TargetVersion": 1
-//       }
-//     }
-//   }]
-// }
-
-// {
-//     "applicationName": "Test",
-//     "deploymentGroupName": "Test",
-//     "revision": {
-//         "revisionType": "AppSpecContent",
-//         "appSpecContent": {
-//             "content": "{\"version\":\"0.0\",\"Resources\":[{\"blue\":{\"Type\":\"AWS::Lambda::Function\",\"Properties\":{\"Name\":\"blue\",\"Alias\":\"Blue\",\"CurrentVersion\":2,\"TargetVersion\":1}}}]}"
-//         }
-//     },
-//     "deploymentConfigName": "CodeDeployDefault.LambdaAllAtOnce"
-// }
-
-// # {
-// #     "applicationName": "",
-// #     "deploymentGroupName": "",
-// #     "revision": {
-// #         "revisionType": "AppSpecContent",
-// #         "appSpecContent": {
-// #             "content": ""
-// #         }
-// #     },
-// #     "deploymentConfigName": "",
-// #     "description": "",
-// #     "ignoreApplicationStopFailures": true,
-// #     "autoRollbackConfiguration": {
-// #         "enabled": true,
-// #         "events": [
-// #             "DEPLOYMENT_FAILURE"
-// #         ]
-// #     },
-// #     "updateOutdatedInstancesOnly": true,
-// #     "overrideAlarmConfiguration": {
-// #         "enabled": true,
-// #         "ignorePollAlarmFailure": true,
-// #         "alarms": [
-// #             {
-// #                 "name": ""
-// #             }
-// #         ]
-// #     }
-// # }
