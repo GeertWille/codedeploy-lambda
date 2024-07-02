@@ -74,6 +74,7 @@ const deployApplication = async (
       }
     }
 
+    await delay(1000)
     await deploy(input)
   }
 
@@ -84,6 +85,8 @@ const deployApplication = async (
     )
   })
 }
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 const fromLambdaFunctionToResource = (
   lambdaFunction: LambdaFunction
