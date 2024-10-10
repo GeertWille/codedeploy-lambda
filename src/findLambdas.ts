@@ -84,7 +84,7 @@ export async function findLambdas({
 }): Promise<LambdaFunction[]> {
   const resourceGroupsTaggingAPI = new ResourceGroupsTaggingAPI()
 
-  tags['ResourceType'] = ['lambda']
+  tags['ResourceType'] = ['Lambda']
 
   const resources = await resourceGroupsTaggingAPI.send(
     new GetResourcesCommand({
@@ -95,6 +95,7 @@ export async function findLambdas({
       }))
     })
   )
+  console.log('🚀 ~ resources:', resources)
 
   const lambdaArns = resources.ResourceTagMappingList ?? []
 
