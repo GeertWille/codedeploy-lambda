@@ -62285,6 +62285,7 @@ const LambdaVersionsFunctionSchema = zod_1.default.object({
 });
 async function findLambdas({ tags, alias }) {
     const resourceGroupsTaggingAPI = new client_resource_groups_tagging_api_1.ResourceGroupsTaggingAPI();
+    tags['ResourceType'] = ['lambda'];
     const resources = await resourceGroupsTaggingAPI.send(new client_resource_groups_tagging_api_1.GetResourcesCommand({
         ResourceTypeFilters: ['lambda'],
         TagFilters: Object.entries(tags).map(([Key, Value]) => ({
