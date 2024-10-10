@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
-import { deploy } from './deploy'
 import { LambdaFunction, findLambdas } from './findLambdas'
 import { DeployApplicationInput, DeployInput, Resource } from './types'
+import { deploy } from './deploy'
 
 const LAMBDA_ALIAS = 'live'
 
@@ -11,6 +11,12 @@ const LAMBDA_ALIAS = 'live'
  */
 export async function run(): Promise<void> {
   try {
+    // const applicationName: string = 'betting-api'
+    // const deploymentConfigName: string = 'CodeDeployDefault.LambdaAllAtOnce'
+    // const description: string = 'Deploy betting-api'
+    // const tagKey: string = 'Application'
+    // const tagValues: string[] = ['betting-api']
+
     const applicationName: string = core.getInput('applicationName')
     const deploymentConfigName: string = core.getInput('deploymentConfigName')
     const description: string = core.getInput('description')
@@ -79,16 +85,18 @@ const deployApplication = async (
   }
 
   core.info('Deployments triggered:')
-  lambdas.forEach(lambda => {
+  for (const lambda of lambdas) {
     core.info(
       `  - ${lambda.name}: ${lambda.aliasVersion} -> ${lambda.latestVersion}`
     )
-  })
+  }
+
+  return
 }
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
-const fromLambdaFunctionToResource = (
+export const fromLambdaFunctionToResource = (
   lambdaFunction: LambdaFunction
 ): Resource => {
   return {

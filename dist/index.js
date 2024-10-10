@@ -62223,6 +62223,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getLambdaFunction = void 0;
 exports.findLambdas = findLambdas;
 const core = __importStar(__nccwpck_require__(9093));
 const client_lambda_1 = __nccwpck_require__(490);
@@ -62285,7 +62286,12 @@ const LambdaVersionsFunctionSchema = zod_1.default.object({
 });
 async function findLambdas({ tags, alias }) {
     const resourceGroupsTaggingAPI = new client_resource_groups_tagging_api_1.ResourceGroupsTaggingAPI();
-    tags['ResourceType'] = ['lambda'];
+    tags['ResourceType'] = ['Lambda'];
+    const tagFilters = Object.entries(tags).map(([Key, Value]) => ({
+        Key,
+        Values: Value
+    }));
+    core.info(`🚀 ~ tagFilters: ${JSON.stringify(tagFilters, null, 2)}`);
     const resources = await resourceGroupsTaggingAPI.send(new client_resource_groups_tagging_api_1.GetResourcesCommand({
         ResourceTypeFilters: ['lambda'],
         TagFilters: Object.entries(tags).map(([Key, Value]) => ({
@@ -62293,8 +62299,11 @@ async function findLambdas({ tags, alias }) {
             Values: Value
         }))
     }));
+    core.info(`🚀 ~ resources: ${JSON.stringify(resources, null, 2)}`);
     const lambdaArns = resources.ResourceTagMappingList ?? [];
-    const promises = lambdaArns.filter(isResourceArn).map(value => getLambdaFunction({
+    const filteredLambdaArns = lambdaArns.filter(isResourceArn);
+    core.info(`🚀 ~ filteredLambdaArns: ${JSON.stringify(filteredLambdaArns, null, 2)}`);
+    const promises = filteredLambdaArns.map(value => (0, exports.getLambdaFunction)({
         arn: value.ResourceARN,
         alias
     }));
@@ -62302,8 +62311,8 @@ async function findLambdas({ tags, alias }) {
 }
 const getAllVersions = async (arn) => {
     const client = new client_lambda_1.LambdaClient();
+    const allVersions = [];
     let marker;
-    let allVersions = [];
     do {
         const response = await client.send(new client_lambda_1.ListVersionsByFunctionCommand({
             FunctionName: `${arn}`,
@@ -62336,11 +62345,12 @@ const getLambdaFunction = async ({ arn, alias }) => {
         .sort((a, b) => parseInt(b.Version) - parseInt(a.Version))[0].Version;
     const lambdaFunction = {
         name: dto.Configuration.FunctionName,
-        latestVersion: latestVersion,
-        aliasVersion: dto.Configuration.Version
+        aliasVersion: dto.Configuration.Version,
+        latestVersion
     };
     return lambdaFunction;
 };
+exports.getLambdaFunction = getLambdaFunction;
 const isResourceArn = (resource) => {
     return typeof resource === 'object' && !!resource && 'ResourceARN' in resource;
 };
@@ -62377,10 +62387,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.fromLambdaFunctionToResource = void 0;
 exports.run = run;
 const core = __importStar(__nccwpck_require__(9093));
-const deploy_1 = __nccwpck_require__(5381);
 const findLambdas_1 = __nccwpck_require__(4460);
+const deploy_1 = __nccwpck_require__(5381);
 const LAMBDA_ALIAS = 'live';
 /**
  * The main function for the action.
@@ -62388,6 +62399,11 @@ const LAMBDA_ALIAS = 'live';
  */
 async function run() {
     try {
+        // const applicationName: string = 'betting-api'
+        // const deploymentConfigName: string = 'CodeDeployDefault.LambdaAllAtOnce'
+        // const description: string = 'Deploy betting-api'
+        // const tagKey: string = 'Application'
+        // const tagValues: string[] = ['betting-api']
         const applicationName = core.getInput('applicationName');
         const deploymentConfigName = core.getInput('deploymentConfigName');
         const description = core.getInput('description');
@@ -62420,7 +62436,7 @@ const deployApplication = async (data) => {
     const lambdas = allLambdas.filter(lambda => lambda.latestVersion !== lambda.aliasVersion);
     const resources = lambdas.map(lambda => {
         return {
-            [lambda.name]: fromLambdaFunctionToResource(lambda)
+            [lambda.name]: (0, exports.fromLambdaFunctionToResource)(lambda)
         };
     });
     if (resources.length === 0) {
@@ -62447,9 +62463,10 @@ const deployApplication = async (data) => {
         await (0, deploy_1.deploy)(input);
     }
     core.info('Deployments triggered:');
-    lambdas.forEach(lambda => {
+    for (const lambda of lambdas) {
         core.info(`  - ${lambda.name}: ${lambda.aliasVersion} -> ${lambda.latestVersion}`);
-    });
+    }
+    return;
 };
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const fromLambdaFunctionToResource = (lambdaFunction) => {
@@ -62463,6 +62480,7 @@ const fromLambdaFunctionToResource = (lambdaFunction) => {
         }
     };
 };
+exports.fromLambdaFunctionToResource = fromLambdaFunctionToResource;
 
 
 /***/ }),

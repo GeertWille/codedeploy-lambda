@@ -86,6 +86,13 @@ export async function findLambdas({
 
   tags['ResourceType'] = ['Lambda']
 
+  const tagFilters = Object.entries(tags).map(([Key, Value]) => ({
+    Key,
+    Values: Value
+  }))
+
+  core.info(`🚀 ~ tagFilters: ${JSON.stringify(tagFilters, null, 2)}`)
+
   const resources = await resourceGroupsTaggingAPI.send(
     new GetResourcesCommand({
       ResourceTypeFilters: ['lambda'],
@@ -95,11 +102,17 @@ export async function findLambdas({
       }))
     })
   )
-  console.log('🚀 ~ resources:', resources)
+  core.info(`🚀 ~ resources: ${JSON.stringify(resources, null, 2)}`)
 
   const lambdaArns = resources.ResourceTagMappingList ?? []
 
-  const promises = lambdaArns.filter(isResourceArn).map(value =>
+  const filteredLambdaArns = lambdaArns.filter(isResourceArn)
+
+  core.info(
+    `🚀 ~ filteredLambdaArns: ${JSON.stringify(filteredLambdaArns, null, 2)}`
+  )
+
+  const promises = filteredLambdaArns.map(value =>
     getLambdaFunction({
       arn: value.ResourceARN,
       alias
@@ -110,8 +123,8 @@ export async function findLambdas({
 
 const getAllVersions = async (arn: string) => {
   const client = new LambdaClient()
+  const allVersions = []
   let marker
-  let allVersions = []
 
   do {
     const response: unknown = await client.send(
@@ -135,7 +148,7 @@ const getAllVersions = async (arn: string) => {
   return allVersions
 }
 
-const getLambdaFunction = async ({
+export const getLambdaFunction = async ({
   arn,
   alias
 }: {
@@ -163,8 +176,8 @@ const getLambdaFunction = async ({
 
   const lambdaFunction: LambdaFunction = {
     name: dto.Configuration.FunctionName,
-    latestVersion: latestVersion,
-    aliasVersion: dto.Configuration.Version
+    aliasVersion: dto.Configuration.Version,
+    latestVersion
   }
 
   return lambdaFunction

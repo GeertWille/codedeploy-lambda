@@ -34,7 +34,9 @@
     "package:watch": "npm run package -- --watch",
     "test": "npx jest",
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package",
-    "findLambdas": "ts-node script/findLambdas.ts"
+    "findLambdas": "ts-node script/findLambdas.ts",
+    "getLambdaFunction": "ts-node script/getLambdaFunction.ts",
+    "main": "ts-node src/index.ts"
   },
   "license": "MIT",
   "jest": {
