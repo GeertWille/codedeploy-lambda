@@ -83,6 +83,9 @@ export async function findLambdas({
   alias: string
 }): Promise<LambdaFunction[]> {
   const resourceGroupsTaggingAPI = new ResourceGroupsTaggingAPI()
+
+  tags['ResourceType'] = ['lambda']
+
   const resources = await resourceGroupsTaggingAPI.send(
     new GetResourcesCommand({
       ResourceTypeFilters: ['lambda'],
